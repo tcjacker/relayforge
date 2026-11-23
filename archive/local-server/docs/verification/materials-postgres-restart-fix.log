@@ -1,0 +1,115 @@
+test_round_trip_and_stale_write (test_seed_pg.PostgresJournalTests.test_round_trip_and_stale_write) ... ok
+test_concurrent_confirm_has_one_authorization_and_batch (test_seed_pg.PostgresStageTests.test_concurrent_confirm_has_one_authorization_and_batch) ... ok
+test_edit_authorize_repeat_restart_and_stage_assessment (test_seed_pg.PostgresStageTests.test_edit_authorize_repeat_restart_and_stage_assessment) ... ok
+test_interrupted_planning_requires_explicit_retry (test_seed_pg.PostgresStageTests.test_interrupted_planning_requires_explicit_retry) ... ok
+test_invalid_persisted_graph_and_closed_stage_do_not_pass (test_seed_pg.PostgresStageTests.test_invalid_persisted_graph_and_closed_stage_do_not_pass) ... ok
+test_mid_batch_constraint_failure_rolls_back_everything (test_seed_pg.PostgresStageTests.test_mid_batch_constraint_failure_rolls_back_everything) ... ok
+test_save_confirm_race_and_stale_save (test_seed_pg.PostgresStageTests.test_save_confirm_race_and_stale_save) ... ok
+test_authorized_recovery_conflict_releases_pending (test_seed_project_pg.ProjectPostgresTests.test_authorized_recovery_conflict_releases_pending) ... ok
+test_candidate_tampering_and_readonly_diff_rejected (test_seed_project_pg.ProjectPostgresTests.test_candidate_tampering_and_readonly_diff_rejected) ... ok
+test_competing_enables_only_one_wins (test_seed_project_pg.ProjectPostgresTests.test_competing_enables_only_one_wins) ... ok
+test_draft_atomic_race_restart_and_readonly_sources (test_seed_project_pg.ProjectPostgresTests.test_draft_atomic_race_restart_and_readonly_sources) ... ok
+test_failed_verification_never_becomes_source (test_seed_project_pg.ProjectPostgresTests.test_failed_verification_never_becomes_source) ... ok
+test_failure_boundaries_recover_in_fresh_process (test_seed_project_pg.ProjectPostgresTests.test_failure_boundaries_recover_in_fresh_process) ... ok
+test_git_success_then_main_advance_and_db_outage (test_seed_project_pg.ProjectPostgresTests.test_git_success_then_main_advance_and_db_outage) ... ok
+test_new_explicit_base_after_normal_main_change (test_seed_project_pg.ProjectPostgresTests.test_new_explicit_base_after_normal_main_change) ... ok
+test_real_verify_publish_history_roles_and_task_worktree_untouched (test_seed_project_pg.ProjectPostgresTests.test_real_verify_publish_history_roles_and_task_worktree_untouched) ... ok
+test_recovery_requires_main_ancestry_and_candidate_ref (test_seed_project_pg.ProjectPostgresTests.test_recovery_requires_main_ancestry_and_candidate_ref) ... ok
+test_request_retries_stale_drafts_dirty_main_and_baseline (test_seed_project_pg.ProjectPostgresTests.test_request_retries_stale_drafts_dirty_main_and_baseline) ... ok
+test_browser_crlf_transport_preserves_existing_lf_crlf_and_trailing_newlines (test_seed_material_web.MaterialFormTests.test_browser_crlf_transport_preserves_existing_lf_crlf_and_trailing_newlines) ... ok
+test_dirty_noscript_prepare_and_activate_refused_before_domain_mutation (test_seed_material_web.MaterialFormTests.test_dirty_noscript_prepare_and_activate_refused_before_domain_mutation) ... ok
+test_import_requires_literal_registered_fragment_no_decision_inference (test_seed_material_web.MaterialFormTests.test_import_requires_literal_registered_fragment_no_decision_inference) ... ok
+test_javascript_dirty_refresh_and_action_return_area (test_seed_material_web.MaterialFormTests.test_javascript_dirty_refresh_and_action_return_area) ... ok
+test_reject_paths_readonly_unknown_ids_duplicate_and_missing_bodies (test_seed_material_web.MaterialFormTests.test_reject_paths_readonly_unknown_ids_duplicate_and_missing_bodies) ... ok
+test_revision_covers_draft_publication_state_and_evidence (test_seed_material_web.MaterialFormTests.test_revision_covers_draft_publication_state_and_evidence) ... ok
+test_seven_editors_preview_save_empty_and_exact_newlines (test_seed_material_web.MaterialFormTests.test_seven_editors_preview_save_empty_and_exact_newlines) ... ok
+test_stale_save_retains_input_and_exposes_latest_bundle (test_seed_material_web.MaterialFormTests.test_stale_save_retains_input_and_exposes_latest_bundle) ... ok
+test_strict_sections_preserve_unedited_bytes_and_offer_raw_repair (test_seed_material_web.MaterialFormTests.test_strict_sections_preserve_unedited_bytes_and_offer_raw_repair) ... ok
+test_dirty_main_and_forward_baseline_conflicts_remain_visible (test_seed_material_web.MaterialHTTPPostgresTests.test_dirty_main_and_forward_baseline_conflicts_remain_visible) ... 127.0.0.1 - - [07/Nov/2026 19:09:05] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:06] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:06] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:07] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:08] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:09] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:10] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:12] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:09:13] "POST /action HTTP/1.1" 409 -
+ok
+test_failed_ready_records_survive_new_process_without_activation (test_seed_material_web.MaterialHTTPPostgresTests.test_failed_ready_records_survive_new_process_without_activation) ... 127.0.0.1 - - [07/Nov/2026 19:09:15] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:16] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:17] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:17] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:19] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:09:20] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:21] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:22] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:23] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:24] "GET /materials?area=context HTTP/1.1" 200 -
+ok
+test_forged_candidate_paths_xss_and_revision_consistency (test_seed_material_web.MaterialHTTPPostgresTests.test_forged_candidate_paths_xss_and_revision_consistency) ... 127.0.0.1 - - [07/Nov/2026 19:09:25] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:26] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:09:27] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:09:28] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:09:29] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:29] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:30] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:31] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:32] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:33] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:34] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:09:35] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:36] "GET /api/revision HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:36] "GET / HTTP/1.1" 200 -
+ok
+test_http_full_bundle_preview_save_prepare_confirm_history_and_reload (test_seed_material_web.MaterialHTTPPostgresTests.test_http_full_bundle_preview_save_prepare_confirm_history_and_reload) ... 127.0.0.1 - - [07/Nov/2026 19:09:38] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:39] "GET /materials?area=agents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:39] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:40] "POST /action HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:41] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:41] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:42] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:43] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:44] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:45] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:47] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:09:48] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:09:49] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:50] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:51] "GET /materials?area=context HTTP/1.1" 200 -
+ok
+test_http_import_registered_source_empty_body_and_browser_newlines (test_seed_material_web.MaterialHTTPPostgresTests.test_http_import_registered_source_empty_body_and_browser_newlines) ... 127.0.0.1 - - [07/Nov/2026 19:09:53] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:54] "POST /action HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:54] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:55] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+ok
+test_http_parallel_old_pages_only_one_save_and_one_activation_win (test_seed_material_web.MaterialHTTPPostgresTests.test_http_parallel_old_pages_only_one_save_and_one_activation_win) ... 127.0.0.1 - - [07/Nov/2026 19:09:57] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:57] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:09:59] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:09:59] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:09:59] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:10:00] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:10:01] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:10:03] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:10:03] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:10:03] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:10:05] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:10:05] "POST /action HTTP/1.1" 409 -
+ok
+test_two_stale_pages_save_prepare_and_activate_preserve_inputs (test_seed_material_web.MaterialHTTPPostgresTests.test_two_stale_pages_save_prepare_and_activate_preserve_inputs) ... 127.0.0.1 - - [07/Nov/2026 19:10:07] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:10:07] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:10:08] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:10:09] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:10:10] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 19:10:11] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:10:12] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:10:13] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:10:14] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:10:15] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 19:10:15] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:10:16] "POST /action HTTP/1.1" 409 -
+ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 121.574s
+
+OK

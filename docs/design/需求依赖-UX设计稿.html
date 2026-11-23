@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>需求依赖 UX 设计稿</title>
+<style>
+:root { color-scheme: dark; --bg: #111318; --panel: #171a21; --col: #15181e; --card: #1c2029; --btn: #1e222b; --ink: #e5e7eb; --muted: #8b93a1;
+  --line: #262b36; --accent: #7aa2ff; --ok: #4ade80; --wait: #fbbf24; --test: #c084fc; --bad: #f87171; --doc: #0d0f13 }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--doc); color: var(--ink); font: 15px/1.65 -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif }
+.page { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px }
+h1 { font-size: 30px; margin: 0 0 6px } h2 { font-size: 22px; margin: 56px 0 10px; padding-top: 12px; border-top: 1px solid var(--line) }
+h3 { font-size: 17px; margin: 22px 0 6px } p { margin: 8px 0 } .muted { color: var(--muted) } .small { font-size: 13px }
+.lead { font-size: 17px; color: #cfd3da; max-width: 880px }
+.toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0 } .toc a { color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; font-size: 13px } .toc a:hover { color: var(--ink) }
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 14px } th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top } th { background: var(--panel); font-weight: 600 }
+code { font: 13px ui-monospace, Menlo, monospace; background: #1b1f28; padding: 1px 5px; border-radius: 4px }
+.note { border-left: 3px solid var(--accent); background: #141924; padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 12px 0 }
+.note.warn { border-color: var(--wait); background: #1b1810 }
+.cap { font-size: 13px; color: var(--muted); margin: 6px 0 0 }
+ul { margin: 6px 0; padding-left: 20px } li { margin: 3px 0 }
+/* step header */
+.step { display: flex; gap: 14px; align-items: baseline; margin: 40px 0 6px } .step .n { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; background: #1a2337; color: var(--accent); font-weight: 700; display: grid; place-items: center; font-size: 14px }
+.step h3 { margin: 0 } .who { display: inline-block; font-size: 12px; padding: 0 8px; border-radius: 999px; margin-left: 8px; vertical-align: 2px } .w-ai { background: #1a2337; color: var(--accent) } .w-you { background: #12301f; color: var(--ok) } .w-prog { background: #262b36; color: #cfd3da }
+.chain { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 14px 0; font-size: 13px } .chain a { text-decoration: none; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px } .chain a:hover { border-color: var(--accent) } .chain i { color: var(--muted); font-style: normal }
+/* mock window */
+.win { border: 1px solid #2d3340; border-radius: 12px; overflow: hidden; background: var(--bg); box-shadow: 0 16px 50px rgba(0,0,0,.45); margin: 12px 0 4px; font-size: 13px; position: relative }
+.wbody { display: flex; min-height: 300px } .rail { flex: 0 0 50px; background: var(--panel); border-right: 1px solid var(--line); padding: 10px 0; display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--muted); font-size: 11px }
+.rail span { padding: 5px 4px; border-radius: 8px } .rail .on { background: #262b36; color: var(--ink) }
+.term { flex: 1; min-width: 0; padding: 14px 16px; font: 13px/1.7 ui-monospace, Menlo, monospace; color: #d7dae0 } .term .u { color: #e5c07b } .term .a { color: #98c379 } .term .dim { color: var(--muted) }
+.main { flex: 1; min-width: 0; padding: 12px; overflow: hidden }
+.rpanel { flex: 0 0 300px; border-left: 1px solid var(--line); padding: 14px; display: flex; flex-direction: column; gap: 9px; background: var(--bg) }
+.ttl { font-size: 17px; font-weight: 700; line-height: 1.35 }
+.chip { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 0 9px; font-size: 11.5px; color: #cfd3da; margin: 0 4px 4px 0 }
+.chip.blue { border-color: #34426a; color: var(--accent) } .chip.ok { border-color: #1f4d33; color: var(--ok) } .chip.wait { border-color: #5a4614; color: var(--wait) } .chip.bad { border-color: #5c2a2a; color: var(--bad) } .chip.test { border-color: #4b3566; color: var(--test) }
+.steps { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-size: 12px } .steps span { border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; color: var(--muted) } .steps .done { color: var(--ok); border-color: #1f4d33 } .steps .cur { color: var(--ink); border-color: var(--accent); background: #1a2337 } .steps i { color: var(--muted); font-style: normal }
+.pbtn { display: inline-block; background: var(--ok); color: #06250f; font-weight: 600; border-radius: 6px; padding: 5px 12px; font-size: 12.5px } .qbtn { display: inline-block; background: var(--btn); border: 1px solid var(--line); border-radius: 6px; padding: 4px 11px; font-size: 12.5px } .dis { opacity: .4 } .dbtn { display: inline-block; background: #2a1515; border: 1px solid #5c2a2a; color: #fca5a5; border-radius: 6px; padding: 4px 11px; font-size: 12.5px }
+.sec { font-size: 12px; color: var(--muted); margin: 6px 0 0 } .gnote { font-size: 12px; color: var(--wait) } .gnote.bad { color: var(--bad) } .gnote.ok { color: var(--ok) }
+.box { border: 1px solid var(--line); border-radius: 9px; padding: 9px 10px; background: #14171d } .box.hl { border-color: #34426a; background: #131a28 } .box.warn { border-color: #5a4614; background: #1b1810 } .box.bad { border-color: #5c2a2a; background: #1d1313 }
+.dep { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 5px 0; border-bottom: 1px dashed var(--line) } .dep:last-child { border-bottom: 0 } .dep b { font-weight: 600 } .x { color: var(--muted); cursor: default }
+.bar { height: 4px; background: #262b36; border-radius: 2px; overflow: hidden } .bar i { display: block; height: 100% }
+.opt { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px } .opt span { border: 1px solid var(--line); border-radius: 6px; padding: 1px 8px; font-size: 11.5px; color: var(--muted) } .opt span.on { border-color: var(--accent); color: var(--ink); background: #1a2337 }
+/* board */
+.cols { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px }
+.col { background: var(--col); border-radius: 9px; padding: 7px; min-height: 150px; display: flex; flex-direction: column; gap: 6px; position: relative } .colhead { font-size: 12px; display: flex; align-items: center; gap: 6px; padding: 0 2px 2px }
+.colhead i { width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--muted) } .c-build i { border-color: var(--accent) } .c-test i { border-color: var(--test) } .c-check i { border-color: var(--wait); background: var(--wait) } .c-done i { border-color: var(--ok); background: var(--ok) }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 7px; padding: 7px 8px; display: flex; flex-direction: column; gap: 3px; transition: opacity .2s } .card b { font-weight: 600; font-size: 12.5px; line-height: 1.4 } .card small { font-size: 11px; color: var(--muted) }
+.card small.w { color: var(--wait) } .card small.g { color: var(--ok) } .card small.b { color: var(--accent) } .card small.r { color: var(--bad) } .card small.dep { color: #a5b4fc }
+.card.blocked { border-style: dashed } .card.fade { opacity: .28 } .card.focus { border-color: var(--accent); box-shadow: 0 0 0 2px #2b3a63 } .card.pre { border-color: var(--wait); box-shadow: 0 0 0 2px #4a3a10 } .card.post { border-color: #a5b4fc; box-shadow: 0 0 0 2px #2c2f55 }
+.tip { position: absolute; z-index: 2; background: #2a1515; border: 1px solid #5c2a2a; color: #fecaca; border-radius: 8px; padding: 6px 10px; font-size: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.5); max-width: 240px }
+.toast { position: absolute; right: 14px; top: 12px; width: 300px; background: #202532; border: 1px solid #3a4152; border-radius: 12px; padding: 10px 12px; box-shadow: 0 12px 34px rgba(0,0,0,.55); font-size: 12.5px; z-index: 3 } .toast b { display: block; font-size: 13px }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start }
+.pick { background: #1a1e27; border: 1px solid #3a4152; border-radius: 9px; padding: 6px; box-shadow: 0 12px 30px rgba(0,0,0,.5) } .pick input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; color: var(--ink); padding: 4px 8px; font: inherit; font-size: 12.5px } .pick div { padding: 5px 6px; border-radius: 6px; font-size: 12.5px } .pick div:hover { background: var(--btn) } .pick .no { color: var(--muted) } .pick .no small { display: block; font-size: 11px }
+@media (max-width: 900px) { .grid2 { grid-template-columns: 1fr } .rpanel { flex-basis: 250px } .rail { display: none } .cols { grid-template-columns: repeat(3, minmax(0, 1fr)) } .hide-narrow { display: none } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>需求依赖：UX 设计稿</h1>
+<p class="lead">没有需求组，也没有父子需求：每个需求还是普通需求。开发中发现需求太大，就把一部分拆成新的需求，原需求继续完成自己那部分。需求之间可以有<b>「前置需求」</b>：前置需求完成之前，这个需求不能开始开发。程序会说清楚它在等谁，看板上也能看到。</p>
+<p class="muted small">基于 2026-11-21 的界面设计，只是方案，还没有实现。示例沿用演示项目 FlowNote 的需求，示意图按现有界面的布局和配色画。</p>
+
+<h2 id="chain">整条链路</h2>
+<p>下面用一个连续的例子走一遍：开发「任务截止日期提醒」时，AI 发现「逾期任务的每日汇总」可以独立交付。</p>
+<div class="chain">
+<a href="#s1">① AI 建议拆分</a><i>→</i><a href="#s2">② 同意拆分，调整验收条件</a><i>→</i><a href="#s3">③ 看板上看到依赖</a><i>→</i><a href="#s4">④ 悬停看前后关系</a><i>→</i><a href="#s5">⑤ 打开被挡住的需求</a><i>→</i><a href="#s6">⑥ 拖动被拦住</a><i>→</i><a href="#s7">⑦ 前置需求完成</a><i>→</i><a href="#s8">⑧ 确认立项，自动同步</a>
+</div>
+<div class="chain"><span class="muted">另外：</span><a href="#s9">⑨ 手动添加、去掉前置需求</a><a href="#e1">边界 1：前置需求被取消</a><a href="#e2">边界 2：原需求等拆出去的需求</a><a href="#e3">边界 3：开工同步有冲突</a><a href="#rules">规则一览</a><a href="#later">以后</a></div>
+
+<!-- ============ S1 ============ -->
+<div class="step" id="s1"><span class="n">1</span><h3>开发会话里，AI 建议拆分<span class="who w-ai">AI 建议</span></h3></div>
+<p>和现在一样，会话在回复里附上拆分建议，右侧面板出现「拆分建议」。新增的是：<b>每一条都写明和当前需求的先后关系</b>。AI 先选好一个，你可以改。</p>
+<div class="win"><div class="wbody">
+<div class="rail"><span>首页</span><span class="on">需求</span><span>问题</span><span>测试</span></div>
+<div class="term">
+<div class="u">用户</div><div>邮件汇总也要做吗？</div><br>
+<div class="a">AI</div>
+<div>「每天汇总逾期任务、发一封邮件」需要定时任务和发信配置，和截止日期提醒本身可以分开交付和验收。建议拆成一个新需求：</div>
+<div>　· 逾期任务的每日汇总：要等这个需求完成，因为它要用到截止日期字段。</div>
+<div>这个需求继续完成截止日期的字段、校验和看板上的临期提示。回复「同意拆分」或点右侧按钮。</div>
+<br><div class="dim">（后面附着 relayforge-split 代码块，由应用读取）</div>
+</div>
+<div class="rpanel">
+<div class="ttl">任务截止日期提醒</div>
+<div><span class="chip blue">进行中</span><span class="chip">分支 req/20261121-e024</span></div>
+<div class="steps"><span class="done">✓ 立项</span><i>›</i><span class="cur">开发</span><i>›</i><span>测试</span><i>›</i><span>验收</span><i>›</i><span>完成</span></div>
+<div class="box hl">
+<b>拆分建议 · 新增 1 条</b>
+<div style="margin-top:6px"><b>逾期任务的每日汇总</b><div class="small muted">为什么单独交付：定时任务和发信是独立的一块，可以单独验收</div>
+<div class="sec">和当前需求的先后</div>
+<div class="opt"><span class="on">等当前需求完成后再开发</span><span>当前需求等它</span><span>互不依赖</span></div></div>
+<div style="margin-top:9px"><span class="pbtn">同意拆分</span></div>
+</div>
+<div class="sec">计划 2 / 4</div><div class="bar"><i style="width:50%;background:var(--ok)"></i></div>
+</div>
+</div></div>
+<ul class="small">
+<li><b>先后关系有三种</b>：「等当前需求完成后再开发」最常见；「当前需求等它」用于拆出去的是前置的公共部分（见<a href="#e2" style="color:var(--accent)">边界 2</a>）；「互不依赖」。</li>
+<li><b>新需求也可以等另一个已有的需求。</b>这时拆分建议里写的是那个需求的名称，选项同样可以改。</li>
+</ul>
+
+<!-- ============ S2 ============ -->
+<div class="step" id="s2"><span class="n">2</span><h3>你同意拆分，然后调整原需求的验收条件<span class="who w-you">你确认</span><span class="who w-ai">AI 建议</span></h3></div>
+<p>点「同意拆分」后，程序建好新需求，放在「立项中」，并记下它的前置需求。新需求的说明里带着拆分理由和范围，这一点和现在一样。<b>紧接着</b>，原需求里有一条验收条件其实属于拆出去的部分，AI 提出把它移过去。这一步由你确认，否则原需求永远验收不过。</p>
+<div class="win"><div class="wbody">
+<div class="term hide-narrow"><div class="dim">（会话继续……）</div><br><div class="a">AI</div><div>已经拆出「逾期任务的每日汇总」。原需求的第 3 条验收条件「逾期任务每天早上收到一封汇总邮件」属于拆出去的部分，建议移过去，原需求只保留第 1、2、4 条。</div></div>
+<div class="rpanel" style="flex-basis:360px">
+<div class="ttl">任务截止日期提醒</div>
+<div class="box ok" style="border-color:#1f4d33;background:#10201a"><span class="gnote ok">✓ 已拆出「逾期任务的每日汇总」，它在等这个需求完成</span></div>
+<div class="box warn">
+<b>建议调整验收条件</b>
+<div class="small" style="margin:6px 0">把第 3 条移给「逾期任务的每日汇总」：</div>
+<div class="small" style="text-decoration:line-through;color:var(--muted)">3. 逾期任务每天早上收到一封汇总邮件</div>
+<div class="small muted" style="margin-top:4px">保留：1. 可以给任务设截止日期　2. 截止日期不能早于今天　4. 临期任务在看板上标黄</div>
+<div style="margin-top:8px"><span class="pbtn">同意移过去</span> <span class="qbtn">保留在这里</span></div>
+</div>
+</div>
+</div></div>
+<p class="cap">验收条件的调整走现有的「改验收条件要你同意」规则，这里只是把建议和拆分放在一起出现，免得你忘了。</p>
+
+<!-- ============ S3 ============ -->
+<div class="step" id="s3"><span class="n">3</span><h3>看板：看到谁在等谁<span class="who w-prog">程序显示</span></h3></div>
+<div class="win"><div class="wbody">
+<div class="rail"><span>首页</span><span class="on">需求</span><span>问题</span><span>测试</span></div>
+<div class="main">
+<div class="cols">
+<div class="col"><div class="colhead"><i></i>立项中 3</div>
+<div class="card blocked"><b>逾期任务的每日汇总</b><small class="w">⏳ 等《任务截止日期提醒》</small><small>清晰度：方向 · 2026-11-21</small></div>
+<div class="card"><b>给任务增加标签</b><small>清晰度：方向</small></div>
+<div class="card"><b>每周完成趋势</b><small>清晰度：可验收</small></div></div>
+<div class="col"><div class="colhead c-build"><i></i>进行中 1</div>
+<div class="card"><b>任务截止日期提醒</b><small class="dep">⇢ 有 1 个需求在等它</small><small>正在接入看板提示</small><div class="bar"><i style="width:50%;background:var(--ok)"></i></div><small>计划 2 / 4</small></div></div>
+<div class="col"><div class="colhead c-test"><i></i>测试中 0</div></div>
+<div class="col"><div class="colhead c-check"><i></i>待验收 1</div><div class="card"><b>导出任务为 JSON</b><small class="g">✓ 测试：可以验收了</small></div></div>
+<div class="col hide-narrow"><div class="colhead c-done"><i></i>已完成</div></div>
+<div class="col hide-narrow"><div class="colhead"><i></i>已取消</div></div>
+</div></div></div></div>
+<ul class="small">
+<li><b>被挡住的卡片</b>：虚线边框，写明「⏳ 等《…》」。有多个前置需求时写「⏳ 等 2 个需求」，悬停时列出来。</li>
+<li><b>被等待的卡片</b>：「⇢ 有 1 个需求在等它」。看板上一眼就能看出谁是瓶颈、应该先做。</li>
+<li><b>左侧列表</b>：被挡住的需求，第二行写「立项中 · 等《任务截止日期提醒》」。</li>
+</ul>
+
+<!-- ============ S4 ============ -->
+<div class="step" id="s4"><span class="n">4</span><h3>鼠标悬停：把前后关系串起来<span class="who w-prog">程序显示</span></h3></div>
+<p>鼠标停在一张卡片上时，它的前置需求用<b>黄色</b>框标出，在等它的需求用<b>紫色</b>框标出，其余卡片变淡。不画连线，所以卡片在哪一栏都不影响，需求多了也不会乱。</p>
+<div class="win"><div class="wbody">
+<div class="main">
+<div class="cols">
+<div class="col"><div class="colhead"><i></i>立项中 3</div>
+<div class="card blocked post"><b>逾期任务的每日汇总</b><small class="w">⏳ 等《任务截止日期提醒》</small></div>
+<div class="card fade"><b>给任务增加标签</b><small>清晰度：方向</small></div>
+<div class="card fade"><b>每周完成趋势</b><small>清晰度：可验收</small></div></div>
+<div class="col"><div class="colhead c-build"><i></i>进行中 1</div>
+<div class="card focus"><b>任务截止日期提醒</b><small class="dep">⇢ 有 1 个需求在等它</small><small>计划 2 / 4</small></div>
+<div class="small muted" style="padding:2px 4px">↑ 鼠标停在这张卡片上</div></div>
+<div class="col"><div class="colhead c-test"><i></i>测试中 0</div></div>
+<div class="col"><div class="colhead c-check"><i></i>待验收 1</div><div class="card fade"><b>导出任务为 JSON</b></div></div>
+<div class="col hide-narrow"><div class="colhead c-done"><i></i>已完成</div></div>
+<div class="col hide-narrow"><div class="colhead"><i></i>已取消</div></div>
+</div>
+<div class="small muted" style="margin-top:8px">图例：<span style="color:var(--wait)">■ 黄框：它的前置需求</span>　<span style="color:#a5b4fc">■ 紫框：在等它的需求</span>　变淡：无关</div>
+</div></div></div>
+<p class="cap">悬停在「逾期任务的每日汇总」上时，就反过来：「任务截止日期提醒」显示为黄框，表示它是前置需求。依赖链很长时，只高亮相邻的一层，悬停的提示里写「上游还有 2 个」。</p>
+
+<!-- ============ S5 ============ -->
+<div class="step" id="s5"><span class="n">5</span><h3>打开被挡住的需求：说清楚为什么还不能开发<span class="who w-prog">程序显示</span></h3></div>
+<p>右侧面板在清晰度<b>上面</b>加一节「前置需求」。立项按钮置灰，下面写原因，样式和现在的立项说明（<code>gate-note</code>）一样。<b>立项会话照常可以打开</b>，前置需求在做的时候，这边可以先把细节聊清楚。</p>
+<div class="win"><div class="wbody">
+<div class="term hide-narrow"><div class="dim">立项会话照常可以聊……</div><br><div class="u">用户</div><div>汇总邮件几点发？</div><br><div class="a">AI</div><div>默认每天早上 8 点，按每个用户自己的时区发送……</div></div>
+<div class="rpanel" style="flex-basis:340px">
+<div class="ttl">逾期任务的每日汇总</div>
+<div><span class="chip">立项中</span><span class="chip">分支 req/20261121-7a3f</span></div>
+<div class="steps"><span class="cur">立项</span><i>›</i><span>开发</span><i>›</i><span>测试</span><i>›</i><span>验收</span><i>›</i><span>完成</span></div>
+<div class="sec">前置需求</div>
+<div class="box">
+<div class="dep"><span><b>任务截止日期提醒</b><br><span class="small muted">它完成后，这个需求才能开始开发</span></span><span><span class="chip blue">进行中 2/4</span></span></div>
+<div class="small muted" style="margin-top:4px">从「任务截止日期提醒」拆出 · 2026-11-21　<span class="qbtn" style="padding:0 8px">＋ 添加</span></div>
+</div>
+<div class="sec">清晰度</div>
+<div class="small">✓ 想法　✓ 方向　○ 方案　○ 可验收</div>
+<div class="sec">需求说明</div><div class="small">〔待确认〕每天早上给有逾期任务的用户发一封汇总邮件……</div>
+<div style="margin-top:6px"><span class="pbtn dis">确认立项，开始开发</span>
+<div class="gnote" style="margin-top:5px">要等《任务截止日期提醒》确认完成后才能开始开发。现在可以先把需求聊清楚。</div></div>
+</div>
+</div></div>
+
+<!-- ============ S6 ============ -->
+<div class="step" id="s6"><span class="n">6</span><h3>想直接拖到「进行中」：会被拦住<span class="who w-prog">程序拦</span></h3></div>
+<div class="win"><div class="wbody"><div class="main">
+<div class="cols">
+<div class="col"><div class="colhead"><i></i>立项中</div><div class="card fade"><b>给任务增加标签</b></div></div>
+<div class="col" style="outline:2px dashed #5c2a2a;outline-offset:-2px"><div class="colhead c-build"><i></i>进行中</div>
+<div class="card blocked" style="transform:rotate(-2deg);box-shadow:0 10px 24px rgba(0,0,0,.6)"><b>逾期任务的每日汇总</b><small class="w">⏳ 等《任务截止日期提醒》</small></div>
+<div class="tip" style="top:110px;left:6px">不能开始开发：要等《任务截止日期提醒》确认完成。</div></div>
+<div class="col"><div class="colhead c-test"><i></i>测试中</div></div><div class="col"><div class="colhead c-check"><i></i>待验收</div></div>
+<div class="col hide-narrow"><div class="colhead c-done"><i></i>已完成</div></div><div class="col hide-narrow"><div class="colhead"><i></i>已取消</div></div>
+</div></div></div></div>
+<p class="cap">右键菜单里的「改成进行中」也一样：按钮不可点，鼠标停上去显示同样的原因。这条规则和现在「还没有验收条件不能离开立项中」是同一种写法。</p>
+
+<!-- ============ S7 ============ -->
+<div class="step" id="s7"><span class="n">7</span><h3>前置需求完成：提醒「可以开始了」<span class="who w-you">你确认完成</span><span class="who w-prog">程序提醒</span></h3></div>
+<p>你在「任务截止日期提醒」上点「我试过了，确认完成」，代码合进 main 之后，程序算出因此可以开始的需求：卡片变成绿色的「● 可以开始了」，同时发一条系统通知（沿用现在会话需要你回复时的那种通知）。</p>
+<div class="win"><div class="wbody"><div class="main">
+<div class="toast"><b>可以开始了：逾期任务的每日汇总</b><span class="muted">它的前置需求《任务截止日期提醒》已经确认完成。</span></div>
+<div class="cols" style="margin-top:4px">
+<div class="col"><div class="colhead"><i></i>立项中 3</div>
+<div class="card" style="border-color:#1f4d33"><b>逾期任务的每日汇总</b><small class="g">● 可以开始了</small><small>清晰度：可验收</small></div>
+<div class="card"><b>给任务增加标签</b></div><div class="card"><b>每周完成趋势</b></div></div>
+<div class="col"><div class="colhead c-build"><i></i>进行中 0</div></div>
+<div class="col"><div class="colhead c-test"><i></i>测试中 0</div></div>
+<div class="col"><div class="colhead c-check"><i></i>待验收 1</div><div class="card"><b>导出任务为 JSON</b></div></div>
+<div class="col hide-narrow"><div class="colhead c-done"><i></i>已完成 1</div><div class="card"><b>任务截止日期提醒</b><small class="g">✓ 已合并</small></div></div>
+<div class="col hide-narrow"><div class="colhead"><i></i>已取消</div></div>
+</div></div></div></div>
+<p class="cap">「可以开始了」只是提醒，不会自动立项：立项还是由你点，和现在的规则一致。它一直显示到你立项为止。</p>
+
+<!-- ============ S8 ============ -->
+<div class="step" id="s8"><span class="n">8</span><h3>确认立项：先把 main 同步进来，再开开发会话<span class="who w-you">你确认</span><span class="who w-prog">程序同步</span></h3></div>
+<p>这个需求的分支是建卡那天从 main 开出来的，里面<b>没有</b>前置需求的代码。所以点「确认立项」后，程序先把 main 的最新内容合进它的分支，再开开发会话。它此时通常还没有自己的提交，直接快进，几乎不花时间。</p>
+<div class="grid2">
+<div class="win" style="margin:0"><div class="wbody" style="min-height:230px"><div class="rpanel" style="flex:1;border:0">
+<div class="ttl">逾期任务的每日汇总</div>
+<div class="steps"><span class="done">✓ 立项</span><i>›</i><span class="cur">开发</span><i>›</i><span>测试</span><i>›</i><span>验收</span><i>›</i><span>完成</span></div>
+<div class="sec">前置需求</div>
+<div class="box"><div class="dep"><span><b>任务截止日期提醒</b></span><span class="chip ok">✓ 已完成</span></div></div>
+<div class="box" style="border-color:#1f4d33;background:#10201a"><span class="gnote ok">✓ 已把 main 的最新内容同步进这个需求的分支，包含《任务截止日期提醒》的 6 个提交。</span></div>
+</div></div></div>
+<div class="win" style="margin:0"><div class="wbody" style="min-height:230px"><div class="term">
+<div class="dim">开发会话的开场白（节选）</div><br>
+<div>这个需求的前置需求已经完成，代码已经在你的分支上：</div>
+<div>　· 任务截止日期提醒：新增了截止日期字段和校验、看板上的临期提示。改动：6 个提交、9 个文件（完整列表：rf.py trace R-…）。</div>
+<div>先读这些改动再开始，不要重复实现。</div>
+</div></div></div>
+</div>
+<p class="cap">开场白里加的这一段，取自前置需求完成时写下的完成记录，不需要模型重新总结。</p>
+
+<!-- ============ S9 ============ -->
+<div class="step" id="s9"><span class="n">9</span><h3>手动添加、去掉前置需求<span class="who w-you">你操作</span></h3></div>
+<p>不经过拆分，你也可以给任何还没完成的需求设置前置需求。入口在右侧面板的「前置需求」一节；没有前置需求时，这一节缩成一行「＋ 添加前置需求」。</p>
+<div class="grid2">
+<div class="win" style="margin:0"><div class="wbody" style="min-height:300px"><div class="rpanel" style="flex:1;border:0">
+<div class="ttl">每周完成趋势</div>
+<div><span class="chip">立项中</span></div>
+<div class="sec">前置需求</div>
+<div class="pick">
+<input value="导出" aria-label="搜索需求">
+<div><b>导出任务为 JSON</b> <span class="chip wait">待验收</span></div>
+<div class="no">任务截止日期提醒<small>已完成：不用等</small></div>
+<div class="no">给任务增加标签<small>不能选：它在等「每周完成趋势」，选了会互相等待</small></div>
+<div class="no">每周完成趋势<small>不能选：就是这个需求自己</small></div>
+</div>
+</div></div></div>
+<div>
+<ul class="small">
+<li><b>列表里只能选还没完成的需求。</b>已完成的选了也没有意义（不用等），已取消的也不能选，二者都显示为灰色，并说明原因。</li>
+<li><b>选了会形成环的，同样灰掉</b>，并写明是和谁互相等待。图里假设之前已经设过「给任务增加标签」要等「每周完成趋势」。</li>
+<li><b>去掉前置需求</b>：每一条后面有 ✕，点了之后立即生效，并在需求的变更记录里记一笔。</li>
+<li><b>这个需求已经在开发中时</b>，仍然可以加前置需求，只是不再拦它开工，而是拦它<b>确认完成</b>（同边界 2）。添加时会先提示这一点。</li>
+<li><b>这些操作只能由你在应用里做</b>，AI 的会话不能代你添加或去掉，最多在回复里建议。</li>
+</ul>
+</div></div>
+
+<!-- ============ edges ============ -->
+<h2 id="edges">边界情况</h2>
+
+<div class="step" id="e1"><span class="n">!</span><h3>边界 1：前置需求被取消</h3></div>
+<p>程序不替你决定。被挡住的需求显示红色的「前置需求已取消」，面板里给出两个选择。如果之后又恢复了那个前置需求，一切恢复原样。</p>
+<div class="grid2">
+<div class="win" style="margin:0"><div class="wbody" style="min-height:120px"><div class="main"><div class="col" style="min-height:0"><div class="colhead"><i></i>立项中</div>
+<div class="card blocked" style="border-color:#5c2a2a"><b>逾期任务的每日汇总</b><small class="r">✕ 前置需求《任务截止日期提醒》已取消</small></div></div></div></div></div>
+<div class="win" style="margin:0"><div class="wbody" style="min-height:120px"><div class="rpanel" style="flex:1;border:0">
+<div class="box bad"><div class="gnote bad">《任务截止日期提醒》已取消，这个需求等不到它了。</div>
+<div style="margin-top:8px"><span class="qbtn">去掉这条依赖</span> <span class="dbtn">也取消这个需求</span></div></div></div></div></div>
+</div>
+
+<div class="step" id="e2"><span class="n">!</span><h3>边界 2：原需求要等拆出去的需求</h3></div>
+<p>比如开发 A 时发现「统一的日期工具」要先做，并且别的需求也会用到，于是把它拆成 C，选「当前需求等它」。A 已经在开发中，拦不住它开工，所以改为拦它<b>确认完成</b>：C 合进 main 之后，A 才能完成，合并也就自然按先 C 后 A 的顺序。</p>
+<div class="win"><div class="wbody" style="min-height:150px"><div class="rpanel" style="flex:1;border:0;max-width:420px">
+<div class="ttl">任务截止日期提醒</div>
+<div class="steps"><span class="done">✓ 立项</span><i>›</i><span class="done">✓ 开发</span><i>›</i><span class="done">✓ 测试</span><i>›</i><span class="cur">验收</span><i>›</i><span>完成</span></div>
+<div class="sec">前置需求</div><div class="box"><div class="dep"><span><b>统一的日期工具</b></span><span class="chip blue">进行中 1/3</span></div></div>
+<div><span class="pbtn dis">我试过了，确认完成</span><div class="gnote" style="margin-top:5px">要等《统一的日期工具》确认完成后才能确认完成：这个需求用到了它，要等它先合进 main。完成后，程序会把它同步到这个需求的分支，再请你验收一次。</div></div>
+</div></div></div>
+
+<div class="step" id="e3"><span class="n">!</span><h3>边界 3：开工时同步 main 有冲突</h3></div>
+<p>正常情况下不会遇到：立项阶段不改代码，分支上还没有自己的提交，同步就是快进。如果分支上已经有提交（比如以前开过开发会话），同步可能冲突。这时<b>沿用现在合并时的处理办法</b>：把冲突交给这个需求的开发会话解决，解决完再开工。面板上显示「正在同步 main，会话在处理 2 个冲突文件」。</p>
+
+<!-- ============ rules ============ -->
+<h2 id="rules">规则一览</h2>
+<table>
+<tr><th style="width:250px">规则</th><th>表现在哪里</th></tr>
+<tr><td>前置需求没完成，不能开始开发</td><td>立项按钮置灰并说明原因（第 5 步）；不能拖进「进行中」（第 6 步）；右键菜单同样不可用</td></tr>
+<tr><td>已经在开发中的需求加了前置需求：不能确认完成</td><td>「我试过了，确认完成」置灰并说明原因（边界 2）；合并按先后顺序</td></tr>
+<tr><td>开始开发前，先把 main 同步进分支</td><td>立项后自动执行，面板显示结果（第 8 步）；有冲突时交给会话处理（边界 3）</td></tr>
+<tr><td>不能形成环，不能依赖自己</td><td>选择器里灰掉并说明原因（第 9 步）；拆分建议里出现环时不能同意</td></tr>
+<tr><td>依赖已完成的需求，等于不用等</td><td>选择器里灰掉；不出现在「⏳ 等…」里</td></tr>
+<tr><td>前置需求取消，不自动处理</td><td>红色提示加两个按钮（边界 1）</td></tr>
+<tr><td>添加和去掉依赖只由你来做</td><td>只能在应用里操作；拆分时由你点「同意拆分」确认；AI 只能在回复里建议</td></tr>
+<tr><td>拆出去的部分，验收条件跟着移过去</td><td>同意拆分后，AI 提出移动建议，由你确认（第 2 步）</td></tr>
+<tr><td>都有记录</td><td>添加、去掉、因依赖被拦、同步，都写进需求的变更记录</td></tr>
+</table>
+
+<h2 id="later">以后（这次不做）</h2>
+<ul>
+<li><b>看板上画连线</b>：需求少的时候直观，需求一多线就会交叉。这一期先用悬停高亮（第 4 步）。</li>
+<li><b>左侧按文件夹归类</b>：把相关的需求放进同一个文件夹，只是归类，和依赖无关，不影响先后，也不改变流程。建议和依赖分开设计：文件夹表示「属于一类」，依赖表示「谁等谁」。</li>
+</ul>
+
+</div>
+</body>
+</html>

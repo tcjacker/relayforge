@@ -1,0 +1,226 @@
+/* 测试集：测试页（#tests）、需求面板里的两块（#req-tests）、查看器（#ts-viewer）、改挂靠和过期的小对话框（#ts-dlg）、确认完成前的提示（#ts-done）。
+   样式照交互稿 docs/prototype/tests-v2.html，颜色和按钮的写法和问题页（issues.css）一致；全部限定在这几个容器里，类名用 ts- / tv- 开头。 */
+#tests, #ts-viewer, #ts-dlg, #ts-done, #req-tests { --panel: #171a21; --card: #1d222b; --line: #2c323d; --text: #e6e9ef; --muted: #a1a8b4; --blue: #9bbaff; --green: #80dba6; --amber: #edbf70; --red: #f0a08e }
+#tests[hidden], #ts-viewer [hidden], #req-tests [hidden] { display: none !important }
+#tests button, #tests select, #ts-viewer button, #ts-viewer select, #ts-viewer input, #ts-viewer textarea, #ts-dlg button, #ts-dlg select, #ts-dlg input, #ts-done button, #req-tests button.ts-btn {
+  font: inherit; color: inherit; border: 1px solid var(--line); border-radius: 6px; background: #20242d; padding: 5px 10px; margin: 0; text-decoration: none }
+#tests button, #ts-viewer button, #ts-dlg button, #ts-done button, #req-tests button { cursor: pointer }
+#tests button:hover:not(:disabled), #ts-viewer button:hover:not(:disabled), #ts-dlg button:hover:not(:disabled), #ts-done button:hover:not(:disabled), #req-tests button:hover:not(:disabled) { border-color: #7892b7 }
+#tests button:disabled, #ts-viewer button:disabled, #ts-dlg button:disabled, #ts-done button:disabled, #req-tests button:disabled { opacity: .45; cursor: default }
+#tests :focus-visible, #ts-viewer :focus-visible, #ts-dlg :focus-visible, #ts-done :focus-visible, #req-tests :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px }
+#tests button.primary, #ts-viewer button.primary, #ts-dlg button.primary, #ts-done button.primary, #req-tests button.primary { background: #94deb4; color: #11251b; border-color: transparent; font-weight: 600 }
+#tests button.quiet, #ts-viewer button.quiet, #ts-dlg button.quiet, #ts-done button.quiet, #req-tests button.quiet { background: transparent; color: var(--muted); margin: 0; font-size: inherit; text-decoration: none }
+#tests button.link, #ts-viewer button.link, #ts-done button.link, #req-tests button.link { background: transparent; border: 0; padding: 0; color: var(--blue) }
+#tests button.sm, #ts-viewer button.sm, #ts-viewer select.sm, #ts-done button.sm, #req-tests button.sm { font-size: 12px; padding: 2px 8px }
+#tests .muted, #ts-viewer .muted, #ts-done .muted, #req-tests .muted { color: var(--muted) }
+#tests .small, #ts-viewer .small, #ts-done .small, #req-tests .small { font-size: 12px }
+#tests .mono, #ts-viewer .mono, #ts-done .mono, #req-tests .mono { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace }
+#ts-viewer pre, #ts-done pre, #req-tests pre { margin: 0; padding: 6px 9px; background: #0e1014; border: 1px solid var(--line); border-radius: 6px; overflow: auto; color: #c9cfd9; white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace }
+
+/* 小标签和比例条 */
+.ts-pill { display: inline-block; border: 1px solid var(--line); border-radius: 10px; padding: 0 7px; font-size: 11px; line-height: 1.6; white-space: nowrap; color: var(--muted) }
+.ts-pill.g { color: var(--green); border-color: #35604a } .ts-pill.a { color: var(--amber); border-color: #6a5730 } .ts-pill.r { color: var(--red); border-color: #6d4239 } .ts-pill.b { color: var(--blue); border-color: #405677 }
+.ts-bar { display: flex; gap: 1px; margin-top: 6px; min-width: 60px } .ts-bar i { height: 6px; border-radius: 2px; background: #555c69; min-width: 3px }
+.ts-bar i.p { background: var(--green) } .ts-bar i.f { background: var(--red) } .ts-bar i.n { background: var(--amber) } .ts-bar i.z { flex: 1 }
+.ts-bar i.e { background: #b06a5c; background-image: repeating-linear-gradient(45deg, transparent 0 3px, rgba(0, 0, 0, .35) 3px 6px) }
+.ts-pills { display: flex; flex-wrap: wrap; gap: 4px; align-items: center }
+
+/* 需求面板里的两块 */
+#req-tests { color: var(--text) }
+#req-tests h2 .n { font-weight: 400 }
+#req-tests .note { margin: 0 0 4px; font-size: 12px; color: var(--muted) }
+#req-tests .ts-card { display: block; width: 100%; text-align: left; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; margin: 8px 0 0; background: var(--card); color: var(--text) }
+#req-tests .ts-card b { display: block; font-weight: 600; overflow-wrap: anywhere } #req-tests .ts-card b .mono { font-weight: 400; color: var(--muted) }
+#req-tests .ts-card .ts-pills { margin-top: 5px }
+#req-tests .ts-analysis { border: 1px solid #6d4239; background: #241917; border-top: 0; border-radius: 0 0 8px 8px; padding: 6px 11px 8px; margin: -2px 0 0; font-size: 12px }
+#req-tests .ts-analysis span { color: var(--muted) }
+#req-tests details.ts-calm { border: 1px solid var(--line); border-radius: 8px; padding: 7px 11px; margin: 8px 0 0; background: var(--card) }
+#req-tests details.ts-calm summary { cursor: pointer; font-size: 12px }
+#req-tests details.ts-calm .ts-card { background: #191d25 }
+#req-tests .ts-acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 4px }
+#req-tests .ts-err, #ts-done .ts-err, #tests .ts-err, #ts-viewer .ts-err, #ts-dlg .ts-err { color: var(--red); font-size: 12px; overflow-wrap: anywhere; white-space: pre-wrap }
+#req-tests .ts-line { width: 100%; text-align: left; background: transparent; border: 0; padding: 0; color: var(--text) }
+.ts-chg { border: 1px solid #6a5730; border-radius: 8px; background: #231f15; padding: 9px 11px; margin: 8px 0 0; color: var(--text) }
+.ts-chg.done { border-color: #35604a; background: var(--card) } .ts-chg.no { border-color: #6d4239; background: var(--card) }
+.ts-chg b { overflow-wrap: anywhere } .ts-chg .ov { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin: 6px 0 }
+.ts-chg .ts-acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.ts-chg .ov span { font-size: 11px; color: var(--muted) } .ts-chg .why { font-size: 12px } .ts-chg .ts-acts { margin: 8px 0 0 }
+.ts-chg pre { max-height: 140px }
+
+/* 测试页 */
+#tests { flex: 1; min-width: 0; min-height: 0; overflow: auto; background: #111318; color: var(--text) }
+#tests .ts-page { padding: 18px clamp(16px, 3vw, 32px) 48px; max-width: 1280px }
+#tests .ts-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px }
+#tests h1 { margin: 0; font-size: 22px }
+#tests .ts-filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 10px }
+#tests .ts-filters button[aria-pressed=true] { background: #293a50; color: #cde0ff; border-color: #627d9c }
+#tests .ts-tablewrap { overflow-x: auto; border-top: 1px solid var(--line) }
+#tests table { border-collapse: collapse; width: 100%; min-width: 900px; font-size: 13px }
+#tests th, #tests td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top }
+#tests th { color: var(--muted); font-weight: 500; white-space: nowrap }
+#tests tr.grp td { background: #14171d; padding: 5px 8px }
+#tests tr.row { cursor: pointer } #tests tr.row:hover { background: #1b2029 }
+#tests td.res { width: 220px } #tests td.ops { width: 168px; white-space: nowrap } #tests td.n { width: 64px; white-space: nowrap }
+#tests td .sub { display: block; font-size: 12px; color: var(--muted); overflow-wrap: anywhere } #tests td .going { color: var(--amber) }
+#tests td.hint { font-size: 12px; color: var(--amber); max-width: 260px } #tests td.hint .none { color: var(--muted) }
+#tests .ts-foot { margin-top: 14px; font-size: 12px; color: var(--muted); max-width: 900px }
+#tests .ts-empty { padding: 18px 8px; color: var(--muted) }
+
+/* 查看器 */
+#ts-viewer { width: min(1120px, calc(100vw - 32px)); height: min(780px, calc(100vh - 32px)); max-width: none; max-height: none; padding: 0; background: var(--panel); color: var(--text); border: 1px solid #414a57; border-radius: 12px; overflow: hidden }
+#ts-viewer[open] { display: flex; flex-direction: column }
+#ts-viewer::backdrop, #ts-dlg::backdrop, #ts-done::backdrop { background: #070a10c8 }
+#ts-viewer .tv-head { flex: none; padding: 12px 16px 10px; border-bottom: 1px solid var(--line); display: flex; gap: 8px 10px; align-items: center; flex-wrap: wrap }
+#ts-viewer .tv-head h2 { margin: 0; font-size: 17px; color: var(--text); overflow-wrap: anywhere; min-width: 0 }
+#ts-viewer .tv-head .sp { margin-left: auto }
+#ts-viewer .tv-tabs { flex: none; display: flex; gap: 4px; padding: 6px 16px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; align-items: flex-end }
+#ts-viewer .tv-tab { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: var(--muted); padding: 4px 10px 6px }
+#ts-viewer .tv-tab[aria-selected=true] { color: var(--text); border-bottom-color: var(--blue) }
+#ts-viewer .tv-where { margin: 0 0 6px auto; font-size: 12px; color: var(--muted); overflow-wrap: anywhere; text-align: right }
+#ts-viewer .tv-msg { flex: none; padding: 6px 16px; font-size: 12px; border-bottom: 1px solid var(--line) } #ts-viewer .tv-msg.err { color: var(--red); background: #241917 } #ts-viewer .tv-msg.ok { color: var(--green) }
+#ts-viewer .tv-analysis { flex: none; padding: 6px 16px; font-size: 12px; border-bottom: 1px solid var(--line); background: #1b1f27 } #ts-viewer .tv-analysis span { color: var(--muted) }
+#ts-viewer .tv-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(200px, 260px) minmax(0, 1fr) }
+#ts-viewer .tv-list { border-right: 1px solid var(--line); overflow: auto; min-height: 0 }
+#ts-viewer .tv-filter { padding: 8px 10px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 4px; position: sticky; top: 0; background: var(--panel); z-index: 1 }
+#ts-viewer .tv-filter button[aria-pressed=true] { background: #293a50; color: #cde0ff; border-color: #627d9c }
+#ts-viewer .tv-filter input { width: 100%; font-size: 12px; padding: 3px 8px; margin-top: 4px }
+#ts-viewer .tv-grp { padding: 6px 12px 2px; font-size: 11px; color: var(--muted); background: #14171d }
+#ts-viewer .tv-case { display: flex; gap: 8px; width: 100%; text-align: left; border: 0; border-left: 2px solid transparent; border-radius: 0; background: transparent; padding: 7px 12px; align-items: baseline }
+#ts-viewer .tv-case span:last-child { min-width: 0; overflow-wrap: anywhere }
+#ts-viewer .tv-case[aria-current=true] { background: #202937; border-left-color: var(--blue) }
+#ts-viewer .tv-s { flex: none; width: 14px; font-weight: 700 } #ts-viewer .tv-s.pass { color: var(--green) } #ts-viewer .tv-s.fail, #ts-viewer .tv-s.broken { color: var(--red) } #ts-viewer .tv-s.unrun { color: var(--amber) }
+#ts-viewer .tv-main { overflow: auto; padding: 14px 18px 24px; min-height: 0; min-width: 0 }
+#ts-viewer .tv-main.full { flex: 1; display: flex; flex-direction: column }
+#ts-viewer .tv-chead { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+#ts-viewer .tv-chead input.name { flex: 1 1 220px; min-width: 0; font-weight: 600; font-size: 15px; background: transparent; border-color: transparent; padding: 2px 6px }
+#ts-viewer .tv-chead input.name:hover, #ts-viewer .tv-chead input.name:focus { border-color: var(--line); background: #20242d }
+#ts-viewer .tv-box { border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px; margin: 10px 0 0; background: var(--card); font-size: 13px }
+#ts-viewer .tv-box.bad { border-color: #6d4239; background: #241917 } #ts-viewer .tv-box.warn { border-color: #6a5730; background: #231f15 }
+#ts-viewer .tv-box pre { margin-top: 6px }
+#ts-viewer .tv-io { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 12px }
+#ts-viewer .tv-io h3 { font-size: 12px; color: var(--muted); margin: 0 0 4px; font-weight: 600 }
+#ts-viewer textarea.json { width: 100%; min-height: 110px; background: #0e1014; color: #c9cfd9; resize: vertical; font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace }
+#ts-viewer textarea.json.big { flex: 1; min-height: 300px }
+#ts-viewer pre.diff { color: var(--red) }
+#ts-viewer .tv-acts { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; align-items: center }
+#ts-viewer .tv-say { display: flex; gap: 8px; margin-top: 8px; align-items: flex-end } #ts-viewer .tv-say textarea { flex: 1; min-height: 64px; resize: vertical; background: #20242d }
+#ts-viewer .tv-handed { margin-top: 14px; border: 1px solid #405677; border-radius: 8px; background: #192331; padding: 9px 12px; font-size: 13px }
+#ts-viewer p.lead { margin: 0 0 8px; font-size: 12px; color: var(--muted) }
+
+/* 改挂靠、标成过期、确认完成前 */
+#ts-dlg, #ts-done { background: var(--panel); color: var(--text); border: 1px solid #414a57; border-radius: 12px; padding: 20px; max-height: 88vh; overflow: auto }
+#ts-dlg { width: min(460px, 94vw) } #ts-dlg:has(.ev-appr) { width: min(700px, 94vw) } #ts-done { width: min(640px, 94vw) }
+#ts-dlg h2, #ts-done h2 { margin: 0 0 10px; font-size: 18px; color: var(--text) }
+#ts-dlg label { display: block; margin: 10px 0; font-size: 13px } #ts-dlg label > select, #ts-dlg label > input { display: block; width: 100%; margin-top: 4px }
+#ts-dlg p, #ts-done p { margin: 6px 0; font-size: 13px; color: var(--muted) }
+#ts-done h3 { margin: 14px 0 4px; font-size: 13px; color: var(--text) }
+#ts-done ul { margin: 4px 0; padding-left: 18px } #ts-done li { font-size: 13px; margin: 2px 0 }
+#ts-dlg .ts-row, #ts-done .ts-row { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; align-items: center; flex-wrap: wrap }
+#ts-done .ts-row .wait { margin-right: auto; font-size: 12px; color: var(--amber) }
+
+/* 窗口变窄：查看器的列表收窄、输入和输出上下排；改动的新旧值上下排 */
+@media (max-width: 860px) {
+  #ts-viewer .tv-body { grid-template-columns: minmax(160px, 200px) minmax(0, 1fr) }
+  #ts-viewer .tv-io { grid-template-columns: minmax(0, 1fr) }
+  #ts-viewer .tv-where { flex-basis: 100%; text-align: left; margin-left: 0 }
+}
+@media (max-width: 620px) {
+  #ts-viewer .tv-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(120px, 34%) minmax(0, 1fr) }
+  #ts-viewer .tv-list { border-right: 0; border-bottom: 1px solid var(--line) }
+  .ts-chg .ov { grid-template-columns: minmax(0, 1fr) }
+}
+
+/* 测试页的三块切换、「测试环境」选择框（测试页、查看器顶栏、需求面板共用） */
+#tests .ts-seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden }
+#tests .ts-seg button { border: 0; border-radius: 0; background: transparent; color: var(--muted); padding: 4px 12px }
+#tests .ts-seg button + button { border-left: 1px solid var(--line) }
+#tests .ts-seg button[aria-pressed=true] { background: #293a50; color: #cde0ff }
+#tests [hidden] { display: none !important }
+.ev-sel { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line, #2c323d); border-radius: 8px; padding: 2px 4px 2px 8px; background: #14171d; white-space: nowrap; max-width: 100% }
+.ev-sel > span { font-size: 12px; color: var(--muted, #a1a8b4) }
+.ev-sel select, #tests .ev-sel select, #ts-viewer .ev-sel select, #req-tests .ev-sel select { font: inherit; font-size: 12px; font-weight: 600; color: var(--text, #e6e9ef); background: transparent; border: 0; padding: 2px 4px; max-width: 160px; min-width: 0 }
+.ev-sel select option { background: #1d222b }
+.ev-sel button.link, #ts-viewer .ev-sel button.link, #req-tests .ev-sel button.link, #tests .ev-sel button.link { background: transparent; border: 0; padding: 0 4px; color: var(--blue, #9bbaff); font-size: 12px; cursor: pointer }
+#req-tests .ts-envrow { margin-bottom: 0 }
+
+/* 测试环境页 */
+#tests .ev-empty { margin: 28px 0; padding: 28px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); max-width: 720px }
+#tests .ev-empty p { margin: 0 }
+#tests .ev { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 24px; margin-top: 16px; max-width: 1180px }
+#tests .ev-side { min-width: 0 }
+#tests .ev-card { display: block; width: 100%; text-align: left; margin: 0 0 8px; padding: 9px 11px; border-radius: 8px; background: var(--card) }
+#tests .ev-card b { display: block; font-weight: 600; overflow-wrap: anywhere } #tests .ev-card span.small { display: block; margin-top: 2px; overflow-wrap: anywhere }
+#tests .ev-card[aria-current=true] { border-color: #627d9c; background: #202937 }
+#tests .ev-sidebtns { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px }
+#tests .ev-side p { font-size: 12px; margin: 0 }
+#tests .ev-main { min-width: 0; padding-bottom: 8px }
+#tests .ev-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px }
+#tests .ev-head .sp, #tests .ev-aihead .sp, #tests .ev-airow .sp, #tests .ev-bar .sp { margin-left: auto }
+#tests input, #tests textarea, #tests select { font: inherit; color: var(--text); background: #14171d; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; min-width: 0 }
+#tests input:focus, #tests textarea:focus, #tests select:focus { border-color: #627d9c; outline: none }
+#tests input.mono, #tests textarea.mono, #tests select.mono { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace }
+#tests .ev-name { font-size: 18px; font-weight: 600; flex: 0 1 auto; field-sizing: content; min-width: 4em; max-width: 100%; background: transparent; border-color: transparent; padding: 2px 6px }
+#tests .ev-note { width: 100%; margin: 6px 0 0; background: transparent; border-color: transparent; color: var(--muted); padding: 2px 6px }
+#tests .ev-name:hover, #tests .ev-note:hover { border-color: var(--line) }
+#tests .ev-sec { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 22px 0 8px; padding-top: 12px; border-top: 1px solid var(--line) }
+#tests .ev-sec h3 { margin: 0; font-size: 14px; color: var(--text) } #tests .ev-sec span { font-size: 12px; color: var(--muted) }
+#tests table.ev-t { min-width: 0; table-layout: fixed; font-size: 13px }
+#tests table.ev-t th, #tests table.ev-t td { padding: 5px 6px; vertical-align: top; overflow-wrap: anywhere }
+#tests table.ev-t td > input, #tests table.ev-t td > select, #tests table.ev-t td > textarea { width: 100% }
+#tests table.ev-t td.ev-none { color: var(--muted); font-size: 12px; padding: 10px 6px }
+#tests table.ev-t tr.mine td { background: #171c25 }
+#tests table.ev-t .sub .bad, #tests .ev-jwt .bad { color: var(--red) } #tests .ev-jwt .good { color: var(--green) }
+#tests .ev-pw { display: flex; gap: 4px; align-items: flex-start } #tests .ev-pw input, #tests .ev-pw textarea { flex: 1; min-width: 0 }
+#tests .ev-secret { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; margin-right: 6px; white-space: nowrap }
+#tests .ev-secret input { margin: 0 }
+#tests .ev-x { padding: 0 6px !important; font-size: 15px !important; line-height: 1.4 }
+#tests .ev-acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0 }
+#tests .ev-scan { margin: 2px 0 6px }
+#tests .ev-skip { margin: 0 0 6px; font-size: 12px } #tests .ev-skip ul { gap: 2px; margin: 4px 0 0 12px }
+#tests .ev-preview { margin: 6px 0 4px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; background: var(--card) }
+#tests .ev-preview summary { cursor: pointer } #tests .ev-preview table { margin-top: 6px }
+#tests .ev-io { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 10px }
+#tests .ev-io h4 { margin: 0 0 4px; font-size: 12px; color: var(--muted); font-weight: 600 }
+#tests .ev-io textarea { width: 100%; min-height: 130px; resize: vertical }
+#tests .ev-users { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 14px }
+#tests .ev-box { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--card); min-width: 0 }
+#tests .ev-uhead { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 6px } #tests .ev-uhead input { flex: 1 1 160px } #tests .ev-uname { font-weight: 600 }
+#tests .ev-jwt { font-size: 12px; margin-top: 4px; overflow-wrap: anywhere }
+#tests .ev-warn { margin: 22px 0 0; border: 1px solid #6a5730; background: #231f15; border-radius: 8px; padding: 9px 12px; font-size: 13px }
+#tests .ev-info { color: var(--green); font-size: 12px; margin: 6px 0 0 }
+#tests .ev-handed { margin: 10px 0 0; border: 1px solid #405677; border-radius: 8px; background: #192331; padding: 9px 12px; font-size: 13px }
+#tests .ev-ai { margin: 12px 0 0; border: 1px solid #405677; border-radius: 10px; background: #172030; padding: 10px 12px }
+#tests .ev-aihead { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 4px }
+#tests .ev-airow { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; padding: 6px 0; border-top: 1px solid #2a3850 }
+#tests .ev-airow .mono { overflow-wrap: anywhere; min-width: 0 }
+#tests .ev-ai p { margin: 6px 0 0 } #tests .ev-ainote { color: var(--amber) }
+#tests .ev-bar { position: sticky; bottom: 0; z-index: 2; display: flex; align-items: center; gap: 8px; margin-top: 18px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: #171a21f2; font-size: 13px }
+#tests .ev-bar.on { border-color: #6a5730; background: #231f15f2 }
+/* 准备步骤、允许 AI 带上保密值、第一次执行前的确认、查看器里测试代码的设置 */
+#tests table.ev-prep td .ev-watch { width: 100%; margin-top: 4px }
+#tests table.ev-prep tr.ev-prepfail td { background: #1f1715 }
+#tests table.ev-prep tr.ev-prepfail pre { margin: 4px 0; padding: 6px 9px; background: #0e1014; border: 1px solid var(--line); border-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 220px; overflow: auto; color: #c9cfd9 }
+#tests .ev-aisec { margin: 10px 0 4px; border: 1px solid #6a5730; background: #231f15; border-radius: 8px; padding: 8px 12px }
+#tests .ev-aisec label { display: inline-flex; gap: 6px; align-items: center; font-weight: 600; font-size: 13px }
+#tests .ev-aisec p { margin: 4px 0 0 } #tests .ev-aisec .bad, #tests .ev-prepfail .bad { color: var(--red); font-weight: 600 }
+#ts-dlg .ev-appr { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin: 8px 0; background: #1d222b }
+#ts-dlg .ev-appr pre { margin: 6px 0; padding: 6px 9px; background: #0e1014; border: 1px solid #2c323d; border-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: #e6e9ef }
+#ts-dlg .ev-appr .small { font-size: 12px; color: #a1a8b4; overflow-wrap: anywhere }
+#ts-viewer .tv-box .tv-acts { margin-top: 8px }
+#ts-viewer .tv-conf { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; background: var(--card) }
+#ts-viewer .tv-conf h3 { margin: 0 0 8px; font-size: 13px }
+#ts-viewer .tv-conf-g { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 8px 12px; align-items: start }
+#ts-viewer .tv-conf-g label { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--muted); min-width: 0 }
+#ts-viewer .tv-conf-g .wide { grid-column: 1 / -1 } #ts-viewer .tv-conf-g p { margin: 0 }
+#ts-viewer .tv-conf-g input, #ts-viewer .tv-conf-g textarea, #ts-viewer .tv-conf-g select { width: 100%; background: #14171d; color: var(--text) }
+@media (max-width: 1120px) {
+  #tests .ev { grid-template-columns: minmax(0, 1fr) }
+  #tests .ev-side { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start }
+  #tests .ev-side .ev-card { width: auto; flex: 0 1 220px; margin: 0 }
+  #tests .ev-side p { flex-basis: 100% }
+  #tests .ev-users, #tests .ev-io { grid-template-columns: minmax(0, 1fr) }
+}
+.ev-auto { display: inline-flex; align-items: center; gap: 4px; margin: 0 6px 4px 0 }
+
+/* 上次全量（tests-model.js 的 fullLine）：没跑过、过时了或者有没过的，标黄 */
+.ts-full { margin: 4px 0 8px } .ts-full.warn { color: var(--wait) }

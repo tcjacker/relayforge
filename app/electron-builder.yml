@@ -1,0 +1,40 @@
+# 打包成 macOS 应用（electron-builder）的配置。
+# 这一版只写好了配置，还没装 electron-builder、也没实际打过包。要打包时：
+#   npm install --save-dev electron-builder
+#   npx electron-builder --mac
+# 打出来的 .app 运行时需要 python3，以及已登录的独立 CLI 或桌面应用提供的 CLI。
+appId: dev.relayforge.app
+productName: RelayForge
+directories:
+  output: dist
+  buildResources: build
+files:
+  - package.json
+  - src/**/*
+  - resources/**/*
+# Python 后端放在应用资源目录的 backend/ 下（src/main/config.js 会在那里找 rf.py）
+extraResources:
+  - from: ../test-project
+    to: test-project
+    filter:
+      - "**/*"
+      - "!.runtime/**"
+      - "!**/__pycache__/**"
+  - from: ../backend
+    to: backend
+    filter:
+      - "**/*"
+      - "!**/__pycache__/**"
+# pty_bridge.py 由 python3 直接运行，python3 读不了 app.asar 里面的文件，所以放到外面
+asarUnpack:
+  - resources/**
+mac:
+  # 与开发时的 Dock 使用同一份圆角、透明留白图标。
+  icon: resources/app-icon.png
+  category: public.app-category.developer-tools
+  target:
+    - dmg
+    - zip
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist

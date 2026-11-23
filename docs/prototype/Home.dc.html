@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>首页</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F4FD1}a:hover{color:#163A9C}
+</style>
+</helmet>
+<div style="min-height: 1180px; background: #F4F5F7; color: #15171C; font-family: Inter, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif; font-size: 14px; line-height: 1.5">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #DDE1E8">
+<div style="max-width: 1440px; margin: 0 auto; padding: 0 32px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px">
+<div style="display: flex; align-items: center; gap: 10px; padding: 14px 0">
+<span style="font-weight: 700; font-size: 16px">RelayForge</span>
+<span style="color: #5A6170">项目：示例游戏引擎</span>
+<a href="New.dc.html" style="display: inline-flex; align-items: center; min-height: 44px">新建产品</a>
+</div>
+<nav aria-label="主导航" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+<a href="Home.dc.html" aria-current="page" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #15171C; font-weight: 600; border-bottom: 2px solid #1F4FD1">首页</a>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">产品功能</a>
+<a href="Progress.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">需求</a>
+<a href="Control.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">研发管控</a>
+<a href="Context.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">设计资料</a>
+<a href="Tests.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">测试与体验</a>
+</nav>
+<span style="padding: 3px 10px; border: 1px dashed #8A919E; border-radius: 4px; color: #5A6170; font-size: 12px">示例数据</span>
+</div>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 24px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px">
+<div>
+<h1 style="margin: 0; font-size: 26px; font-weight: 700">示例游戏引擎</h1>
+<p style="margin: 2px 0 0; color: #5A6170">由 AI 驱动 NPC 的世界模拟引擎 · 3 个模块 · 6 个功能点 · 1 个已上线</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+<a href="Progress.dc.html" style="display: inline-flex; align-items: center; min-height: 34px; padding: 0 14px; text-decoration: none; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border-radius: 6px">提一个需求</a>
+<button type="button" onClick="{{toggleIdle}}" style="min-height: 28px; padding: 0 10px; font: inherit; font-size: 12px; color: #5A6170; background: none; border: 1px dashed #8A919E; border-radius: 6px; cursor: pointer">{{idleLabel}}</button>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<section aria-label="等你处理" style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; overflow: hidden">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; padding: 14px 18px; border-bottom: 1px solid #DDE1E8">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">等你处理 <span style="font-weight: 400; color: #5A6170">{{todoCount}}</span></h2>
+<span style="font-size: 13px; color: #5A6170">{{doneNote}}</span>
+</div>
+
+<sc-if value="{{allClear}}" hint-placeholder-val="{{false}}">
+<div style="padding: 32px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px">
+<strong style="font-size: 16px">现在不需要你做什么</strong>
+<span style="color: #5A6170; max-width: 520px">{{clearNote}}</span>
+</div>
+</sc-if>
+
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="4">
+<div>
+<div style="display: flex; justify-content: space-between; gap: 8px; padding: 8px 18px; background: #F8F9FB; border-top: 1px solid #EEF0F3; font-size: 13px; font-weight: 600; color: #5A6170"><span>{{g.title}}</span><span style="font-weight: 400">{{g.count}}</span></div>
+<sc-for list="{{g.items}}" as="x" hint-placeholder-count="2">
+<div style="padding: 12px 18px; border-top: 1px solid #EEF0F3; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px">
+<span style="flex: none; font-size: 12px; color: #5A6170; font-family: ui-monospace, SFMono-Regular, Menlo, monospace">{{x.ref}}</span>
+<span style="flex: 1 1 320px; min-width: 0">{{x.text}}</span>
+</div>
+<sc-if value="{{x.locked}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #5A6170">{{x.lockNote}}</span></sc-if>
+<sc-if value="{{x.hasOpts}}" hint-placeholder-val="{{false}}">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px">
+<sc-for list="{{x.opts}}" as="o" hint-placeholder-count="2">
+<button type="button" onClick="{{o.pick}}" style="min-height: 40px; padding: 8px 12px; font: inherit; text-align: left; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 6px; cursor: pointer"><strong>{{o.label}}</strong><span style="display: block; font-size: 13px; color: #5A6170">代价：{{o.cost}}</span></button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{x.hasActs}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{x.acts}}" as="o" hint-placeholder-count="2">
+<button type="button" onClick="{{o.pick}}" style="min-height: 30px; padding: 0 12px; font: inherit; font-size: 13px; font-weight: {{o.weight}}; color: {{o.ink}}; background: {{o.bg}}; border: 1px solid {{o.edge}}; border-radius: 6px; cursor: pointer">{{o.label}}</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</section>
+
+<section aria-label="需求队列" style="flex: 1 1 360px; max-width: 460px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; overflow: hidden">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; padding: 14px 18px; border-bottom: 1px solid #DDE1E8">
+<div>
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">需求队列</h2>
+<span style="font-size: 13px; color: #5A6170">从上到下就是先后顺序，可以调整</span>
+</div>
+<button type="button" onClick="{{arrive}}" style="min-height: 28px; padding: 0 10px; font: inherit; font-size: 12px; color: #5A6170; background: none; border: 1px dashed #8A919E; border-radius: 6px; cursor: pointer">演示：来了一条新需求</button>
+</div>
+
+<sc-if value="{{hasMove}}" hint-placeholder-val="{{false}}">
+<div style="padding: 8px 18px; background: #F3F6FE; border-bottom: 1px solid #DDE1E8; font-size: 13px; color: #3A4050">{{moveNote}}</div>
+</sc-if>
+
+<sc-if value="{{hasOffer}}" hint-placeholder-val="{{false}}">
+<div style="margin: 12px; padding: 14px; border: 1px solid #9DB3EA; background: #F3F6FE; border-radius: 8px; display: flex; flex-direction: column; gap: 8px">
+<strong>新需求：NPC 之间可以转述听到的事</strong>
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">Copilot 建议的位置</div><div>{{offerPos}}</div></div>
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">理由</div><div>它修改的 NPC 亲历记忆和态度与世界状态还在 REQ-5 里讨论；排在 REQ-5 前面，就得基于一个没确认的方案开工。</div></div>
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">会挤掉什么</div><div>REQ-6「第一个场景可以试玩」顺延一位，而且它的验收要多等这条需求完成。</div></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" onClick="{{offerAccept}}" style="min-height: 30px; padding: 0 12px; font: inherit; font-size: 13px; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">按建议排</button>
+<button type="button" onClick="{{offerTail}}" style="min-height: 30px; padding: 0 12px; font: inherit; font-size: 13px; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 6px; cursor: pointer">排到队尾</button>
+<button type="button" onClick="{{offerTop}}" style="min-height: 30px; padding: 0 12px; font: inherit; font-size: 13px; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 6px; cursor: pointer">排到最前</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{noQueue}}" hint-placeholder-val="{{false}}">
+<div style="padding: 28px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px">
+<strong>没有进行中的需求</strong>
+<span style="color: #5A6170">产品功能与 PRD 完全一致。最近完成的是 REQ-2「快照可以按时间列出」。</span>
+</div>
+</sc-if>
+
+<sc-for list="{{queue}}" as="q" hint-placeholder-count="5">
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px 12px 18px; border-top: 1px solid #EEF0F3; background: {{q.bg}}">
+<span style="flex: none; width: 22px; height: 22px; border-radius: 50%; background: #EEF0F3; text-align: center; font-size: 12px; line-height: 22px; font-weight: 600">{{q.n}}</span>
+<a href="Progress.dc.html" style="flex: 1 1 auto; min-width: 0; text-decoration: none; color: #15171C; display: flex; flex-direction: column; gap: 2px">
+<span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px"><span style="font-size: 12px; color: #5A6170; font-family: ui-monospace, SFMono-Regular, Menlo, monospace">{{q.code}}</span><span style="padding: 1px 8px; border-radius: 10px; background: {{q.sbg}}; font-size: 12px">{{q.status}}</span></span>
+<strong>{{q.title}}</strong>
+<span style="font-size: 13px; color: #5A6170">{{q.now}}</span>
+</a>
+<div style="flex: none; display: flex; flex-direction: column; gap: 4px">
+<button type="button" onClick="{{q.up}}" aria-label="提前" style="width: 26px; min-height: 22px; padding: 0; font: inherit; font-size: 12px; color: #3A4050; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 4px; cursor: pointer">↑</button>
+<button type="button" onClick="{{q.down}}" aria-label="推后" style="width: 26px; min-height: 22px; padding: 0; font: inherit; font-size: 12px; color: #3A4050; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 4px; cursor: pointer">↓</button>
+</div>
+</div>
+</sc-for>
+</section>
+
+</div>
+
+<section aria-label="产品介绍" style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 22px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">产品介绍</h2>
+<a href="Context.dc.html" style="font-size: 13px; color: #5A6170">来自 docs/product/产品概述.md</a>
+</div>
+<p style="margin: 0; font-size: 16px; max-width: 820px">一个由 AI 驱动 NPC 的世界模拟引擎：世界按时间一小时一小时地推进，NPC 只知道自己经历过的事，并据此作出反应。</p>
+<p style="margin: 0; color: #3A4050; max-width: 820px">它面向想做「活的世界」的场景作者：作者只写场景本身，推进顺序、时间和 NPC 的记忆由引擎负责。</p>
+<a href="Main.dc.html">查看产品功能</a>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<section aria-label="产品模型" style="flex: 1 1 420px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">产品模型</h2>
+<a href="Context.dc.html" style="font-size: 13px; color: #5A6170">来自 docs/product/产品模型.md</a>
+</div>
+<p style="margin: 0; color: #3A4050">三个模块各管一层，上一层为下一层提供基础。</p>
+<div style="padding: 14px; border: 1px solid #DDE1E8; border-radius: 8px; display: flex; flex-direction: column; gap: 6px">
+<strong>场景生命周期</strong>
+<span>决定一个场景从开始到结束怎么走，事情按什么顺序发生。</span>
+<span style="font-size: 13px; color: #5A6170">Lifecycle FSM · Scenario Plugin</span>
+</div>
+<div style="padding-left: 14px; font-size: 13px; color: #5A6170">↓ 提供提交与交接的顺序</div>
+<div style="padding: 14px; border: 1px solid #DDE1E8; border-radius: 8px; display: flex; flex-direction: column; gap: 6px">
+<strong>时间与世界</strong>
+<span>让世界里的时间和状态变化，并能把某一刻留存下来。</span>
+<span style="font-size: 13px; color: #5A6170">小时推进 · 世界状态快照</span>
+</div>
+<div style="padding-left: 14px; font-size: 13px; color: #5A6170">↓ 提供事件发生的时间</div>
+<div style="padding: 14px; border: 1px solid #DDE1E8; border-radius: 8px; display: flex; flex-direction: column; gap: 6px">
+<strong>角色心智</strong>
+<span>决定 NPC 知道什么、怎么看待玩家。</span>
+<span style="font-size: 13px; color: #5A6170">NPC 亲历记忆 · 态度与世界状态</span>
+</div>
+<a href="Main.dc.html">在产品功能里查看每个功能点</a>
+</section>
+
+<section aria-label="核心概念" style="flex: 1 1 420px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px; gap: 4px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">核心概念</h2>
+<a href="Context.dc.html" style="font-size: 13px; color: #5A6170">来自 docs/product/核心概念.md</a>
+</div>
+<dl style="margin: 0">
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; gap: 14px; align-items: baseline">
+<dt style="flex: 0 0 84px; font-weight: 600">场景</dt>
+<dd style="margin: 0">一段有开始和结束的可玩内容，以插件形式接入引擎。</dd>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; gap: 14px; align-items: baseline">
+<dt style="flex: 0 0 84px; font-weight: 600">生命周期</dt>
+<dd style="margin: 0">场景从开始到结束依次经过的一组固定阶段。</dd>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; gap: 14px; align-items: baseline">
+<dt style="flex: 0 0 84px; font-weight: 600">整点提交</dt>
+<dd style="margin: 0">世界时间每到整点，把这一小时内发生的变化落定。</dd>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; gap: 14px; align-items: baseline">
+<dt style="flex: 0 0 84px; font-weight: 600">跨日交接</dt>
+<dd style="margin: 0">时间跨过零点时进行的交接，必须排在整点提交之后。</dd>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; gap: 14px; align-items: baseline">
+<dt style="flex: 0 0 84px; font-weight: 600">亲历记忆</dt>
+<dd style="margin: 0">NPC 只记住自己亲身经历或目击的事。</dd>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; gap: 14px; align-items: baseline">
+<dt style="flex: 0 0 84px; font-weight: 600">快照</dt>
+<dd style="margin: 0">某一时刻世界状态的只读留存，用于回放和排查。</dd>
+</div>
+</dl>
+</section>
+
+</div>
+</main>
+
+<sc-if value="{{chatOpen}}" hint-placeholder-val="{{false}}">
+<section aria-label="Copilot 对话" style="position: fixed; right: 24px; bottom: 24px; width: 400px; max-width: calc(100% - 32px); z-index: 10; background: #FFFFFF; border: 1px solid #C9D3EA; border-radius: 12px; box-shadow: 0 16px 40px rgba(21, 23, 28, 0.22); display: flex; flex-direction: column; overflow: hidden">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; background: #163A9C; color: #FFFFFF">
+<span style="font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap"><strong>Copilot</strong> · {{pageName}}</span>
+<button type="button" onClick="{{toggleChat}}" style="flex: none; min-height: 24px; padding: 0 8px; font: inherit; font-size: 12px; color: #FFFFFF; background: none; border: 1px solid #8FA8E6; border-radius: 6px; cursor: pointer">收起</button>
+</div>
+<div style="padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 320px; max-height: 560px; overflow-y: auto">
+<sc-for list="{{msgs}}" as="m" hint-placeholder-count="1">
+<div style="display: flex; flex-direction: column">
+<sc-if value="{{m.me}}" hint-placeholder-val="{{false}}">
+<div style="align-self: flex-end; max-width: 88%; padding: 9px 13px; background: #1F4FD1; color: #FFFFFF; border-radius: 12px 12px 2px 12px">{{m.text}}</div>
+</sc-if>
+<sc-if value="{{m.ai}}" hint-placeholder-val="{{true}}">
+<div style="align-self: flex-start; max-width: 96%; padding: 9px 13px; background: #F4F5F7; border-radius: 12px 12px 12px 2px">{{m.text}}</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="padding: 10px 12px; border-top: 1px solid #DDE1E8; background: #F8F9FB; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="2">
+<button type="button" onClick="{{c.pick}}" style="min-height: 32px; padding: 6px 12px; font: inherit; font-size: 13px; text-align: left; color: #163A9C; background: #E6EDFB; border: none; border-radius: 8px; cursor: pointer">{{c.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; gap: 8px; align-items: flex-end">
+<textarea id="chat-text" aria-label="和 Copilot 讨论" placeholder="描述你想调整的内容" rows="3" value="{{draft}}" onChange="{{setDraft}}" style="flex: 1 1 auto; min-width: 0; padding: 8px 10px; font: inherit; border: 1px solid #B9C0CC; border-radius: 6px; resize: vertical; background: #FFFFFF"></textarea>
+<button type="button" onClick="{{send}}" style="flex: none; min-height: 34px; padding: 0 14px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">发送</button>
+</div>
+</div>
+</section>
+</sc-if>
+<sc-if value="{{chatClosed}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{toggleChat}}" style="position: fixed; right: 24px; bottom: 24px; z-index: 10; min-height: 38px; padding: 0 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: #163A9C; border: none; border-radius: 19px; box-shadow: 0 12px 32px rgba(21, 23, 28, 0.22); cursor: pointer">Copilot</button>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+renderVals() {
+const st = this.state || {};
+const idle = !!st.idle;
+const gone = st.gone || {};
+const SB = { '开发中': '#E6F0FC', '待验收': '#F0EAFB', '讨论中': '#FCEBDD', '未开始': '#EEF0F3', '新需求': '#E3F2EE' };
+const hide = (id, note) => () => this.setState({ gone: Object.assign({}, gone, { [id]: note || true }) });
+const act = (label, pick, primary) => ({ label, pick, weight: primary ? 600 : 400, ink: primary ? '#FFFFFF' : '#15171C', bg: primary ? '#1F4FD1' : '#FFFFFF', edge: primary ? '#1F4FD1' : '#B9C0CC' });
+const item = (id, ref, text, acts, opts, lockNote) => ({ id, ref, text, acts: lockNote ? [] : acts, hasActs: !lockNote && acts.length > 0, opts: opts || [], hasOpts: !!(opts && opts.length), locked: !!lockNote, lockNote: lockNote || '' });
+const opt = (id, label, cost) => ({ label, cost, pick: hide(id, label) });
+const G = [
+['方案和用例等你确认', [
+item('c1', 'UC-15', 'AI 建议给 REQ-4 加一条用例：跨日交接恰好落在整点；两条校验都应执行。', [act('确认，加入增量', hide('c1'), true), act('不要这条', hide('c1'))])
+]],
+['选项等你决定', [
+item('d1', 'REQ-5', 'NPC 的记忆保留多久？没定之前，这条需求不会生成任务。', [], [opt('d1', '全部保留', '记忆越积越多，对话时要处理的内容变长。'), opt('d1', '只留最近若干天，更早的合并成摘要', '早期的细节会丢，NPC 可能忘记玩家认为重要的事。')]),
+item('d2', 'REQ-4', '跨日交接恰好落在整点时，两条校验按什么顺序做？', [], [opt('d2', '先校验整点提交，通过后再校验跨日交接', '提交校验失败时交接不会被检查，问题可能分两次才暴露。'), opt('d2', '两条都校验，一起报告', '实现更复杂，在途的开发任务要按新规则重新核对。')]),
+item('d3', 'REQ-3', '要不要现在用真实模型跑一遍小时推进？', [], [opt('d3', '现在跑', '消耗一次真实模型调用；Scenario Plugin 还没集成，只能跑最小场景。'), opt('d3', '等 Scenario Plugin 集成后一起跑', '这期间真实模型的用例一直是「尚未运行」。')])
+]],
+['任务等你验收', [
+item('a1', 'REQ-7 · UC-06', '保存一份带备注的快照，在列表里找到它。开发任务已完成。', [act('记为通过', hide('a1'), true), act('不通过，说明原因', hide('a1'))]),
+item('a2', 'REQ-4 · UC-13', '把时间从 23 点推进到 0 点，确认提交先于跨日交接。', [act('记为通过', hide('a2'), true), act('不通过，说明原因', hide('a2'))], null, gone.d2 ? '' : '要先决定上面「校验顺序」那一项，才能判定这条。')
+]],
+['任务等你派工', [
+item('t1', 'REQ-3', 'Scenario Plugin 的「注册与加载」可以开工了。', [act('派工', hide('t1'), true), act('先不做', hide('t1'))]),
+item('t2', 'REQ-3', '小时推进的「补强验收样例」可以开工了。', [act('派工', hide('t2'), true), act('先不做', hide('t2'))])
+]],
+['影响等你过目', [
+item('i1', 'REQ-4 → REQ-3', 'REQ-4 修改了 Lifecycle FSM，REQ-3 在它上面的开发任务是按修改前的内容做的。', [act('让任务按新内容重新核对', hide('i1'), true), act('不用管，继续做', hide('i1'))]),
+item('i2', 'UC-07、UC-08', '这两条用例的证据因为 REQ-4 的修改已经过期，显示的「通过」不再可信。', [act('安排重跑', hide('i2'), true), act('知道了', hide('i2'))])
+]]
+];
+const groups = idle ? [] : G.map((g) => { const items = g[1].filter((x) => !gone[x.id]); return { title: g[0], count: items.length + ' 项', items }; }).filter((g) => g.items.length);
+const todo = groups.reduce((n, g) => n + g.items.length, 0);
+const doneN = Object.keys(gone).length;
+const BASEQ = [['REQ-7', '保存快照时可以加备注', '待验收', '开发任务已完成，等你试用'], ['REQ-4', '跨日交接要有顺序校验', '待验收', '等你决定校验顺序后才能判定'], ['REQ-3', '场景能按生命周期推进', '开发中', 'AI 正在开发 Lifecycle FSM，阶段 3 / 4'], ['REQ-5', 'NPC 有自己的记忆和态度', '讨论中', '记忆保留多久还没有定'], ['REQ-6', '第一个场景可以试玩', '未开始', '等 REQ-3 和 REQ-5 完成']];
+const NEWQ = ['REQ-8', 'NPC 之间可以转述听到的事', '新需求', '刚排入队列，等待讨论方案'];
+const order = st.order || BASEQ.map((q) => q[0]);
+const byId = {}; BASEQ.concat([NEWQ]).forEach((q) => { byId[q[0]] = q; });
+const move = (i, d) => () => { const j = i + d; if (j < 0 || j >= order.length) return; const o = order.slice(); const t = o[i]; o[i] = o[j]; o[j] = t; this.setState({ order: o, moveNote: d < 0 ? t + ' 提前到第 ' + (j + 1) + ' 位，' + order[j] + ' 顺延' : t + ' 推后到第 ' + (j + 1) + ' 位，' + order[j] + ' 提前' }); };
+const place = (pos, note) => () => { const o = order.slice(); o.splice(pos, 0, 'REQ-8'); this.setState({ order: o, offer: false, moveNote: note }); };
+const queue = idle ? [] : order.map((id, i) => { const q = byId[id]; return { n: i + 1, code: q[0], title: q[1], status: q[2], sbg: SB[q[2]], now: q[3], bg: id === 'REQ-8' ? '#F3FBF8' : '#FFFFFF', up: move(i, -1), down: move(i, 1) }; });
+const vals = {
+groups, queue,
+todoCount: idle ? '' : todo + ' 项', doneNote: doneN && !idle ? '刚才已处理 ' + doneN + ' 项' : '',
+allClear: idle || todo === 0,
+clearNote: idle ? '没有需求在讨论、开发或等待验收。' : 'AI 正在开发 REQ-3 的 Lifecycle FSM（阶段 3 / 4）。有需要你决定或验收的事时，会出现在这里。',
+noQueue: idle,
+hasMove: !!st.moveNote && !idle, moveNote: st.moveNote || '',
+hasOffer: !!st.offer && !idle,
+arrive: () => { if (order.indexOf('REQ-8') < 0) this.setState({ offer: true }); },
+offerAccept: place(order.indexOf('REQ-5') + 1, 'REQ-8 按建议排在第 ' + (order.indexOf('REQ-5') + 2) + ' 位，REQ-5 之后；排在它后面的需求顺延'),
+offerPos: '排在第 ' + (order.indexOf('REQ-5') + 2) + ' 位，紧跟在 REQ-5 之后。',
+offerTail: place(order.length, 'REQ-8 排在队尾，没有挤掉任何需求'),
+offerTop: place(0, 'REQ-8 排到最前，其余 ' + order.length + ' 条需求全部顺延；它依赖的 REQ-5 还没确认，开工前会卡住'),
+toggleIdle: () => this.setState({ idle: !idle }), idleLabel: idle ? '演示：切回有开发的状态' : '演示：没有任何进行中的开发'
+};
+const chat = st.chat || [];
+const chatOpen = !!st.chatOpen;
+const say = (input) => {
+const text = (input || '').trim();
+if (!text) return;
+this.setState({ chat: chat.concat([{ me: true, ai: false, text }, { me: false, ai: true, text: '收到。原型里这一页的对话还没有接通。正式版本中，我会结合当前页面的内容和你讨论方案，确认后再修改并留档。' }]), draft: '' });
+};
+return Object.assign(vals, {
+pageName: '首页', chatOpen, chatClosed: !chatOpen,
+toggleChat: () => this.setState({ chatOpen: !chatOpen }),
+msgs: [{ me: false, ai: true, text: '这里列的是现在需要你处理的事，和需求的先后顺序。拿不准某一项，可以让我分析。' }].concat(chat),
+chips: chat.length ? [] : ['这几项里先处理哪一项最能解除阻塞', '把 REQ-5 提到 REQ-3 前面会怎样'].map((c) => ({ label: c, pick: () => say(c) })),
+draft: st.draft || '',
+setDraft: (e) => this.setState({ draft: e.target.value }),
+send: () => say(st.draft)
+});
+}
+}
+</script>
+</body>
+</html>

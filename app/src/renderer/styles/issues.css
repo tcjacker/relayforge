@@ -1,0 +1,212 @@
+/* 问题页：样式限定在 #issues 和问题对话框里，
+   和需求、看板共用的类名（card、bar、meta、row、empty、hint、wait、dhead）换成了 i 开头的名字，免得互相影响。 */
+#issues, #issue-dlg, #issue-review { --panel: #171a21; --card: #1d222b; --line: #2c323d; --text: #e6e9ef; --muted: #a1a8b4; --blue: #9bbaff; --green: #80dba6; --amber: #edbf70; --red: #f0a08e; --tri: #192331; --tri-line: #35465e }
+#issues[hidden] { display: none }
+#issues { flex: 1; min-width: 0; min-height: 0; display: grid; grid-template-columns: clamp(280px, 28vw, 410px) minmax(0, 1fr); background: #111318; color: var(--text) }
+#issues button, #issues select, #issues textarea, #issue-dlg button, #issue-dlg input, #issue-dlg select, #issue-dlg textarea, #issue-review button { font: inherit; color: inherit; border: 1px solid var(--line); border-radius: 6px; background: #20242d; padding: 6px 10px; margin: 0; text-decoration: none }
+#issues button, #issues select, #issue-dlg button, #issue-review button { cursor: pointer }
+#issues button:hover:not(:disabled), #issue-dlg button:hover:not(:disabled), #issue-review button:hover:not(:disabled) { border-color: #7892b7 }
+#issues button:disabled, #issue-dlg button:disabled, #issue-review button:disabled { opacity: .45; cursor: default }
+#issues :focus-visible, #issue-dlg :focus-visible, #issue-review :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px }
+#issues button.primary, #issue-dlg button.primary, #issue-review button.primary { background: #94deb4; color: #11251b; border-color: transparent; font-weight: 600 }
+#issues button.quiet, #issue-dlg button.quiet { background: transparent; color: var(--muted); font-size: inherit }
+#issues button.quiet:hover:not(:disabled), #issue-dlg button.quiet:hover:not(:disabled) { color: var(--text) }
+#issues button.link, #issue-dlg button.link { background: transparent; border: 0; padding: 0; color: var(--blue) }
+#issues .muted, #issue-dlg .muted { color: var(--muted) } #issues .small, #issue-dlg .small { font-size: 12px }
+#issues .mono, #issue-dlg .mono { font: 12px ui-monospace, SFMono-Regular, monospace; color: var(--muted) }
+#issues ul, #issue-dlg ul { display: block; list-style: disc; padding-left: 18px; margin: 8px 0 } #issues li, #issue-dlg li { display: list-item }
+/* 左栏 */
+#issues .listcol { background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-width: 0; min-height: 0 }
+#issues .listtop { padding: 16px 12px 8px; flex: none }
+#issues .ibar { display: flex; align-items: center; justify-content: space-between; gap: 8px }
+#issues .refresh-actions { display: flex; align-items: center; gap: 6px; white-space: nowrap }
+#issue-review-start svg { vertical-align: -2px }
+/* 「刷新」只在待处理页签里；正在复查或有结果没看时，别的页签也留着它（issue-review.js 设 data-review） */
+#issues:not([data-review="running"]):not([data-review="ready"]):not(:has(#issue-tabs [data-k="todo"][aria-selected="true"])) #issue-review-start { display: none }
+#issues #issue-review-start.running { color: var(--blue); border-color: var(--tri-line) }
+#issues #issue-review-start.running svg { animation: rvspin 1.2s linear infinite }
+#issues #issue-review-start .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--amber); margin-left: 4px; vertical-align: 1px }
+#issues #issue-review-start .dot[hidden] { display: none }
+@keyframes rvspin { to { transform: rotate(360deg) } }
+#issues #issue-review-notice { margin: 8px 0 0; color: var(--muted) }
+#issues #issue-review-notice.ok { color: var(--green) } #issues #issue-review-notice.warn { color: var(--amber) } #issues #issue-review-notice.ierror { color: var(--red) }
+#issues #issue-review-strip { margin: 8px 0 2px; background: var(--tri); border: 1px solid var(--tri-line); border-radius: 8px; padding: 8px 10px; font-size: 13px }
+#issues #issue-review-strip[hidden] { display: none }
+#issues #issue-review-strip.ready { background: #17261e; border-color: #2f5a41 }
+#issues #issue-review-strip.failed { background: #2a1c1a; border-color: #5a3530 }
+#issues #issue-review-strip .top { display: flex; align-items: center; gap: 8px }
+#issues #issue-review-strip .top b { font-weight: 600; flex: none }
+#issues #issue-review-strip .top .now { color: var(--muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+#issues #issue-review-strip .top .now.wrap { white-space: normal }
+#issues #issue-review-strip .top button { padding: 2px 8px; font-size: 12px; flex: none }
+#issues #issue-review-strip .rbar { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; margin-top: 6px }
+#issues #issue-review-strip .rbar i { display: block; height: 100%; background: var(--blue); transition: width .3s }
+#issues .imeta .rv { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px }
+#issues .imeta .rv.now { color: var(--blue); border-color: var(--tri-line) }
+#issues h1 { margin: 0; font-size: 24px }
+#issues .tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin: 14px 0 10px; border-bottom: 1px solid var(--line) }
+#issues .tab { background: transparent; border: 0; border-bottom: 2px solid transparent; border-radius: 6px 6px 0 0; padding: 4px 0 5px; text-align: center; line-height: 1.25; color: var(--muted) }
+#issues .tab b { display: block; font-size: 16px; font-weight: 600 }
+#issues .tab span { font-size: 11px; white-space: nowrap }
+#issues .tab[aria-selected=true] { color: var(--text); border-bottom-color: var(--blue); background: #1d2330 }
+#issues .tab.attn b { color: var(--amber) }
+#issues .tab.attn span::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); margin-right: 3px; vertical-align: 1px }
+#issues .tab.attn:not([aria-selected=true]) { background: #2a2518 }
+#issues .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px } #issues .chips[hidden] { display: none }
+#issues .chip { border-radius: 14px; font-size: 12px; padding: 1px 9px; background: transparent; color: var(--muted) }
+#issues .chip[aria-pressed=true] { background: #293a50; color: #cde0ff; border-color: #627d9c }
+#issues .featsel { width: 100%; font-size: 13px }
+#issues .rows { flex: 1; overflow: auto; min-height: 0; padding: 4px 0 24px }
+#issues .rw { display: flex; align-items: stretch; border-top: 1px solid var(--line); border-left: 2px solid transparent }
+#issues .rw:hover { background: #1b2029 }
+#issues .rw.cur { background: #202937; border-left-color: var(--blue) }
+#issues .pk { flex: none; width: 32px; display: flex; justify-content: center; align-items: flex-start; padding-top: 12px }
+#issues label.pk { cursor: pointer }
+#issues .pk input { width: 16px; height: 16px; padding: 0; margin: 0; accent-color: #94deb4; cursor: pointer; border: 0; background: transparent }
+#issues .pk + .irow { padding-left: 2px }
+#issues .irow { display: block; flex: 1; min-width: 0; text-align: left; border: 0; border-radius: 0; background: transparent; padding: 9px 12px }
+#issues .irow strong { display: block; font-weight: 550; line-height: 1.45; overflow-wrap: anywhere }
+#issues .irow .imeta { display: flex; flex-wrap: wrap; gap: 3px 8px; margin-top: 3px; font-size: 12px; color: var(--muted) }
+#issues .rw.deferred { opacity: .55 }
+#issues .ph { font-weight: 600 } #issues .ph.blue { color: var(--blue) } #issues .ph.amber { color: var(--amber) } #issues .ph.quiet { font-weight: 400; color: var(--muted) } #issues .ph.green { color: var(--green) } #issues .ph.red { color: var(--red) }
+#issues .src { border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; font-size: 11px; line-height: 1.5 }
+#issues .iempty { padding: 28px 14px; color: var(--muted); text-align: center }
+/* 选了几条：钉在列表底下的选择条 */
+#issues .selbar { flex: none; border-top: 1px solid #414a57; background: #1d2330; padding: 10px 12px 11px; box-shadow: 0 -8px 18px #0006 }
+#issues .selbar[hidden] { display: none }
+#issues .selbar .r1 { display: flex; align-items: center; gap: 8px }
+#issues .selbar .r1 b { margin-right: auto; font-weight: 600 }
+#issues .selbar .note { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.5 }
+#issues .selbar .note.warn { color: var(--amber) }
+#issues .selbar button.link { font-size: 12px; text-align: left }
+/* 右栏 */
+#issues .detail { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: #111318; position: relative }
+#issues .ihead { padding: 20px clamp(16px, 3vw, 40px) 10px; flex: none; border-bottom: 1px solid var(--line) }
+#issues .ihead .inner, #issues .thread .inner, #issues .replybox .inner { max-width: 780px; margin: 0 auto }
+#issues .ihead h2 { margin: 6px 0 2px; font-size: clamp(19px, 1.8vw, 26px); line-height: 1.4; overflow-wrap: anywhere; color: var(--text); font-weight: 700 }
+#issues .pill { border: 1px solid var(--line); border-radius: 5px; padding: 1px 7px; font-size: 11px; margin-left: 8px }
+#issues .strip { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: 13px; position: relative }
+#issues .fchip { border: 1px solid var(--line); background: #20242d; border-radius: 14px; padding: 1px 10px; font-size: 12px }
+#issues .fchip.link { color: var(--blue); cursor: pointer }
+#issues .fchip.none { color: var(--muted) }
+#issues .strip button.s { font-size: 12px; padding: 1px 10px; border-radius: 14px }
+#issues .picker { position: absolute; top: 100%; left: 0; z-index: 5; margin-top: 6px; background: var(--panel); border: 1px solid #414a57; border-radius: 8px; padding: 6px; min-width: 260px; max-height: 320px; overflow: auto; box-shadow: 0 8px 24px #0008 }
+#issues .picker button { display: block; width: 100%; text-align: left; border: 0; background: transparent; border-radius: 5px }
+#issues .picker button:hover { background: #243044 }
+#issues .picker .grp { font-size: 11px; color: var(--muted); padding: 6px 10px 2px }
+#issues .views { display: inline-flex; margin-left: auto; border: 1px solid var(--line); border-radius: 6px; overflow: hidden }
+#issues .views button { border: 0; border-radius: 0; background: transparent; color: var(--muted); padding: 2px 12px; font-size: 12px }
+#issues .views button[aria-pressed=true] { background: #293344; color: #c7d8ff }
+#issues .views .dot::after { content: ""; display: inline-block; width: 6px; height: 6px; margin-left: 5px; border-radius: 50%; background: var(--amber); vertical-align: 2px }
+#issues .finish-action { position: relative; margin-left: auto }
+#issues .views + .finish-action { margin-left: 0 }
+#issues .finish-menu { position: absolute; top: 100%; right: 0; z-index: 5; margin-top: 6px; min-width: 144px; padding: 5px; background: var(--panel); border: 1px solid #414a57; border-radius: 8px; box-shadow: 0 8px 24px #0008 }
+#issues .finish-menu button { display: block; width: 100%; text-align: left; border-color: transparent; background: transparent }
+#issues .thread { flex: 1; overflow: auto; min-height: 0; padding: 18px clamp(16px, 3vw, 40px) 24px }
+#issues .thread[hidden], #issues .replybox[hidden], #issues .fixterm[hidden] { display: none }
+#issues .thread .inner { display: flex; flex-direction: column; gap: 14px; overflow-wrap: anywhere }
+#issues .entry { border-radius: 8px }
+#issues .lbl { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 4px }
+#issues .lbl .at { margin-left: auto }
+#issues .aitag { border: 1px solid #3d4a60; color: #b3c6e8; border-radius: 4px; padding: 0 5px; font-size: 11px; line-height: 1.5 }
+#issues .report { background: var(--card); border: 1px solid var(--line); padding: 12px 14px }
+#issues .report p, #issues .bubble p, #issues .jcard p { margin: 2px 0; white-space: pre-wrap }
+#issues .thumbs, #issue-dlg .thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px }
+#issues .thumbs button.th, #issue-dlg .thumbs button.th { padding: 0; border-radius: 6px; overflow: hidden; line-height: 0; position: relative }
+#issues .thumbs img, #issue-dlg .thumbs img { width: 96px; height: 68px; object-fit: cover; display: block }
+#issues .thumbs .x, #issue-dlg .thumbs .x { position: absolute; right: 2px; top: 2px; min-height: 0; padding: 0 6px; line-height: 1.4; background: #000a; border-radius: 4px }
+#issues .bubble { padding: 9px 12px; border-radius: 8px; max-width: 86% }
+#issues .bubble.me { align-self: flex-end; background: #26374b }
+#issues .bubble.ai { align-self: flex-start; background: #202633 }
+#issues .sys { text-align: center; font-size: 12px; color: var(--muted) }
+#issues .sys span { display: inline-block; padding: 1px 12px; border-radius: 12px; background: #1a1f27; white-space: pre-wrap; overflow-wrap: anywhere }
+#issues .sys.close { border-top: 1px solid var(--line); padding-top: 10px }
+#issues .jcard { background: var(--tri); border: 1px solid var(--tri-line); border-radius: 9px; padding: 14px 16px }
+#issues .jcard .issue-link { color: var(--blue); background: transparent; border-color: transparent; padding: 0 4px; text-align: left; white-space: normal }
+#issues .jcard .issue-link:hover { border-color: var(--blue) }
+#issues .jcard h3 { margin: 2px 0 4px; font-size: 18px; display: flex; align-items: center; gap: 8px; color: var(--text) }
+#issues .jcard h3 small { font-size: 12px; font-weight: 400; color: var(--muted) }
+#issues .kdot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none }
+#issues .jcard .q { margin: 10px 0 2px; padding: 9px 12px; border-left: 3px solid var(--amber); background: #2a2518; border-radius: 0 6px 6px 0 }
+#issues .jcard .how { margin: 10px 0 2px; padding: 9px 12px; border-left: 3px solid var(--green); background: #16261f; border-radius: 0 6px 6px 0 }
+#issues .jcard.failed { background: #2a1d1b; border-color: #5a3a33 }
+#issues .actions, #issue-dlg .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center }
+#issues .collapsed { font-size: 12px; color: var(--muted); padding: 0 4px }
+#issues .collapsed::before { content: "· " }
+#issues .fixcard { background: #152421; border-color: #2f5a4b }
+#issues .fixcard .part { margin-top: 10px }
+#issues .fixcard .part b { display: block; font-size: 12px; color: var(--green); font-weight: 600 }
+/* 排查会话的结论：读过代码，和只看产品事实的初判分开；复现过的和推断的分开 */
+#issues .findcard { background: #1b2030; border-color: #3d4a78 }
+#issues .findcard .part { margin-top: 10px }
+#issues .findcard .part b { display: block; font-size: 12px; color: #9bbaff; font-weight: 600 }
+#issues .findcard .part.ok b { color: var(--green) }
+#issues .findcard .part.guess b { color: var(--amber) }
+#issues .ihint { font-size: 12px; color: var(--muted); margin-left: 6px }
+#issues .iwait { border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center }
+/* 一起修的同批问题 */
+#issues .sibs { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px }
+#issues .sibs .muted { margin-right: 2px }
+#issues button.sibchip { display: inline-flex; align-items: baseline; gap: 6px; max-width: 100%; border-radius: 14px; padding: 1px 10px; font-size: 12px; background: #20242d }
+#issues .sibchip .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px }
+#issues .sibchip .st { flex: none }
+#issue-dlg .blist { list-style: none; padding: 0; margin: 8px 0 } #issue-dlg .blist li { display: block; border-top: 1px solid var(--line); padding: 7px 2px }
+#issue-dlg .blist li:first-child { border-top: 0 } #issue-dlg .blist .f { display: block; font-size: 12px; color: var(--muted) }
+#issues .analysing { display: flex; align-items: center; gap: 10px }
+#issues .spin { width: 14px; height: 14px; border: 2px solid #3b4a60; border-top-color: var(--blue); border-radius: 50%; animation: isp .8s linear infinite }
+@keyframes isp { to { transform: rotate(360deg) } }
+@media (prefers-reduced-motion: reduce) { #issues .spin { animation: none } }
+/* 回复框 */
+#issues .replybox { flex: none; border-top: 1px solid var(--line); background: var(--panel); padding: 10px clamp(16px, 3vw, 40px) 12px }
+#issues .replybox.hot { box-shadow: inset 0 2px 0 var(--amber); background: #201d14 }
+#issues .replybox textarea { width: 100%; min-height: 44px; max-height: 160px; resize: none; display: block; background: #20242d; outline: none }
+#issues .replybox.hot textarea { border-color: #8a713a }
+#issues .replybox .tools { display: flex; align-items: center; gap: 8px; margin-top: 6px }
+#issues .replybox .tools .grow { flex: 1; font-size: 12px; color: var(--muted) }
+#issues .replybox .thumbs { margin: 0 0 8px }
+#issues .closedbar { display: flex; align-items: center; gap: 10px; justify-content: center; color: var(--muted); font-size: 13px }
+#issues .noselect { margin: auto; color: var(--muted) }
+#issues .ierror { color: var(--red); font-size: 12px; margin-top: 6px }
+/* 修复会话：嵌在右边的终端，和对话来回切换；藏起来时会话照常在跑 */
+#issues .fixterm { flex: 1; min-height: 0; padding: 10px 0 10px 12px; background: #111318 }
+#issues .fixterm > div { height: 100% } #issues .fixterm > div[hidden] { display: none }
+/* 对话框 */
+#issue-dlg, #issue-review { width: min(480px, 94vw); background: var(--panel); color: var(--text); border: 1px solid #414a57; border-radius: 12px; padding: 22px; max-height: 88vh; overflow: auto }
+#issue-dlg::backdrop, #issue-review::backdrop { background: #070a10b8 }
+#issue-dlg h2 { margin: 0 0 14px; font-size: 20px; color: var(--text) }
+#issue-dlg label.field { display: block; margin: 12px 0 }
+#issue-dlg label.field > * { display: block; width: 100%; margin-top: 4px }
+#issue-dlg label.field textarea { min-height: 68px; resize: vertical }
+#issue-dlg .actions { justify-content: flex-end }
+#issue-dlg img.big { max-width: 100%; max-height: 60vh; display: block; margin: 0 auto; border-radius: 6px }
+#issue-dlg .ierror { color: var(--red); font-size: 12px }
+#issue-review { width: min(660px, 94vw); overflow-wrap: anywhere; color-scheme: dark }
+#issue-review h2 { margin: 0; font-size: 20px }
+#issue-review h3 { margin: 16px 0 6px; font-size: 14px }
+#issue-review p { margin: 5px 0 }
+#issue-review .muted { color: var(--muted); font-size: 13px }
+#issue-review label { display: flex; align-items: baseline; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-top: 6px }
+#issue-review label { cursor: pointer }
+#issue-review input { flex: none; accent-color: #94deb4 }
+#issue-review .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px }
+#issue-review .actions .spacer { flex: 1 }
+#issue-review .ask { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 4px }
+#issue-review .ask span { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px }
+#issue-review .bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin: 12px 0 8px }
+#issue-review .bar i { display: block; height: 100%; width: 0; background: var(--blue); transition: width .3s }
+/* app.css 里全局的 .steps 是横向进度条（display:flex），这里要纵向一条一行，必须显式盖掉 */
+#issue-review ol.steps { display: block; list-style: none; margin: 0; padding: 0; font-size: 13px }
+#issue-review ol.steps li { display: flex; align-items: flex-start; gap: 8px; padding: 3px 0; color: var(--muted) }
+#issue-review ol.steps li > span { flex: 1; min-width: 0 }
+#issue-review ol.steps li.done { color: var(--text) }
+#issue-review ol.steps li.now { color: var(--blue) }
+#issue-review ol.steps b { width: 16px; flex: none; text-align: center; font-weight: 400 }
+#issue-review .grp { display: flex; align-items: baseline; gap: 8px }
+#issue-review .grp em { font-style: normal; font-size: 12px; color: var(--muted); font-weight: 400 }
+#issue-review .keep { background: var(--card); border: 1px dashed var(--line); border-radius: 8px; padding: 8px 10px; margin-top: 6px }
+#issue-review .ran { display: block; font-size: 12px; color: #8b93a1; margin-top: 2px }
+#issue-review button.link { border: 0; background: none; padding: 0; color: var(--blue); text-decoration: underline }
+/* 问题对话底部的「改动」块：别让对话里的列表样式盖住它 */
+.issue-trace ul { list-style: none; margin: 4px 0 0; padding: 0 }
+.issue-trace .trace-files li { display: flex !important; flex-direction: row !important; justify-content: space-between; gap: 10px; list-style: none; margin: 0; padding: 0 }
+.issue-trace li::before { content: none }

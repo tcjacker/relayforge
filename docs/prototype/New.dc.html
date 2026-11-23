@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>新建产品</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F4FD1}a:hover{color:#163A9C}
+</style>
+</helmet>
+<div style="min-height: 1180px; background: #F4F5F7; color: #15171C; font-family: Inter, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif; font-size: 14px; line-height: 1.5">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #DDE1E8">
+<div style="max-width: 1440px; margin: 0 auto; padding: 0 32px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; min-height: 52px">
+<span style="font-weight: 700; font-size: 16px">RelayForge</span>
+<span style="color: #5A6170; flex: 1 1 auto">新建产品</span>
+<a href="Home.dc.html" style="display: inline-flex; align-items: center; min-height: 44px">返回已有产品</a>
+<span style="padding: 3px 10px; border: 1px dashed #8A919E; border-radius: 4px; color: #5A6170; font-size: 12px">示例数据</span>
+</div>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 24px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+
+<sc-if value="{{choosing}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px 0">
+<div>
+<h1 style="margin: 0; font-size: 24px; font-weight: 700">新建产品</h1>
+<p style="margin: 4px 0 0; color: #5A6170">两种开始方式。无论哪一种，都是先讨论清楚、你确认之后才生效。</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px">
+<button type="button" onClick="{{startNew}}" style="padding: 22px; font: inherit; text-align: left; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; gap: 8px">
+<strong style="font-size: 18px">从零开始</strong>
+<span style="color: #3A4050">还没有代码。和主 Agent 聊你想做什么，讨论清楚后由它画出产品结构，并生成第一条需求。</span>
+<span style="font-size: 13px; color: #5A6170">PRD 一开始是空的，验收通过后才写入。</span>
+</button>
+<button type="button" onClick="{{startImport}}" style="padding: 22px; font: inherit; text-align: left; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; gap: 8px">
+<strong style="font-size: 18px">接入已有仓库</strong>
+<span style="color: #3A4050">已经有代码、文档和进行中的任务。主 Agent 读仓库后提出模块、功能点和功能说明的候选，由你逐步确认。</span>
+<span style="font-size: 13px; color: #5A6170">整理出的内容标为「接入时整理，未经验收」，不冒充已验收的 PRD。</span>
+</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{started}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<section aria-label="与主 Agent 对话" style="flex: 1 1 400px; max-width: 520px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden">
+<div style="padding: 18px 20px; border-bottom: 1px solid #DDE1E8">
+<h1 style="margin: 0; font-size: 20px; font-weight: 700">{{chatTitle}}</h1>
+<p style="margin: 4px 0 0; color: #5A6170">{{chatSub}}</p>
+</div>
+
+<div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; min-height: 440px">
+<sc-for list="{{msgs}}" as="m" hint-placeholder-count="0">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<sc-if value="{{m.me}}" hint-placeholder-val="{{false}}">
+<div style="align-self: flex-end; max-width: 85%; padding: 10px 14px; background: #1F4FD1; color: #FFFFFF; border-radius: 12px 12px 2px 12px">{{m.text}}</div>
+</sc-if>
+<sc-if value="{{m.ai}}" hint-placeholder-val="{{true}}">
+<div style="align-self: flex-start; max-width: 92%; padding: 10px 14px; background: #F4F5F7; border-radius: 12px 12px 12px 2px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; color: #5A6170">主 Agent</span>
+<span>{{m.text}}</span>
+<sc-if value="{{m.hasOptions}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{m.options}}" as="o" hint-placeholder-count="2">
+<button type="button" onClick="{{o.pick}}" style="min-height: 44px; padding: 8px 12px; font: inherit; text-align: left; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 6px; cursor: pointer"><strong>{{o.label}}</strong><span style="display: block; font-size: 13px; color: #5A6170">{{o.cost}}</span></button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+</div>
+</sc-for>
+
+<sc-if value="{{canDraw}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" onClick="{{draw}}" style="min-height: 44px; padding: 0 18px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">可以，开始绘制</button>
+</div>
+</sc-if>
+<sc-if value="{{isDone}}" hint-placeholder-val="{{false}}">
+<a href="Main.dc.html" style="align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; font-weight: 600; text-decoration: none; color: #FFFFFF; background: #1F4FD1; border-radius: 6px">打开产品功能</a>
+</sc-if>
+</div>
+
+<div style="padding: 14px 20px 18px; border-top: 1px solid #DDE1E8; background: #F8F9FB; display: flex; flex-direction: column; gap: 10px">
+<sc-if value="{{hasChips}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="1">
+<button type="button" onClick="{{c.pick}}" style="min-height: 44px; padding: 0 12px; font: inherit; font-size: 13px; color: #163A9C; background: #E6EDFB; border: none; border-radius: 22px; cursor: pointer">{{c.label}}</button>
+</sc-for>
+</div>
+</sc-if>
+<label for="new-text" style="font-size: 13px; font-weight: 600; color: #3A4050">{{inputLabel}}</label>
+<textarea id="new-text" rows="2" value="{{draft}}" onChange="{{setDraft}}" style="padding: 10px 12px; font: inherit; border: 1px solid #B9C0CC; border-radius: 6px; resize: vertical; background: #FFFFFF"></textarea>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+<button type="button" onClick="{{send}}" style="min-height: 44px; padding: 0 18px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">发送</button>
+<span style="flex: 1 1 160px; font-size: 12px; color: #5A6170">原型演示：对话是预设脚本，无论输入什么都按「会员网站」这个示例往下走。</span>
+</div>
+</div>
+</section>
+
+<section aria-label="方案与草稿" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<sc-if value="{{isNewMode}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">{{draftTitle}}</h2>
+<span style="padding: 2px 10px; border-radius: 4px; background: {{stageBg}}; font-size: 13px">{{stage}}</span>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">方案要点</h3>
+<span style="font-size: 13px; color: #5A6170">讨论中已经定下来的事</span>
+</div>
+<sc-if value="{{noPoints}}" hint-placeholder-val="{{true}}">
+<div style="color: #5A6170">还没有内容。</div>
+</sc-if>
+<sc-for list="{{points}}" as="p" hint-placeholder-count="0">
+<div style="display: flex; gap: 12px; align-items: baseline; padding: 8px 10px; background: {{p.bg}}; border-radius: 6px">
+<span style="flex: 0 0 72px; font-size: 13px; font-weight: 600; color: #3A4050">{{p.k}}</span>
+<span>{{p.v}}</span>
+</div>
+</sc-for>
+</div>
+
+<sc-if value="{{notDrawn}}" hint-placeholder-val="{{true}}">
+<div style="padding: 36px 20px; text-align: center; color: #5A6170; border: 1px dashed #B9C0CC; border-radius: 8px; display: flex; flex-direction: column; gap: 6px">
+<strong style="color: #3A4050">页面还没有绘制</strong>
+<span>方案确认后，这里会画出产品结构和页面清单，并生成第一条需求：每个功能点一份 PRD 增量和一个开发任务，外加验收任务。</span>
+</div>
+</sc-if>
+
+<sc-if value="{{drawn}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">产品结构</h3>
+<span style="font-size: 13px; color: #5A6170">{{structNote}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+<sc-for list="{{modules}}" as="m" hint-placeholder-count="4">
+<div style="padding: 12px; border: 1px solid #B9C0CC; border-radius: 6px; display: flex; flex-direction: column; gap: 6px">
+<strong>{{m.name}}</strong>
+<sc-for list="{{m.features}}" as="f" hint-placeholder-count="2">
+<div style="display: flex; justify-content: space-between; gap: 8px; padding: 6px 8px; background: #F4F5F7; border-radius: 4px">
+<span>{{f.name}}</span>
+<span style="flex: none; font-size: 12px; color: #3A4050">草稿</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
+<sc-for list="{{cards}}" as="c" hint-placeholder-count="4">
+<div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">{{c.title}}</h3>
+<span style="flex: none; padding: 1px 8px; border-radius: 10px; background: #E6F0FC; font-size: 12px">草稿</span>
+</div>
+<sc-for list="{{c.lines}}" as="l" hint-placeholder-count="2">
+<div>{{l.text}}</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+
+<sc-if value="{{canConfirm}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 16px; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px">
+<button type="button" onClick="{{confirm}}" style="min-height: 44px; padding: 0 18px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">确认，创建产品</button>
+<span style="color: #5A6170">创建后仍可在产品功能里用「调整结构」「调整这个功能」继续修改。</span>
+</div>
+</sc-if>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isImport}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">{{impTitle}}</h2>
+<span style="padding: 2px 10px; border-radius: 4px; background: #F0EAFB; font-size: 13px">{{impStage}}</span>
+</div>
+
+<sc-if value="{{imp1}}" hint-placeholder-val="{{false}}">
+<div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">选择仓库</h3>
+<button type="button" onClick="{{pickRepo}}" aria-pressed="{{repoPressed}}" style="padding: 12px 14px; font: inherit; text-align: left; color: #15171C; background: {{repoBg}}; border: 1px solid {{repoEdge}}; border-radius: 6px; cursor: pointer; display: flex; flex-direction: column; gap: 2px"><strong style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace">demo_game</strong><span style="font-size: 13px; color: #5A6170">示例游戏引擎的仓库</span></button>
+<sc-if value="{{repoRead}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 13px; font-weight: 600; color: #5A6170">主 Agent 读了这些，没有修改任何东西</div>
+<sc-for list="{{readList}}" as="x" hint-placeholder-count="4"><div style="padding: 6px 10px; background: #F4F5F7; border-radius: 6px">{{x.text}}</div></sc-for>
+<button type="button" onClick="{{next}}" style="align-self: flex-start; min-height: 36px; padding: 0 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">继续，看候选结构</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{imp2}}" hint-placeholder-val="{{false}}">
+<div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">模块和功能点的候选</h3>
+<span style="font-size: 13px; color: #5A6170">{{keepNote}}</span>
+</div>
+<sc-for list="{{cands}}" as="c" hint-placeholder-count="6">
+<div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 12px; border: 1px solid #DDE1E8; border-radius: 6px; background: {{c.bg}}">
+<button type="button" onClick="{{c.toggle}}" aria-pressed="{{c.pressed}}" style="flex: none; min-height: 28px; padding: 0 10px; font: inherit; font-size: 13px; color: {{c.btnInk}}; background: {{c.btnBg}}; border: 1px solid {{c.btnEdge}}; border-radius: 6px; cursor: pointer">{{c.btn}}</button>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><strong>{{c.name}}</strong><span style="font-size: 13px; color: #5A6170">{{c.mod}}</span><span style="padding: 1px 8px; border-radius: 10px; background: {{c.tagBg}}; font-size: 12px">{{c.tag}}</span></div>
+<span style="color: #3A4050">依据：{{c.basis}}</span>
+</div>
+</div>
+</sc-for>
+<button type="button" onClick="{{next}}" style="align-self: flex-start; min-height: 36px; padding: 0 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">确认这些模块和功能点</button>
+</div>
+</sc-if>
+
+<sc-if value="{{imp3}}" hint-placeholder-val="{{false}}">
+<div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">功能说明草稿</h3>
+<span style="font-size: 13px; color: #5A6170">七项里哪些有依据，哪些是主 Agent 猜的</span>
+</div>
+<sc-for list="{{briefs}}" as="b" hint-placeholder-count="5">
+<div style="padding: 10px 12px; border: 1px solid #DDE1E8; border-radius: 6px; display: flex; flex-direction: column; gap: 4px">
+<strong>{{b.name}}</strong>
+<div style="display: flex; gap: 8px; align-items: baseline"><span style="flex: none; padding: 1px 8px; border-radius: 10px; background: #E3F2EE; font-size: 12px">有依据</span><span>{{b.known}}</span></div>
+<div style="display: flex; gap: 8px; align-items: baseline"><span style="flex: none; padding: 1px 8px; border-radius: 10px; background: #FDF6E7; font-size: 12px">猜的</span><span>{{b.guess}}</span></div>
+</div>
+</sc-for>
+<button type="button" onClick="{{next}}" style="align-self: flex-start; min-height: 36px; padding: 0 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">确认；猜的部分标为待我核对</button>
+</div>
+</sc-if>
+
+<sc-if value="{{imp4}}" hint-placeholder-val="{{false}}">
+<div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">把进行中的任务归到需求下</h3>
+<span style="font-size: 13px; color: #5A6170">来自 Linear</span>
+</div>
+<div style="padding: 12px; border: 1px solid #DDE1E8; border-radius: 6px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><strong>需求：码头场景可以试玩</strong><span style="padding: 1px 8px; border-radius: 10px; background: #FDF6E7; font-size: 12px">需求名是主 Agent 起的</span></div>
+<div>G-70 码头可试玩路线 · 进行中</div>
+<div>G-54 · 被 G-70 和 G-52 阻塞</div>
+<div>G-62 · 被 G-54 阻塞，里程碑收口</div>
+<span style="font-size: 13px; color: #5A6170">影响哪些功能点还没有指定，接入后在需求页补上。</span>
+</div>
+<div style="padding: 12px; border: 1px dashed #B9C0CC; border-radius: 6px; display: flex; flex-direction: column; gap: 6px">
+<strong>归不上的任务</strong>
+<div>G-52 · 进行中。它和 G-70 相关，但看不出对应哪个功能点或哪条需求。</div>
+<span style="font-size: 13px; color: #5A6170">接入后放进首页的「等你处理」，由你归类。</span>
+</div>
+<button type="button" onClick="{{next}}" style="align-self: flex-start; min-height: 36px; padding: 0 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">确认，接入</button>
+</div>
+</sc-if>
+
+<sc-if value="{{imp5}}" hint-placeholder-val="{{false}}">
+<div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">接入结果</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px">
+<div style="padding: 12px; border: 1px solid #DDE1E8; border-radius: 6px"><div style="font-size: 13px; font-weight: 600; color: #5A6170">产品功能</div><div>{{resStruct}}</div></div>
+<div style="padding: 12px; border: 1px solid #DDE1E8; border-radius: 6px"><div style="font-size: 13px; font-weight: 600; color: #5A6170">功能说明</div><div>每个功能点一份；猜的部分标为待你核对</div></div>
+<div style="padding: 12px; border: 1px solid #DDE1E8; border-radius: 6px"><div style="font-size: 13px; font-weight: 600; color: #5A6170">需求</div><div>1 条从 Linear 接入，含 3 个任务；1 个任务待你归类</div></div>
+</div>
+<div style="padding: 12px 14px; border: 1px solid #C9B8E8; background: #F7F3FD; border-radius: 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px">
+<span style="flex: none; padding: 1px 10px; border-radius: 10px; background: #FFFFFF; border: 1px solid #C9B8E8; font-size: 13px; font-weight: 600">接入时整理，未经验收</span>
+<span style="flex: 1 1 280px; color: #3A4050">每个功能点的功能说明顶部会显示这个状态。它的 PRD 是「接入时的现状」，由主 Agent 根据仓库整理，没有经过工作台的验收。之后第一次有需求在这个功能点上验收通过，PRD 才成为已验收的版本。</span>
+</div>
+</div>
+</sc-if>
+
+</div>
+</sc-if>
+</section>
+
+</div>
+</sc-if>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+renderVals() {
+const st = this.state || {};
+const step = st.step || 0;
+const refund = !!st.refund;
+const first = st.first || '';
+const plan = st.plan || '';
+const form = st.form || '';
+const IDEA = '我想做一个会员网站，有定价、订阅和会员专属内容';
+const msgs = [];
+const ai = (text, options) => msgs.push({ ai: true, me: false, text, hasOptions: !!options, options: options || [] });
+const me = (text) => msgs.push({ ai: false, me: true, text, hasOptions: false, options: [] });
+const mode = st.mode || '';
+const imp = st.imp || 0;
+const drop = st.drop || {};
+const CANDS = [
+['k1', '场景生命周期', 'Lifecycle FSM', '有依据', '代码里有对应的目录和测试，设计文档里有说明', true],
+['k2', '场景生命周期', 'Scenario Plugin', '有依据', '代码里有插件接口；目前只有一个场景在用', true],
+['k3', '时间与世界', '小时推进', '有依据', '代码和测试都有', true],
+['k4', '时间与世界', '世界状态快照', '有依据', '代码里有，而且已经在用', true],
+['k5', '角色心智', 'NPC 亲历记忆', '有依据', '设计文档和已确认的裁定里有；代码刚开始', true],
+['k6', '角色心智', '态度与世界状态', '猜的', '只在设计文档里提到，代码里没找到对应实现', true],
+['k7', '归属不明', '码头试玩场景', '拿不准', '它看起来是一个具体场景，不是引擎的功能；更像一条需求', false],
+['k8', '归属不明', '工程问题台账', '拿不准', '仓库里的 tools/issue_tracker/ 是开发工具，可能不属于产品', false]
+];
+const kept = CANDS.filter((c) => (drop[c[0]] === undefined ? c[5] : !drop[c[0]]));
+const BRIEF = { 'Lifecycle FSM': ['一句话定位、在产品中的位置、规则与边界', '用户旅程、没有它会怎样'], 'Scenario Plugin': ['一句话定位、在产品中的位置', '用户旅程、规则与边界、调整时要注意'], '小时推进': ['一句话定位、规则与边界、在产品中的位置', '用户旅程'], '世界状态快照': ['一句话定位、用户旅程、规则与边界', '调整时要注意'], 'NPC 亲历记忆': ['一句话定位、规则与边界', '在产品中的位置、用户旅程、调整时要注意'], '态度与世界状态': ['一句话定位', '其余六项都是猜的，因为代码里没有实现'], '码头试玩场景': ['一句话定位', '其余六项'], '工程问题台账': ['一句话定位', '其余六项'] };
+if (mode === 'import') {
+ai('好，接入已有的仓库。先选仓库。我会读它的文档、代码结构和进行中的任务，不会修改任何东西。');
+if (st.repo) ai('读完了，仓库没有被改动。接下来我提出模块和功能点的候选，每一项都写了依据，你来增删。');
+if (imp >= 2) ai('这是我整理出的候选。有两项我拿不准该不该算功能点，默认没有选上；有一项只在文档里出现，标成了猜的。');
+if (imp >= 3) ai('结构确认了。我为每个功能点起草了功能说明，把有依据的和我猜的分开标出。猜的部分不会被当成事实，会留在「还没定的事」里等你核对。');
+if (imp >= 4) ai('最后一步：把 Linear 里进行中的任务归到需求下。有一个任务我归不上，单列出来了。');
+if (imp >= 5) ai('接入完成。所有功能点的状态是「接入时整理，未经验收」，PRD 是接入时的现状，不算已验收。之后的修改照常走需求。');
+}
+if (step >= 1) {
+me(first);
+ai('明白，一个会员网站。先不急着画，有两件事会决定结构。第一件：会员怎么付费？', step === 1 ? [
+{ label: '按月订阅', cost: '需要续费、到期和取消的处理，功能点更多。', pick: () => this.setState({ step: 2, plan: '按月订阅' }) },
+{ label: '一次买断', cost: '结构简单，但以后改成订阅要重做支付和权限。', pick: () => this.setState({ step: 2, plan: '一次买断' }) }
+] : null);
+}
+if (step >= 2) {
+me(plan);
+ai('第二件：会员专属内容是什么形式？', step === 2 ? [
+{ label: '文章', cost: '只需要按权限显示或隐藏正文。', pick: () => this.setState({ step: 3, form: '文章' }) },
+{ label: '视频课程', cost: '要多做播放和学习进度，功能点和页面都会增加。', pick: () => this.setState({ step: 3, form: '视频课程' }) }
+] : null);
+}
+if (step >= 3) {
+me(form);
+ai('我认为方案差不多清楚了，要点列在右边。还有要补充的吗？没有的话，我就按这些要点绘制产品结构和各个页面。');
+}
+if (refund) {
+me('把退款也加进去');
+ai('好，已记入要点。退款规则我没有替你定，绘制时会标成待你确认。现在可以开始绘制了吗？');
+}
+if (step >= 4) {
+me('可以，开始绘制');
+ai('画好了，在右边。结构和页面清单是草稿，请你过一遍。确认后我创建第一条需求，Coding Agent 按它开工；此时 PRD 还是空的，验收通过后才写入。');
+}
+if (step >= 5) ai('产品已创建，第一条需求在需求页里。');
+const video = form === '视频课程';
+const points = [];
+if (step >= 1) points.push({ k: '产品', v: '会员网站：定价、订阅、会员专属内容', bg: '#F4F5F7' });
+if (step >= 2) points.push({ k: '付费方式', v: plan, bg: '#F4F5F7' });
+if (step >= 3) points.push({ k: '内容形式', v: form, bg: '#F4F5F7' });
+if (refund) points.push({ k: '退款', v: '需要支持；规则待你确认', bg: '#E3F2EE' });
+const base = [
+{ name: '网站门面', features: ['首页'] },
+{ name: '账号', features: ['注册', '登录'] },
+{ name: '定价与订阅', features: ['定价展示', plan === '一次买断' ? '购买支付' : '订阅支付'].concat(plan === '一次买断' ? [] : ['续费与取消']).concat(refund ? ['退款'] : []) },
+{ name: '会员内容', features: ['内容权限', '会员中心'].concat(video ? ['视频播放', '学习进度'] : []) }
+];
+const modules = base.map((m) => ({ name: m.name, features: m.features.map((n) => ({ name: n })) }));
+const count = base.reduce((a, m) => a + m.features.length, 0);
+const card = (title, lines) => ({ title, lines: lines.map((t) => ({ text: t })) });
+const cards = [
+card('第一条需求', ['从零做出这个产品', count + ' 份 PRD 增量，每个功能点一份', '验收通过后才并入 PRD']),
+card('页面与原型', ['首页', '定价页', '注册与登录页', '会员中心'].concat(video ? ['课程播放页'] : [])),
+card('任务', [count + ' 个开发任务，每个功能点一个', '1 个验收任务：你走通注册、付费、看会员内容']),
+card('验收样例', [count + ' 条待你确认', refund ? '待确认：退款规则' : '待确认：到期后权限何时失效'])
+];
+const text = (st.draft || '').trim();
+const send = () => {
+if (mode !== 'new') { this.setState({ draft: '' }); return; }
+if (step === 0) { this.setState({ step: 1, first: text || IDEA, draft: '' }); return; }
+if (step === 1) { this.setState({ step: 2, plan: '按月订阅', draft: '' }); return; }
+if (step === 2) { this.setState({ step: 3, form: '文章', draft: '' }); return; }
+if (step === 3 && !refund) { this.setState({ refund: true, draft: '' }); return; }
+this.setState({ draft: '' });
+};
+const chips = [];
+if (step === 0 && mode === 'new') chips.push({ label: IDEA, pick: () => this.setState({ step: 1, first: IDEA, draft: '' }) });
+if (step === 3 && !refund) chips.push({ label: '把退款也加进去', pick: () => this.setState({ refund: true, draft: '' }) });
+const TAGBG = { '有依据': '#E3F2EE', '猜的': '#FDF6E7', '拿不准': '#FCEBDD' };
+return {
+choosing: !mode, started: !!mode, isNewMode: mode === 'new', isImport: mode === 'import',
+startNew: () => this.setState({ mode: 'new' }),
+startImport: () => this.setState({ mode: 'import', imp: 1 }),
+chatTitle: mode === 'import' ? '接入已有仓库' : '你想做什么产品？',
+chatSub: mode === 'import' ? '主 Agent 读仓库后提出候选，右边每一步都由你确认。它只读，不修改仓库。' : '先和主 Agent 把方案聊清楚。它认为差不多了会向你确认，你同意后才开始绘制页面。',
+impTitle: '接入：demo_game', impStage: imp >= 5 ? '已接入' : '第 ' + imp + ' 步，共 4 步',
+imp1: imp === 1, imp2: imp === 2, imp3: imp === 3, imp4: imp === 4, imp5: imp >= 5,
+pickRepo: () => this.setState({ repo: true }), repoRead: !!st.repo, repoPressed: st.repo ? 'true' : 'false', repoBg: st.repo ? '#E6EDFB' : '#FFFFFF', repoEdge: st.repo ? '#1F4FD1' : '#B9C0CC',
+readList: ['README 和 docs/ 下的设计文档', '已确认的裁定（docs/decisions/）', '代码的目录结构和测试目录', 'Linear 里这个项目进行中的任务'].map((t) => ({ text: t })),
+next: () => this.setState({ imp: imp + 1 }),
+cands: CANDS.map((c) => { const on = kept.indexOf(c) >= 0; return { name: c[2], mod: c[1], tag: c[3], tagBg: TAGBG[c[3]], basis: c[4], pressed: on ? 'true' : 'false', btn: on ? '已选' : '不要', btnInk: on ? '#FFFFFF' : '#3A4050', btnBg: on ? '#1F4FD1' : '#FFFFFF', btnEdge: on ? '#1F4FD1' : '#B9C0CC', bg: on ? '#FFFFFF' : '#F4F5F7', toggle: () => this.setState({ drop: Object.assign({}, drop, { [c[0]]: on }) }) }; }),
+keepNote: '已选 ' + kept.length + ' 个，共 ' + CANDS.length + ' 个候选',
+briefs: kept.map((c) => ({ name: c[2], known: BRIEF[c[2]][0], guess: BRIEF[c[2]][1] })),
+resStruct: kept.filter((c, i, arr) => arr.findIndex((x) => x[1] === c[1]) === i).length + ' 个模块，' + kept.length + ' 个功能点',
+msgs, modules, cards, chips, points,
+hasChips: chips.length > 0,
+noPoints: points.length === 0,
+canDraw: step === 3,
+draw: () => this.setState({ step: 4 }),
+notDrawn: step < 4, drawn: step >= 4,
+canConfirm: step === 4,
+confirm: () => this.setState({ step: 5 }),
+isDone: step >= 5 || imp >= 5,
+draftTitle: step === 0 ? '新产品' : '会员网站',
+stage: ['等你开口', '讨论方案中', '讨论方案中', '方案待你确认', '草稿，等你确认', '已创建'][step],
+stageBg: ['#EEF0F3', '#F0EAFB', '#F0EAFB', '#FCEBDD', '#FCEBDD', '#E3F2EE'][step],
+structNote: '4 个模块 · ' + count + ' 个功能点',
+inputLabel: ['描述你想做的产品', '也可以直接打字回答', '也可以直接打字回答', '还有要补充的吗', '继续说要改哪里', '继续补充'][step],
+draft: st.draft || '',
+setDraft: (e) => this.setState({ draft: e.target.value }),
+send
+};
+}
+}
+</script>
+</body>
+</html>

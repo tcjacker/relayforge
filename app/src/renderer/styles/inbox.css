@@ -1,0 +1,25 @@
+.inbox-panel {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin: 0 12px 6px 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #171a21;
+  font-size: 12px;
+}
+#issue-inbox { margin: 6px 12px 0 }
+#chat:has(#terms[hidden]) #session-inbox { display: none }
+.inbox-panel > summary { padding: 4px 10px; cursor: pointer; font-weight: 600 }
+.inbox-list { max-height: min(32vh, 260px); overflow: auto; padding: 0 10px 8px }
+.inbox-list ul { gap: 0 }
+.inbox-message { display: block; padding: 8px 0; border-top: 1px solid var(--line) }
+.inbox-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; color: var(--muted) }
+.inbox-meta b { color: var(--ink) }
+.inbox-message.queued .inbox-status { color: var(--wait) }
+.inbox-meta button { margin-left: auto; padding: 0 7px }
+.inbox-message details > summary { color: var(--accent); cursor: pointer }
+.inbox-body { white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 3px }
+.inbox-badge { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--wait); margin-left: 6px; flex: none; vertical-align: middle }
+.req > .inbox-badge { float: right; margin-top: 8px }
+#req-list li.sub .inbox-badge { flex: none }
+.inbox-badge[hidden] { display: none }

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>研发管控</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F4FD1}a:hover{color:#163A9C}
+</style>
+</helmet>
+<div style="min-height: 1180px; background: #F4F5F7; color: #15171C; font-family: Inter, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif; font-size: 14px; line-height: 1.5">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #DDE1E8">
+<div style="max-width: 1440px; margin: 0 auto; padding: 0 32px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px">
+<div style="display: flex; align-items: center; gap: 10px; padding: 14px 0">
+<span style="font-weight: 700; font-size: 16px">RelayForge</span>
+<span style="color: #5A6170">项目：示例游戏引擎</span>
+<a href="New.dc.html" style="display: inline-flex; align-items: center; min-height: 44px">新建产品</a>
+</div>
+<nav aria-label="主导航" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+<a href="Home.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">首页</a>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">产品功能</a>
+<a href="Progress.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">需求</a>
+<a href="Control.dc.html" aria-current="page" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #15171C; font-weight: 600; border-bottom: 2px solid #1F4FD1">研发管控</a>
+<a href="Context.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">设计资料</a>
+<a href="Tests.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">测试与体验</a>
+</nav>
+<span style="padding: 3px 10px; border: 1px dashed #8A919E; border-radius: 4px; color: #5A6170; font-size: 12px">示例数据</span>
+</div>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 28px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+
+<div>
+<h1 style="margin: 0; font-size: 24px; font-weight: 700">研发管控</h1>
+<p style="margin: 4px 0 0; color: #5A6170">Coding Agent 正在做什么，还有哪些问题没解决。需要你处理的事都在<a href="Home.dc.html">首页</a>。</p>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+
+
+<div style="flex: 1 1 400px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+
+<section aria-label="正在执行" style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">正在执行 <span style="color: #5A6170; font-weight: 400">1 个 Worker</span></h2>
+<div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+<strong>接入运行时入口</strong>
+<span style="font-size: 13px; color: #5A6170">需求 REQ-3 · 开发任务 · 阶段 3 / 4</span>
+<a href="Main.dc.html">Lifecycle FSM</a>
+<div style="display: flex; gap: 8px; align-items: baseline">
+<span style="flex: none; padding: 1px 8px; border-radius: 10px; background: #F0EAFB; font-size: 12px">改代码</span>
+<span style="color: #3A4050">最近活动：修改入口调用，正在运行测试</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px">
+<a href="#log">运行日志</a>
+<a href="#tree">工作区改动</a>
+<a href="#stop">停止</a>
+</div>
+</div>
+</section>
+
+
+
+<section aria-label="问题清单" style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 12px; gap: 4px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">问题清单 <span style="color: #5A6170; font-weight: 400">4 项未解决</span></h2>
+<button type="button" style="min-height: 44px; padding: 0 12px; font: inherit; color: #1F4FD1; background: none; border: none; cursor: pointer">记一个问题</button>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; flex-direction: column; gap: 2px">
+<span>跨日交接恰好落在整点时，两条校验的先后没有写明</span>
+<span style="font-size: 13px; color: #5A6170">来源：你的实测 · <a href="Main.dc.html">Lifecycle FSM</a> · 待你决定</span>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; flex-direction: column; gap: 2px">
+<span>插件之间能否互相调用，尚未写明</span>
+<span style="font-size: 13px; color: #5A6170">来源：Copilot 整理功能说明时发现 · <a href="Main.dc.html">Scenario Plugin</a> · 未安排</span>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; flex-direction: column; gap: 2px">
+<span>一次行动能否跨越多个小时，尚未写明</span>
+<span style="font-size: 13px; color: #5A6170">来源：Copilot 整理功能说明时发现 · <a href="Main.dc.html">小时推进</a> · 未安排</span>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; flex-direction: column; gap: 2px">
+<span>态度有哪些维度，尚未写明</span>
+<span style="font-size: 13px; color: #5A6170">来源：Copilot 整理功能说明时发现 · <a href="Main.dc.html">态度与世界状态</a> · 未安排</span>
+</div>
+</section>
+
+</div>
+</div>
+</main>
+
+<sc-if value="{{chatOpen}}" hint-placeholder-val="{{false}}">
+<section aria-label="Copilot 对话" style="position: fixed; right: 24px; bottom: 24px; width: 400px; max-width: calc(100% - 32px); z-index: 10; background: #FFFFFF; border: 1px solid #C9D3EA; border-radius: 12px; box-shadow: 0 16px 40px rgba(21, 23, 28, 0.22); display: flex; flex-direction: column; overflow: hidden">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; background: #163A9C; color: #FFFFFF">
+<span style="font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap"><strong>Copilot</strong> · {{pageName}}</span>
+<button type="button" onClick="{{toggleChat}}" style="flex: none; min-height: 24px; padding: 0 8px; font: inherit; font-size: 12px; color: #FFFFFF; background: none; border: 1px solid #8FA8E6; border-radius: 6px; cursor: pointer">收起</button>
+</div>
+<div style="padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 320px; max-height: 560px; overflow-y: auto">
+<sc-for list="{{msgs}}" as="m" hint-placeholder-count="1">
+<div style="display: flex; flex-direction: column">
+<sc-if value="{{m.me}}" hint-placeholder-val="{{false}}">
+<div style="align-self: flex-end; max-width: 88%; padding: 9px 13px; background: #1F4FD1; color: #FFFFFF; border-radius: 12px 12px 2px 12px">{{m.text}}</div>
+</sc-if>
+<sc-if value="{{m.ai}}" hint-placeholder-val="{{true}}">
+<div style="align-self: flex-start; max-width: 96%; padding: 9px 13px; background: #F4F5F7; border-radius: 12px 12px 12px 2px">{{m.text}}</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="padding: 10px 12px; border-top: 1px solid #DDE1E8; background: #F8F9FB; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="2">
+<button type="button" onClick="{{c.pick}}" style="min-height: 32px; padding: 6px 12px; font: inherit; font-size: 13px; text-align: left; color: #163A9C; background: #E6EDFB; border: none; border-radius: 8px; cursor: pointer">{{c.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; gap: 8px; align-items: flex-end">
+<textarea id="chat-text" aria-label="和 Copilot 讨论" placeholder="描述你想调整的内容" rows="3" value="{{draft}}" onChange="{{setDraft}}" style="flex: 1 1 auto; min-width: 0; padding: 8px 10px; font: inherit; border: 1px solid #B9C0CC; border-radius: 6px; resize: vertical; background: #FFFFFF"></textarea>
+<button type="button" onClick="{{send}}" style="flex: none; min-height: 34px; padding: 0 14px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">发送</button>
+</div>
+</div>
+</section>
+</sc-if>
+<sc-if value="{{chatClosed}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{toggleChat}}" style="position: fixed; right: 24px; bottom: 24px; z-index: 10; min-height: 38px; padding: 0 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: #163A9C; border: none; border-radius: 19px; box-shadow: 0 12px 32px rgba(21, 23, 28, 0.22); cursor: pointer">Copilot</button>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+renderVals() {
+const st = this.state || {};
+const PAGE = '研发管控';
+const HELLO = '我能看到待你决定的事项、正在执行的 Worker 和问题清单。需要我分析某个决定的代价，或调整任务安排，可以直接说。';
+const CHIPS = ['帮我分析「记忆保留多久」两个选项的影响范围', '让这个 Worker 先停下来'];
+const chat = st.chat || [];
+const chatOpen = !!st.chatOpen;
+const say = (input) => {
+const text = (input || '').trim();
+if (!text) return;
+this.setState({ chat: chat.concat([{ me: true, ai: false, text }, { me: false, ai: true, text: '收到。原型里这一页的对话还没有接通。正式版本中，我会结合当前页面的内容和你讨论方案，确认后再修改并留档。' }]), draft: '' });
+};
+return {
+pageName: PAGE, chatOpen, chatClosed: !chatOpen,
+toggleChat: () => this.setState({ chatOpen: !chatOpen }),
+msgs: [{ me: false, ai: true, text: HELLO }].concat(chat),
+chips: chat.length ? [] : CHIPS.map((c) => ({ label: c, pick: () => say(c) })),
+draft: st.draft || '',
+setDraft: (e) => this.setState({ draft: e.target.value }),
+send: () => say(st.draft)
+};
+}
+}
+</script>
+</body>
+</html>

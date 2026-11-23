@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>设计资料</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F4FD1}a:hover{color:#163A9C}
+</style>
+</helmet>
+<div style="min-height: 1180px; background: #F4F5F7; color: #15171C; font-family: Inter, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif; font-size: 14px; line-height: 1.5">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #DDE1E8">
+<div style="max-width: 1440px; margin: 0 auto; padding: 0 32px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px">
+<div style="display: flex; align-items: center; gap: 10px; padding: 14px 0">
+<span style="font-weight: 700; font-size: 16px">RelayForge</span>
+<span style="color: #5A6170">项目：示例游戏引擎</span>
+<a href="New.dc.html" style="display: inline-flex; align-items: center; min-height: 44px">新建产品</a>
+</div>
+<nav aria-label="主导航" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+<a href="Home.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">首页</a>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">产品功能</a>
+<a href="Progress.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">需求</a>
+<a href="Control.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">研发管控</a>
+<a href="Context.dc.html" aria-current="page" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #15171C; font-weight: 600; border-bottom: 2px solid #1F4FD1">设计资料</a>
+<a href="Tests.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">测试与体验</a>
+</nav>
+<span style="padding: 3px 10px; border: 1px dashed #8A919E; border-radius: 4px; color: #5A6170; font-size: 12px">示例数据</span>
+</div>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 28px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+
+<div>
+<h1 style="margin: 0; font-size: 24px; font-weight: 700">设计资料</h1>
+<p style="margin: 4px 0 0; color: #5A6170">研发过程中产生和参考的全部文档，读取自 Git 仓库的 docs/ 目录。AI 生成的和你写的都在这里；修改通过提交完成。</p>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<section aria-label="文档目录" style="flex: 1 1 260px; max-width: 320px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; overflow: hidden">
+<div style="padding: 12px 16px; border-bottom: 1px solid #DDE1E8; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: #3A4050">docs/</div>
+<div style="padding: 8px">
+<sc-for list="{{folders}}" as="d" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; margin-bottom: 6px">
+<div style="display: flex; justify-content: space-between; gap: 8px; padding: 6px 8px; font-size: 12px; font-weight: 600; color: #5A6170"><span>{{d.title}}</span><span style="font-weight: 400; font-family: ui-monospace, SFMono-Regular, Menlo, monospace">{{d.dir}}</span></div>
+<sc-for list="{{d.docs}}" as="x" hint-placeholder-count="2">
+<button type="button" onClick="{{x.pick}}" aria-pressed="{{x.pressed}}" style="display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 4px 8px; box-sizing: border-box; font: inherit; text-align: left; color: {{x.ink}}; background: {{x.bg}}; border: none; border-radius: 6px; cursor: pointer">
+<span style="flex: 1 1 auto; min-width: 0">{{x.name}}</span>
+<span style="flex: none; font-size: 12px; color: #5A6170">{{x.by}}</span>
+</button>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section aria-label="文档内容" style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; overflow: hidden">
+<div style="padding: 18px 24px; background: #F8F9FB; border-bottom: 1px solid #DDE1E8; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: #5A6170">{{doc.path}}</span>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+<h2 style="margin: 0; font-size: 22px; font-weight: 700">{{doc.name}}</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" onClick="{{toggleChat}}" style="min-height: 30px; padding: 0 12px; font: inherit; font-size: 13px; color: #163A9C; background: #FFFFFF; border: 1px solid #9DB3EA; border-radius: 6px; cursor: pointer">让 Copilot 修订</button>
+<button type="button" style="min-height: 30px; padding: 0 12px; font: inherit; font-size: 13px; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 6px; cursor: pointer">查看提交历史</button>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: #5A6170">
+<span>来源：{{doc.by}}</span>
+<span>最近提交：{{doc.when}}</span>
+<span>{{doc.kind}}</span>
+</div>
+<sc-if value="{{doc.hasLinks}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<span style="font-size: 13px; color: #5A6170">关联</span>
+<sc-for list="{{doc.links}}" as="l" hint-placeholder-count="2">
+<a href="{{l.href}}" style="display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px; font-size: 13px; text-decoration: none; color: #163A9C; background: #E6EDFB; border-radius: 13px">{{l.name}}</a>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<article style="padding: 22px 24px 32px; max-width: 760px; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{doc.blocks}}" as="b" hint-placeholder-count="5">
+<div>
+<sc-if value="{{b.h}}" hint-placeholder-val="{{false}}"><h3 style="margin: 10px 0 0; font-size: 16px; font-weight: 600">{{b.text}}</h3></sc-if>
+<sc-if value="{{b.p}}" hint-placeholder-val="{{true}}"><p style="margin: 0">{{b.text}}</p></sc-if>
+<sc-if value="{{b.li}}" hint-placeholder-val="{{false}}"><div style="display: flex; gap: 10px; align-items: baseline"><span aria-hidden="true" style="flex: none; color: #5A6170">•</span><span>{{b.text}}</span></div></sc-if>
+</div>
+</sc-for>
+</article>
+</section>
+
+</div>
+</main>
+
+<sc-if value="{{chatOpen}}" hint-placeholder-val="{{false}}">
+<section aria-label="Copilot 对话" style="position: fixed; right: 24px; bottom: 24px; width: 400px; max-width: calc(100% - 32px); z-index: 10; background: #FFFFFF; border: 1px solid #C9D3EA; border-radius: 12px; box-shadow: 0 16px 40px rgba(21, 23, 28, 0.22); display: flex; flex-direction: column; overflow: hidden">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; background: #163A9C; color: #FFFFFF">
+<span style="font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap"><strong>Copilot</strong> · {{pageName}}</span>
+<button type="button" onClick="{{toggleChat}}" style="flex: none; min-height: 24px; padding: 0 8px; font: inherit; font-size: 12px; color: #FFFFFF; background: none; border: 1px solid #8FA8E6; border-radius: 6px; cursor: pointer">收起</button>
+</div>
+<div style="padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 320px; max-height: 560px; overflow-y: auto">
+<sc-for list="{{msgs}}" as="m" hint-placeholder-count="1">
+<div style="display: flex; flex-direction: column">
+<sc-if value="{{m.me}}" hint-placeholder-val="{{false}}">
+<div style="align-self: flex-end; max-width: 88%; padding: 9px 13px; background: #1F4FD1; color: #FFFFFF; border-radius: 12px 12px 2px 12px">{{m.text}}</div>
+</sc-if>
+<sc-if value="{{m.ai}}" hint-placeholder-val="{{true}}">
+<div style="align-self: flex-start; max-width: 96%; padding: 9px 13px; background: #F4F5F7; border-radius: 12px 12px 12px 2px">{{m.text}}</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="padding: 10px 12px; border-top: 1px solid #DDE1E8; background: #F8F9FB; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="2">
+<button type="button" onClick="{{c.pick}}" style="min-height: 32px; padding: 6px 12px; font: inherit; font-size: 13px; text-align: left; color: #163A9C; background: #E6EDFB; border: none; border-radius: 8px; cursor: pointer">{{c.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; gap: 8px; align-items: flex-end">
+<textarea id="chat-text" aria-label="和 Copilot 讨论" placeholder="描述你想调整的内容" rows="3" value="{{draft}}" onChange="{{setDraft}}" style="flex: 1 1 auto; min-width: 0; padding: 8px 10px; font: inherit; border: 1px solid #B9C0CC; border-radius: 6px; resize: vertical; background: #FFFFFF"></textarea>
+<button type="button" onClick="{{send}}" style="flex: none; min-height: 34px; padding: 0 14px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">发送</button>
+</div>
+</div>
+</section>
+</sc-if>
+<sc-if value="{{chatClosed}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{toggleChat}}" style="position: fixed; right: 24px; bottom: 24px; z-index: 10; min-height: 38px; padding: 0 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: #163A9C; border: none; border-radius: 19px; box-shadow: 0 12px 32px rgba(21, 23, 28, 0.22); cursor: pointer">Copilot</button>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+renderVals() {
+const st = this.state || {};
+const F = (n) => ({ name: n, href: 'Main.dc.html' });
+const Q = (n) => ({ name: n, href: 'Progress.dc.html' });
+const DOCS = [
+{ dir: 'product/', title: '产品', docs: [
+{ id: 'p1', name: '产品概述', file: '产品概述.md', by: '你写，Copilot 整理', short: '你', when: '10-28', kind: '首页的产品介绍读取自这里', links: [], body: ['p:一个由 AI 驱动 NPC 的世界模拟引擎：世界按时间一小时一小时地推进，NPC 只知道自己经历过的事，并据此作出反应。', 'h:面向谁', 'p:想做「活的世界」的场景作者。作者只写场景本身，推进顺序、时间和 NPC 的记忆由引擎负责。', 'h:不做什么', 'li:不提供场景编辑器', 'li:不处理小于一小时的时间粒度'] },
+{ id: 'p2', name: '核心概念', file: '核心概念.md', by: 'AI 生成，你已确认', short: 'AI', when: '11-02', kind: '首页的核心概念读取自这里', links: [], body: ['li:场景：一段有开始和结束的可玩内容，以插件形式接入引擎。', 'li:生命周期：场景从开始到结束依次经过的一组固定阶段。', 'li:整点提交：世界时间每到整点，把这一小时内发生的变化落定。', 'li:跨日交接：时间跨过零点时进行的交接，必须排在整点提交之后。', 'li:亲历记忆：NPC 只记住自己亲身经历或目击的事。', 'li:快照：某一时刻世界状态的只读留存，用于回放和排查。'] },
+{ id: 'p3', name: '产品模型', file: '产品模型.md', by: 'AI 生成，你已确认', short: 'AI', when: '11-02', kind: '首页的产品模型读取自这里', links: [], body: ['p:三个模块各管一层，上一层为下一层提供基础。', 'li:场景生命周期：决定事情按什么顺序发生。', 'li:时间与世界：让时间和状态变化，并能留存某一刻。依赖生命周期给出的提交与交接顺序。', 'li:角色心智：决定 NPC 知道什么、怎么看待玩家。依赖时间给出的事件发生时刻。'] }
+] },
+{ dir: 'prd/', title: 'PRD 留档', docs: [
+{ id: 'r1', name: '世界状态快照', file: '世界状态快照.md', by: 'Copilot 写入', short: 'v2', when: '10-20', kind: 'PRD v2 · 只含已验收的内容', links: [F('世界状态快照'), Q('REQ-2'), Q('REQ-1')], body: ['h:目标', 'p:把某一时刻的世界状态保存成快照，供回放和排查问题使用。', 'h:范围', 'li:保存世界状态快照', 'li:按保存时间列出全部快照，并从列表里选择要看的那一份', 'h:不做什么', 'p:不负责从快照恢复运行。', 'h:验收样例', 'li:保存一份快照后再读取，内容与保存时一致。', 'li:选中任意一份快照，页面显示的状态与保存时一致。', 'h:并入记录', 'li:v2：需求 REQ-2 验收通过后并入，10-20', 'li:v1：需求 REQ-1 验收通过后并入，10-10', 'p:其余五个功能点还没有已验收的内容，所以这个目录下没有它们的文件。'] }
+] },
+{ dir: 'design/', title: '设计稿与说明', docs: [
+{ id: 'd1', name: '生命周期状态流转', file: '生命周期状态流转.md', by: 'AI 生成', short: 'AI', when: '11-06', kind: '设计稿 · 对应 REQ-3 的增量，尚未验收', links: [F('Lifecycle FSM'), Q('REQ-3')], body: ['p:说明生命周期有哪些阶段，以及阶段之间允许的切换。', 'li:阶段只能按定义的顺序切换。', 'li:整点提交先于跨日交接；顺序颠倒时拒绝并报告。', 'p:[状态流转图：待 Coding Agent 生成后放在这里]'] },
+{ id: 'd2', name: '插件接口说明', file: '插件接口说明.md', by: 'AI 生成', short: 'AI', when: '11-05', kind: '设计稿 · 草稿', links: [F('Scenario Plugin'), Q('REQ-3')], body: ['p:场景插件需要实现的接口，以及它能使用的生命周期钩子。', 'li:插件只通过钩子与引擎交互。', 'li:插件之间能否互相调用，尚未写明。'] }
+] },
+{ dir: 'decisions/', title: '裁定', docs: [
+{ id: 'c1', name: '已确认的裁定', file: '已确认的裁定.md', by: '你确认，Copilot 记录', short: '你', when: '11-06', kind: '现行 · Agent 开工时会读取', links: [F('Lifecycle FSM'), F('小时推进'), F('NPC 亲历记忆')], body: ['li:整点提交先于跨日交接；顺序颠倒时拒绝并报告。', 'li:世界时间的最小粒度是一小时。', 'li:NPC 只记亲历和目击，不实现 NPC 之间的记忆传播。', 'li:用固定答案跑通，不等于用真实模型跑过；两者分别记录。'] }
+] },
+{ dir: 'handoff/', title: '交接字条', docs: [
+{ id: 'h1', name: 'Lifecycle FSM', file: 'Lifecycle-FSM.md', by: 'AI 生成', short: 'AI', when: '11-10', kind: '留给下一个接手的会话', links: [F('Lifecycle FSM')], body: ['h:入口', 'p:运行时入口调用生命周期钩子的位置，及其测试。', 'h:只读需求看不出来的坑', 'p:把时间从 23 点推进到 0 点；记录里提交必须出现在跨日交接之前。'] },
+{ id: 'h2', name: '小时推进', file: '小时推进.md', by: 'AI 生成', short: 'AI', when: '11-09', kind: '留给下一个接手的会话', links: [F('小时推进')], body: ['h:入口', 'p:时间推进函数及其测试。', 'h:只读需求看不出来的坑', 'p:整点恰好跨日时，提交和交接会在同一次推进里先后触发。'] }
+] },
+{ dir: 'reference/', title: '参考资料', docs: [
+{ id: 'f1', name: '北极星草稿', file: '北极星草稿.md', by: '你提供', short: '参考', when: '10-25', kind: '草稿 · 只作参考，不作为验收依据，不会自动进入 Agent 的上下文', links: [], body: ['p:[这里显示你放进仓库的原文]', 'p:参考资料不由 AI 修改。需要把其中的内容变成产品的一部分时，提一条需求。'] }
+] }
+];
+const picked = st.picked || 'p1';
+let cur = null; let curDir = '';
+const folders = DOCS.map((d) => ({ dir: d.dir, title: d.title, docs: d.docs.map((x) => { const on = x.id === picked; if (on) { cur = x; curDir = d.dir; } return { name: x.name, by: x.short, pressed: on ? 'true' : 'false', bg: on ? '#E6EDFB' : 'transparent', ink: on ? '#163A9C' : '#15171C', pick: () => this.setState({ picked: x.id }) }; }) }));
+const vals = { folders, doc: { path: 'docs/' + curDir + cur.file, name: cur.name, by: cur.by, when: cur.when, kind: cur.kind, links: cur.links, hasLinks: cur.links.length > 0, blocks: cur.body.map((t) => ({ h: t.indexOf('h:') === 0, p: t.indexOf('p:') === 0, li: t.indexOf('li:') === 0, text: t.slice(t.indexOf(':') + 1) })) } };
+const chat = st.chat || [];
+const chatOpen = !!st.chatOpen;
+const say = (input) => {
+const text = (input || '').trim();
+if (!text) return;
+this.setState({ chat: chat.concat([{ me: true, ai: false, text }, { me: false, ai: true, text: '收到。原型里这一页的对话还没有接通。正式版本中，我会结合当前页面的内容和你讨论方案，确认后再修改并留档。' }]), draft: '' });
+};
+return Object.assign(vals, {
+pageName: '设计资料', chatOpen, chatClosed: !chatOpen,
+toggleChat: () => this.setState({ chatOpen: !chatOpen }),
+msgs: [{ me: false, ai: true, text: '我能看到 docs/ 目录下的全部文档。想修订某一份，先和我讨论，你确认后我提交修改。' }].concat(chat),
+chips: chat.length ? [] : ["这份文档和现在的产品功能还一致吗", "把北极星草稿里已经实现的部分标出来"].map((c) => ({ label: c, pick: () => say(c) })),
+draft: st.draft || '',
+setDraft: (e) => this.setState({ draft: e.target.value }),
+send: () => say(st.draft)
+});
+}
+}
+</script>
+</body>
+</html>

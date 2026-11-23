@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>测试与体验</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F4FD1}a:hover{color:#163A9C}
+</style>
+</helmet>
+<div style="min-height: 1180px; background: #F4F5F7; color: #15171C; font-family: Inter, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif; font-size: 14px; line-height: 1.5">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #DDE1E8">
+<div style="max-width: 1440px; margin: 0 auto; padding: 0 32px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px">
+<div style="display: flex; align-items: center; gap: 10px; padding: 14px 0">
+<span style="font-weight: 700; font-size: 16px">RelayForge</span>
+<span style="color: #5A6170">项目：示例游戏引擎</span>
+<a href="New.dc.html" style="display: inline-flex; align-items: center; min-height: 44px">新建产品</a>
+</div>
+<nav aria-label="主导航" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+<a href="Home.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">首页</a>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">产品功能</a>
+<a href="Progress.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">需求</a>
+<a href="Control.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">研发管控</a>
+<a href="Context.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">设计资料</a>
+<a href="Tests.dc.html" aria-current="page" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #15171C; font-weight: 600; border-bottom: 2px solid #1F4FD1">测试与体验</a>
+</nav>
+<span style="padding: 3px 10px; border: 1px dashed #8A919E; border-radius: 4px; color: #5A6170; font-size: 12px">示例数据</span>
+</div>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 28px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div>
+<h1 style="margin: 0; font-size: 24px; font-weight: 700">测试与体验</h1>
+<p style="margin: 4px 0 0; color: #5A6170">全部用例的总表。用例属于功能点，是 PRD 的一部分；需求通过增量新增或修改用例，验收任务引用它们，每次运行留一条证据。</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" style="min-height: 34px; padding: 0 14px; font: inherit; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 6px; cursor: pointer">让 AI 建议用例</button>
+<button type="button" style="min-height: 34px; padding: 0 14px; font: inherit; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 6px; cursor: pointer">记录一次体验</button>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px"><span style="flex: 0 0 52px; font-size: 13px; color: #5A6170">功能点</span>
+<sc-for list="{{featFilters}}" as="t" hint-placeholder-count="4"><button type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="min-height: 28px; padding: 0 12px; font: inherit; font-size: 13px; font-weight: {{t.weight}}; color: {{t.ink}}; background: {{t.bg}}; border: 1px solid {{t.edge}}; border-radius: 14px; cursor: pointer">{{t.label}}</button></sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px"><span style="flex: 0 0 52px; font-size: 13px; color: #5A6170">筛选</span>
+<sc-for list="{{stateFilters}}" as="t" hint-placeholder-count="4"><button type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="min-height: 28px; padding: 0 12px; font: inherit; font-size: 13px; font-weight: {{t.weight}}; color: {{t.ink}}; background: {{t.bg}}; border: 1px solid {{t.edge}}; border-radius: 14px; cursor: pointer">{{t.label}}</button></sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<section aria-label="用例总表" style="flex: 999 1 620px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; overflow: hidden">
+<div style="padding: 10px 16px; border-bottom: 1px solid #DDE1E8; font-size: 13px; color: #5A6170">{{countLabel}}</div>
+<sc-if value="{{noRows}}" hint-placeholder-val="{{false}}">
+<p style="margin: 0; padding: 24px; text-align: center; color: #5A6170">没有符合条件的用例。</p>
+</sc-if>
+<sc-for list="{{rows}}" as="c" hint-placeholder-count="6">
+<button type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; width: 100%; padding: 12px 16px; box-sizing: border-box; font: inherit; text-align: left; color: #15171C; background: {{c.bg}}; border: none; border-top: 1px solid #EEF0F3; cursor: pointer">
+<span style="flex: none; font-size: 12px; color: #5A6170; font-family: ui-monospace, SFMono-Regular, Menlo, monospace">{{c.id}}</span>
+<span style="flex: 1 1 300px; min-width: 0">{{c.text}}</span>
+<span style="flex: none; font-size: 13px; color: #5A6170">{{c.featLabel}}</span>
+<span style="flex: none; padding: 1px 8px; border-radius: 4px; background: #EEF0F3; font-size: 12px">{{c.how}}</span>
+<span style="flex: none; padding: 1px 8px; border-radius: 10px; background: {{c.resultBg}}; font-size: 12px">{{c.result}}</span>
+<span style="flex: none; padding: 1px 8px; border-radius: 10px; background: {{c.prdBg}}; font-size: 12px">{{c.prdLabel}}</span>
+</button>
+</sc-for>
+</section>
+
+<div style="flex: 1 1 360px; max-width: 440px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+
+<section aria-label="用例详情" style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<span style="font-size: 12px; color: #5A6170; font-family: ui-monospace, SFMono-Regular, Menlo, monospace">{{sel.id}}</span>
+<span style="padding: 1px 8px; border-radius: 10px; background: {{sel.prdBg}}; font-size: 12px">{{sel.prdLabel}}</span>
+</div>
+<p style="margin: 0; font-size: 16px">{{sel.text}}</p>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">属于功能点</div><a href="Main.dc.html">{{sel.featLabel}}</a></div>
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">来自需求</div><a href="Progress.dc.html">{{sel.req}}</a></div>
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">怎么验</div><div>{{sel.how}}</div></div>
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">改坏后</div><div>{{sel.sens}}</div></div>
+</div>
+<div style="font-size: 13px; color: #5A6170">{{sel.note}}</div>
+<div>
+<div style="font-size: 13px; font-weight: 600; color: #5A6170; margin-bottom: 4px">证据记录</div>
+<sc-if value="{{sel.noEv}}" hint-placeholder-val="{{false}}"><div style="color: #5A6170">还没有运行过。</div></sc-if>
+<sc-for list="{{sel.ev}}" as="e" hint-placeholder-count="1">
+<div style="display: flex; gap: 10px; align-items: baseline; padding: 8px 0; border-top: 1px solid #EEF0F3">
+<span style="flex: 0 0 44px; font-size: 13px; color: #5A6170">{{e.when}}</span>
+<div style="display: flex; flex-direction: column"><span>{{e.result}}</span><span style="font-size: 13px; color: #5A6170">{{e.task}}</span></div>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{sel.proposed}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" style="min-height: 34px; padding: 0 14px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">确认，加入 {{sel.req}} 的增量</button>
+<button type="button" style="min-height: 34px; padding: 0 14px; font: inherit; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 6px; cursor: pointer">不要这条</button>
+</div>
+</sc-if>
+</section>
+
+<section aria-label="实测记录" style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 4px">
+<div style="margin-bottom: 6px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">实测记录</h2>
+<p style="margin: 2px 0 0; font-size: 13px; color: #5A6170">人和 AI 试用时的发现。值得长期保留的，转成某条需求的用例增量。</p>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; flex-direction: column; gap: 2px">
+<span>把时间推到 0 点整，记录里看不出提交和跨日交接谁先谁后。</span>
+<span style="font-size: 13px; color: #5A6170">你 · Lifecycle FSM · 已记为问题 · 已转成 UC-15（待你确认）</span>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; flex-direction: column; gap: 2px">
+<span>从 23 点推进一小时，日期变化并触发了跨日交接。</span>
+<span style="font-size: 13px; color: #5A6170">AI 运行 · 小时推进 · 与预期一致 · 已是 UC-09</span>
+</div>
+<div style="padding: 10px 0; border-top: 1px solid #EEF0F3; display: flex; flex-direction: column; gap: 2px">
+<span>还没有可试玩的版本。先记下期望：NPC 不在场时发生的事，它不该知道。</span>
+<span style="font-size: 13px; color: #5A6170">你 · NPC 亲历记忆 · 已转成 UC-16（REQ-5 的增量）</span>
+</div>
+</section>
+
+</div>
+</div>
+</main>
+
+<sc-if value="{{chatOpen}}" hint-placeholder-val="{{false}}">
+<section aria-label="Copilot 对话" style="position: fixed; right: 24px; bottom: 24px; width: 400px; max-width: calc(100% - 32px); z-index: 10; background: #FFFFFF; border: 1px solid #C9D3EA; border-radius: 12px; box-shadow: 0 16px 40px rgba(21, 23, 28, 0.22); display: flex; flex-direction: column; overflow: hidden">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; background: #163A9C; color: #FFFFFF">
+<span style="font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap"><strong>Copilot</strong> · {{pageName}}</span>
+<button type="button" onClick="{{toggleChat}}" style="flex: none; min-height: 24px; padding: 0 8px; font: inherit; font-size: 12px; color: #FFFFFF; background: none; border: 1px solid #8FA8E6; border-radius: 6px; cursor: pointer">收起</button>
+</div>
+<div style="padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 320px; max-height: 560px; overflow-y: auto">
+<sc-for list="{{msgs}}" as="m" hint-placeholder-count="1">
+<div style="display: flex; flex-direction: column">
+<sc-if value="{{m.me}}" hint-placeholder-val="{{false}}">
+<div style="align-self: flex-end; max-width: 88%; padding: 9px 13px; background: #1F4FD1; color: #FFFFFF; border-radius: 12px 12px 2px 12px">{{m.text}}</div>
+</sc-if>
+<sc-if value="{{m.ai}}" hint-placeholder-val="{{true}}">
+<div style="align-self: flex-start; max-width: 96%; padding: 9px 13px; background: #F4F5F7; border-radius: 12px 12px 12px 2px">{{m.text}}</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="padding: 10px 12px; border-top: 1px solid #DDE1E8; background: #F8F9FB; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="2">
+<button type="button" onClick="{{c.pick}}" style="min-height: 32px; padding: 6px 12px; font: inherit; font-size: 13px; text-align: left; color: #163A9C; background: #E6EDFB; border: none; border-radius: 8px; cursor: pointer">{{c.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; gap: 8px; align-items: flex-end">
+<textarea id="chat-text" aria-label="和 Copilot 讨论" placeholder="描述你想调整的内容" rows="3" value="{{draft}}" onChange="{{setDraft}}" style="flex: 1 1 auto; min-width: 0; padding: 8px 10px; font: inherit; border: 1px solid #B9C0CC; border-radius: 6px; resize: vertical; background: #FFFFFF"></textarea>
+<button type="button" onClick="{{send}}" style="flex: none; min-height: 34px; padding: 0 14px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">发送</button>
+</div>
+</div>
+</section>
+</sc-if>
+<sc-if value="{{chatClosed}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{toggleChat}}" style="position: fixed; right: 24px; bottom: 24px; z-index: 10; min-height: 38px; padding: 0 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: #163A9C; border: none; border-radius: 19px; box-shadow: 0 12px 32px rgba(21, 23, 28, 0.22); cursor: pointer">Copilot</button>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+renderVals() {
+const st = this.state || {};
+const UC = [
+{ id: 'UC-01', feats: ['世界状态快照'], text: '保存一份快照后再读取；内容与保存时一致。', how: '程序', req: 'REQ-1', prd: 'merged', result: '通过', sens: '会报警', ev: [['10-08', 'REQ-1 · 开发任务 · 世界状态快照', '通过']] },
+{ id: 'UC-02', feats: ['世界状态快照'], text: '你保存一份快照，之后在只读回放里回看；看到的状态与保存时一致。', how: '人工', req: 'REQ-1', prd: 'merged', result: '通过', sens: '不适用', ev: [['10-10', 'REQ-1 · 验收任务', '通过，你试用']] },
+{ id: 'UC-03', feats: ['世界状态快照'], text: '保存三份快照后打开列表；按保存时间排序，可以逐份打开。', how: '程序', req: 'REQ-2', prd: 'merged', result: '通过', sens: '未检验', ev: [['10-16', 'REQ-2 · 开发任务 · 世界状态快照', '通过']] },
+{ id: 'UC-04', feats: ['世界状态快照'], text: '你在回放页面上选一份快照；页面显示的状态与保存时一致。', how: '人工', req: 'REQ-2', prd: 'merged', result: '通过', sens: '不适用', ev: [['10-20', 'REQ-2 · 验收任务', '通过，你试用']] },
+{ id: 'UC-05', feats: ['世界状态快照'], text: '带备注保存快照后再读取；备注与保存时一致。', how: '程序', req: 'REQ-7', prd: 'pending', result: '通过', sens: '会报警', ev: [['11-09', 'REQ-7 · 开发任务 · 世界状态快照', '通过']] },
+{ id: 'UC-06', feats: ['世界状态快照'], text: '你保存一份带备注的快照；在列表里能看到这句备注。', how: '人工', req: 'REQ-7', prd: 'pending', result: '尚未运行', sens: '不适用', ev: [] },
+{ id: 'UC-07', feats: ['Lifecycle FSM'], text: '整点提交的调用顺序错误；应拒绝并报告。', how: '程序', req: 'REQ-3', prd: 'pending', result: '通过', sens: '会报警', ev: [['11-03', 'REQ-3 · 开发任务 · Lifecycle FSM', '通过']] },
+{ id: 'UC-08', feats: ['Lifecycle FSM'], text: '用固定答案跑完最小场景的一整天；各阶段按顺序被调用。', how: '固定答案', req: 'REQ-3', prd: 'pending', result: '通过', sens: '未检验', ev: [['11-10', 'REQ-3 · 开发任务 · Lifecycle FSM', '通过；只算固定答案，不算真实模型']] },
+{ id: 'UC-09', feats: ['小时推进'], text: '从 23 点推进一小时；日期进入下一天并触发跨日交接。', how: '程序', req: 'REQ-3', prd: 'pending', result: '通过', sens: '不报警', ev: [['11-09', 'REQ-3 · 开发任务 · 小时推进', '通过'], ['11-09', '改坏检查', '把提交顺序改错后，这条用例仍然通过']] },
+{ id: 'UC-10', feats: ['Scenario Plugin'], text: '注册一个最小场景插件；生命周期各阶段都调用到它。', how: '程序', req: 'REQ-3', prd: 'pending', result: '尚未运行', sens: '未检验', ev: [] },
+{ id: 'UC-11', feats: ['Lifecycle FSM', 'Scenario Plugin', '小时推进'], text: '用真实模型跑最小场景的一整天；各阶段按顺序被调用，没有顺序错误。', how: '真实模型', req: 'REQ-3', prd: 'pending', result: '尚未运行', sens: '不适用', ev: [] },
+{ id: 'UC-12', feats: ['Lifecycle FSM', 'Scenario Plugin', '小时推进'], text: '你试玩最小场景；时间显示和场景推进符合预期。', how: '人工', req: 'REQ-3', prd: 'pending', result: '尚未运行', sens: '不适用', ev: [] },
+{ id: 'UC-13', feats: ['Lifecycle FSM'], text: '你把时间从 23 点推进到 0 点；记录里提交出现在跨日交接之前。', how: '人工', req: 'REQ-4', prd: 'pending', result: '待判定', sens: '不适用', ev: [['11-08', 'REQ-4 · 验收任务', '你试过一次，恰好落在整点时先后看不出来，等你决定校验顺序']] },
+{ id: 'UC-14', feats: ['Lifecycle FSM'], text: '跨日交接排在整点提交之前；应拒绝并报告。', how: '程序', req: 'REQ-4', prd: 'pending', result: '通过', sens: '会报警', ev: [['11-07', 'REQ-4 · 开发任务 · Lifecycle FSM', '通过']] },
+{ id: 'UC-15', feats: ['Lifecycle FSM'], text: '跨日交接恰好落在整点；两条校验都应执行。', how: '尚未确定', req: 'REQ-4', prd: 'proposed', result: '尚未运行', sens: '未检验', ev: [] },
+{ id: 'UC-16', feats: ['NPC 亲历记忆'], text: 'NPC 不在场时发生一件事，之后与它对话；它不应提到这件事。', how: '真实模型', req: 'REQ-5', prd: 'pending', result: '尚未运行', sens: '不适用', ev: [] },
+{ id: 'UC-17', feats: [], text: '你从开场到结束完整试玩第一个场景；没有顺序错误，NPC 只提到它经历过的事。', how: '人工', req: 'REQ-6', prd: 'pending', result: '尚未运行', sens: '不适用', ev: [] }
+];
+const UCBG = { '通过': '#E3F2EE', '尚未运行': '#EEF0F3', '待判定': '#FCEBDD', '不报警': '#FCEBDD' };
+const ucPrd = (c) => (c.prd === 'merged' ? '已在 PRD' : (c.prd === 'pending' ? '待并入 · ' + c.req : 'AI 建议，待你确认'));
+const ucPrdBg = (c) => (c.prd === 'merged' ? '#E3F2EE' : (c.prd === 'pending' ? '#FDF6E7' : '#FCEBDD'));
+const ff = st.ff || '全部';
+const sf = st.sf || '全部';
+const FEATS = ['全部', 'Lifecycle FSM', 'Scenario Plugin', '小时推进', '世界状态快照', 'NPC 亲历记忆', '跨功能点'];
+const STATES = ['全部', '已在 PRD', '待并入', '待你确认', '尚未运行', '改坏后不报警'];
+const mk = (list, cur, key) => list.map((l) => { const on = l === cur; return { label: l, pressed: on ? 'true' : 'false', weight: on ? 600 : 400, ink: on ? '#FFFFFF' : '#3A4050', bg: on ? '#15171C' : '#FFFFFF', edge: on ? '#15171C' : '#DDE1E8', pick: () => this.setState({ [key]: l }) }; });
+const okF = (c) => ff === '全部' || (ff === '跨功能点' ? c.feats.length !== 1 : c.feats.indexOf(ff) >= 0);
+const okS = (c) => sf === '全部' || (sf === '已在 PRD' && c.prd === 'merged') || (sf === '待并入' && c.prd === 'pending') || (sf === '待你确认' && c.prd === 'proposed') || (sf === '尚未运行' && c.result === '尚未运行') || (sf === '改坏后不报警' && c.sens === '不报警');
+const shown = UC.filter((c) => okF(c) && okS(c));
+const cur = UC.filter((c) => c.id === st.picked)[0] || shown[0] || UC[0];
+const fl = (c) => (c.feats.length === 0 ? '产品级，不属于单个功能点' : (c.feats.length === 1 ? c.feats[0] : c.feats.join('、')));
+const view = (c) => ({ id: c.id, text: c.text, featLabel: c.feats.length > 1 ? c.feats.length + ' 个功能点' : (c.feats[0] || '产品级'), how: c.how, result: c.result, resultBg: UCBG[c.result] || '#EEF0F3', prdLabel: ucPrd(c), prdBg: ucPrdBg(c), pressed: c.id === cur.id ? 'true' : 'false', bg: c.id === cur.id ? '#F3F6FE' : '#FFFFFF', pick: () => this.setState({ picked: c.id }) });
+const vals = {
+featFilters: mk(FEATS, ff, 'ff'), stateFilters: mk(STATES, sf, 'sf'),
+rows: shown.map(view), noRows: !shown.length, countLabel: '共 ' + UC.length + ' 条用例，当前显示 ' + shown.length + ' 条',
+sel: { id: cur.id, text: cur.text, featLabel: fl(cur), req: cur.req, how: cur.how, sens: cur.sens, prdLabel: ucPrd(cur), prdBg: ucPrdBg(cur), proposed: cur.prd === 'proposed', noEv: !cur.ev.length, ev: cur.ev.map((e) => ({ when: e[0], task: e[1], result: e[2] })),
+note: cur.prd === 'merged' ? '这条用例已经随需求并入 PRD，是功能点的长期约束。' : (cur.prd === 'pending' ? '这条用例在 ' + cur.req + ' 的增量里，需求验收通过后才并入 PRD。' : '这条用例是 AI 的建议，你确认后才进入需求的增量。') }
+};
+const chat = st.chat || [];
+const chatOpen = !!st.chatOpen;
+const say = (input) => {
+const text = (input || '').trim();
+if (!text) return;
+this.setState({ chat: chat.concat([{ me: true, ai: false, text }, { me: false, ai: true, text: '收到。原型里这一页的对话还没有接通。正式版本中，我会结合当前页面的内容和你讨论方案，确认后再修改并留档。' }]), draft: '' });
+};
+return Object.assign(vals, {
+pageName: '测试与体验', chatOpen, chatClosed: !chatOpen,
+toggleChat: () => this.setState({ chatOpen: !chatOpen }),
+msgs: [{ me: false, ai: true, text: '我能看到全部用例和它们的证据。可以让我为某个功能点建议用例；建议的用例要你确认后才进入需求的增量。' }].concat(chat),
+chips: chat.length ? [] : ['给「改坏后不报警」的用例补一条能报警的', '哪些功能点还没有真实模型的用例'].map((c) => ({ label: c, pick: () => say(c) })),
+draft: st.draft || '',
+setDraft: (e) => this.setState({ draft: e.target.value }),
+send: () => say(st.draft)
+});
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' file: blob: data:; frame-src file:">
+<title>RelayForge</title>
+<link rel="stylesheet" href="../../node_modules/@xterm/xterm/css/xterm.css">
+<link rel="stylesheet" href="styles/app.css">
+<link rel="stylesheet" href="styles/issues.css">
+<link rel="stylesheet" href="styles/tests.css">
+<link rel="stylesheet" href="styles/cases.css">
+<link rel="stylesheet" href="styles/bench.css">
+<link rel="stylesheet" href="styles/hitl.css">
+<link rel="stylesheet" href="styles/inbox.css">
+</head>
+<body>
+<header>
+  <b>RelayForge</b><span id="instance-tag" hidden></span><button id="project" type="button" title="切换或打开项目"></button><div id="branch-picker" class="branch-picker" hidden>
+    <button id="branch-toggle" class="branch-trigger" type="button" aria-expanded="false" aria-controls="branch-panel" aria-haspopup="dialog" title="切换项目主目录的 Git 分支"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="6" r="2"/><path d="M6 7v10m12-9a5 5 0 0 1-5 5H6"/></svg><span id="branch-name"></span><svg class="chevron" aria-hidden="true" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></button>
+    <section id="branch-panel" class="branch-panel" role="dialog" aria-label="切换 Git 分支" hidden>
+      <div class="branch-search"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 4 4"/></svg><input id="branch-search" type="search" placeholder="搜索分支…" aria-label="搜索分支" autocomplete="off"></div>
+      <div class="branch-groups">
+        <div id="branch-local-group">
+          <div class="branch-caption">本地分支</div>
+          <div id="branch-list" class="branch-list" role="group" aria-label="本地分支"></div>
+        </div>
+        <div class="branch-group-header">
+          <span class="branch-caption">远端分支</span>
+          <button id="remote-refresh" type="button">刷新远端分支</button>
+        </div>
+        <p id="remote-status" role="status"></p>
+        <div id="remote-list" class="branch-list" role="group" aria-label="远端分支"></div>
+      </div>
+      <p id="branch-empty" class="branch-empty muted" role="status" hidden>没有匹配的分支</p>
+      <div id="remote-plan" hidden>
+        <p id="remote-plan-text"></p>
+        <label id="remote-name-label" hidden>本地分支名 <input id="remote-local-name" autocomplete="off" spellcheck="false" aria-describedby="remote-plan-text"></label>
+      </div>
+      <p id="branch-error" class="branch-error" role="alert" hidden></p>
+      <footer class="branch-footer"><p id="branch-remote" class="branch-remote muted"></p><button type="button" id="branch-switch" class="go" disabled>切换分支</button></footer>
+    </section>
+  </div><span id="branch-announcement" role="status" class="sr-only"></span>
+  <span class="spacer"></span>
+  <span id="status" class="muted"></span>
+  <span id="publish-pending" class="muted" hidden></span>
+  <button id="publish" type="button" class="pubind" hidden></button>
+  <button id="sync" type="button" class="icon" title="现在整理：读聊天记录，更新需求内容和进展" aria-label="现在整理"><svg viewBox="0 0 24 24"><path d="M5 4.5h9l4.5 4.5v10.5H5z"/><path d="M14 4.5V9h4.5"/><path d="M8.5 13h7M8.5 16h4.5"/></svg></button>
+</header>
+<section id="demo-guide" hidden><b>演示项目</b><span>所有需求与会话均为虚构示例。可浏览看板、大图、设计稿和进展；开启真实会话后才调用 AI。</span></section>
+<section id="initialization" hidden aria-label="项目初始化状态">
+  <div class="init-summary"><b id="init-title"></b><span id="init-summary"></span></div>
+  <div class="init-actions"><button id="init-retry" type="button">重试（AI 协助）</button><button id="init-check" type="button">检查结果</button><button id="init-close" type="button" aria-label="关闭初始化提示" title="关闭提示；仍可从项目菜单重试">✕</button></div>
+  <details id="init-details"><summary>错误详情</summary><pre id="init-error"></pre></details>
+</section>
+<div id="body">
+<p id="no-project" class="muted" hidden>尚未打开项目</p>
+<nav id="rail" aria-label="主导航">
+  <button id="view-map" type="button" class="on" aria-current="page"><svg viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="5" rx="1.2"/><rect x="3.5" y="15.5" width="6" height="5" rx="1.2"/><rect x="14.5" y="15.5" width="6" height="5" rx="1.2"/><path d="M12 8.5v3.5M6.5 15.5V12h11v3.5"/></svg><span>首页</span></button>
+  <button id="view-reqs" type="button"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="5" height="16" rx="1.5"/><rect x="9.5" y="4" width="5" height="11" rx="1.5"/><rect x="15.5" y="4" width="5" height="7" rx="1.5"/></svg><span data-en="Reqs">需求</span></button>
+  <button id="view-issues" type="button" title="使用中发现的问题"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.3" r=".6"/></svg><span>问题</span></button>
+  <button id="view-tests" type="button" title="测试集管理"><svg viewBox="0 0 24 24"><path d="M9.5 3.5h5M10.5 3.5v6.2L5 18.4a1.5 1.5 0 0 0 1.3 2.1h11.4a1.5 1.5 0 0 0 1.3-2.1l-5.5-8.7V3.5"/><path d="M7.6 14.5h8.8"/></svg><span>测试</span></button>
+  <button id="view-chats" type="button"><svg viewBox="0 0 24 24"><path d="M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-7l-4.5 3.5v-3.5H5A1.5 1.5 0 0 1 3.5 15V7A1.5 1.5 0 0 1 5 5.5z"/></svg><span>聊天</span></button>
+  <button id="settings" type="button" title="设置" aria-label="设置"><svg viewBox="0 0 24 24"><path d="M9 4l1-2h4l1 2 2 1 2-.2 2 3.4-1.2 1.8v4l1.2 1.8-2 3.4-2-.2-2 1-1 2h-4l-1-2-2-1-2 .2-2-3.4L4.2 14v-4L3 8.2l2-3.4L7 5z"/><circle cx="12" cy="12" r="3"/></svg><span>设置</span></button>
+</nav>
+<main hidden>
+  <nav id="reqs">
+    <div id="req-pane">
+      <button id="to-board" type="button" class="on"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="5" height="16" rx="1.5"/><rect x="9.5" y="4" width="5" height="11" rx="1.5"/><rect x="15.5" y="4" width="5" height="7" rx="1.5"/></svg><span>看板</span></button>
+      <button id="new-req" type="button" data-en="＋ New">＋ 新建需求</button>
+      <details id="req-filter"><summary data-en="Stages ">筛选需求阶段 <span id="filter-count"></span></summary><div>
+        <label><input type="checkbox" value="talk" checked>立项中</label>
+        <label><input type="checkbox" value="build" checked>进行中</label>
+        <label><input type="checkbox" value="test" checked>测试中</label>
+        <label><input type="checkbox" value="check" checked>待验收</label>
+        <label><input type="checkbox" value="done">已完成</label>
+        <label><input type="checkbox" value="dropped">已取消</label>
+      </div></details>
+      <ul id="req-list"></ul>
+    </div>
+    <div id="chat-pane" hidden>
+      <button id="new-chat" type="button" title="直接在项目目录里聊，不开分支、不走验收">＋ 新聊天</button>
+      <ul id="past-list"></ul>
+    </div>
+  </nav>
+  <div class="split" id="split-left" title="拖动调整宽度"></div>
+  <section id="board" hidden>
+    <div class="board-toolbar">
+      <label for="board-date-filter">日期范围</label>
+      <select id="board-date-filter" aria-describedby="board-date-scope">
+        <option value="recent">最近 7 天</option>
+        <option value="all">全部</option>
+      </select>
+      <span id="board-date-scope" class="muted">适用于立项中、已完成、已取消</span>
+    </div>
+    <div id="board-columns"></div>
+  </section>
+  <section id="chat">
+    <div id="preview" hidden>
+      <div class="preview-head">
+        <button id="preview-back" type="button" class="icon" title="回到对话（会话一直开着）" aria-label="回到对话"><svg viewBox="0 0 24 24"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button>
+        <b id="preview-title"></b><small id="preview-meta" class="muted"></small><span class="spacer"></span>
+        <button id="preview-window" type="button" class="icon" title="在单独的窗口里打开，可以放大看；改了会自动刷新" aria-label="单独窗口打开"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="14" height="13" rx="1.5"/><path d="M10 3.5h10.5V14M20.5 3.5l-8 8"/></svg></button>
+      </div>
+      <iframe id="preview-frame" sandbox="allow-scripts" referrerpolicy="no-referrer" title="设计稿预览"></iframe>
+    </div>
+    <div id="demo-session" hidden><span>演示记录 · 只读，不会调用 AI</span><button id="demo-live" type="button">开始真实会话</button></div>
+    <details id="session-inbox" class="inbox-panel" hidden><summary></summary><div class="inbox-list"></div></details>
+    <div id="terms"></div>
+    <div id="bench" data-bench="1" hidden aria-label="人工验收"></div>
+    <p id="split-receipt" role="status" hidden></p>
+    <p id="welcome" class="empty">在左边新建一个需求，或者点一个已有的需求接着聊。<br>每个需求有自己的分支和会话，互不影响。</p>
+    <p id="finished" class="empty" hidden></p>
+    <button id="image" type="button" class="icon" title="添加图片（也可以拖进来或直接粘贴截图）" aria-label="添加图片"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M20.5 15.5l-5-5-8.5 8.5"/></svg></button>
+    <div id="drop">松开，把图片交给当前会话</div>
+  </section>
+  <div class="split" id="split-right" title="拖动调整宽度"></div>
+  <aside id="side">
+    <p class="empty" id="empty">选中一个需求后，这里显示它的内容和进展。</p>
+    <div id="panel" data-view="all" hidden>
+      <div id="panel-head">
+      <h1 id="title"></h1>
+      <div class="meta"><span id="req-state"></span><span id="branch"></span></div>
+      <div id="session-choices" class="session-choices" hidden></div>
+      <div id="stage-steps" class="stage-steps" aria-label="需求流程" role="tablist" hidden></div>
+      </div>
+      <div id="later" class="later" hidden></div>
+      <div id="test-problems" class="test-box bad" data-tab="build" hidden></div>
+      <div id="testing-box" class="test-box" data-tab="test" hidden>
+        <p id="testing-note"></p>
+        <button id="testing-open" type="button" title="切到中间的「测试」标签，看测试会话在做什么">看测试会话</button>
+        <button id="testing-skip" type="button" class="quiet" title="不等测试会话的结论，直接进入待验收；需求的记录里会如实写「跳过了测试」">跳过测试，直接验收</button>
+      </div>
+      <div id="test-result" class="test-box ok" data-tab="test" hidden></div>
+      <button id="req-issue-link" type="button" hidden></button>
+      <div id="deps" hidden>
+        <h2>前置需求 <span class="muted" id="deps-hint"></span></h2>
+        <ul id="deps-list"></ul>
+        <p id="deps-sync" hidden></p>
+        <div id="deps-dropped" hidden>
+          <p id="deps-dropped-note"></p>
+          <button id="deps-drop-link" type="button">去掉这条依赖</button>
+          <button id="deps-drop-req" type="button" class="danger">也取消这个需求</button>
+        </div>
+        <button id="deps-add" type="button" class="quiet">＋ 添加前置需求</button>
+        <div id="deps-picker" hidden>
+          <input id="deps-search" type="search" placeholder="搜索需求名称或编号" aria-label="搜索需求">
+          <ul id="deps-options"></ul>
+        </div>
+        <p id="deps-error" class="error" role="alert" hidden></p>
+      </div>
+      <div id="overlap" hidden>
+        <h2>和其他需求的改动 <span class="muted" id="overlap-hint"></span></h2>
+        <ul id="overlap-list"></ul>
+      </div>
+      <div id="intake" data-tab="talk" hidden>
+        <h2>清晰度</h2>
+        <ol id="ladder"></ol>
+        <div id="intake-assessment"></div>
+      </div>
+      <section id="req-subagent" class="subagent-card" hidden>
+        <h2>Subagent</h2>
+        <p id="req-subagent-summary" class="muted" role="status"></p>
+        <button id="req-subagent-edit" type="button" aria-haspopup="dialog">选择 CLI 和模型</button>
+      </section>
+      <section id="split-proposal" aria-labelledby="split-heading" hidden>
+        <h2 id="split-heading"></h2>
+        <p id="split-count"></p>
+        <ol id="split-items"></ol>
+        <p id="split-problem" class="dep-note dep-wait" hidden></p>
+        <button id="split-approve" type="button" class="primary">同意拆分</button>
+        <p id="split-error" class="error" role="alert" hidden></p>
+      </section>
+      <div id="req-summary" class="trace summary" data-tab="done" hidden></div>
+      <div id="req-body"></div>
+      <section id="req-usage" class="trace" hidden></section>
+      <div id="req-trace" class="trace" data-tab="done" hidden></div>
+      <div id="impact" data-tab="talk" hidden>
+        <h2>影响 <span class="muted">程序按要改的功能点算出</span></h2>
+        <div id="impact-body"></div>
+      </div>
+      <div id="gate" data-tab="talk" hidden>
+        <p id="development-session-choice" class="muted" hidden></p>
+        <button id="start" type="button" class="primary" title="至少要有一条验收条件。确认后关掉立项会话，开一个新的会话开始开发">确认立项，开始开发</button>
+        <p id="gate-note" class="muted"></p>
+        <p id="gate-error" class="error" hidden></p>
+      </div>
+      <div id="to-check" data-tab="build" hidden>
+        <p class="muted" id="to-check-note"></p>
+        <button id="to-test-btn" type="button" title="不等 AI 把计划全部勾完，交给这个需求的测试会话按验收条件来测">交给测试</button>
+        <button id="skip-test-btn" type="button" class="quiet" title="不经过测试，直接进入待验收；需求的记录里会如实写「跳过了测试」">跳过测试，直接验收</button>
+      </div>
+      <div id="accept" data-tab="check done" hidden>
+        <button id="run-it" type="button" title="让当前会话把程序跑起来，并告诉你怎么逐条检查">跑起来让我验收</button>
+        <p id="run-hint" class="muted small" hidden>测试环境里还没配「怎么启动」：现在是让开发会话把程序跑起来。配好服务（<button type="button" class="link" data-envgo="1">去测试环境里配</button>）以后，这里会换成「去人工验收」，由程序直接启动。</p>
+        <button id="done" type="button" class="primary">我试过了，确认完成</button>
+        <p id="done-note" class="dep-note" hidden></p>
+        <button id="resume-merge" type="button" class="primary" hidden>继续合并</button>
+        <p id="accept-error" class="error" hidden></p>
+        <div id="merge-box" hidden>
+          <p id="merge-state"></p><p id="merge-note" class="muted" hidden></p>
+          <button id="merge-retry" type="button" title="AI 已经解决好了：马上再检查一次，干净就合并">重新检查并合并</button>
+          <button id="merge-skip" type="button" class="quiet" hidden title="合并后的代码没过合并前的检查：不再检查，直接合并（完成记录里会写明）">跳过检查，仍然合并</button>
+          <button id="merge-abort" type="button" class="quiet" title="退出合并队伍，需求回到待验收；分支上已经做的不动">中止合并</button>
+        </div>
+      </div>
+      <div id="progress-block" data-tab="build test" hidden>
+        <h2 id="doing-head">正在处理</h2><p id="doing"></p>
+        <h2>计划 <span id="progress" class="muted"></span></h2>
+        <div class="bar"><i id="bar"></i></div>
+        <ul id="plan"></ul>
+        <h2 id="changes-head">方向调整</h2>
+        <ul id="changes"></ul>
+      </div>
+      <p class="empty" id="no-progress" data-tab="build test">AI 干活时会边做边把进展记到这里。</p>
+    </div>
+  </aside>
+</main>
+<section id="issues" hidden aria-label="问题">
+  <section class="listcol" aria-label="问题列表">
+    <div class="listtop">
+      <div class="ibar"><h1>问题</h1><div class="refresh-actions">
+        <button class="quiet" type="button" id="issue-review-start"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 6M20 5v6h-6"/></svg> <span>刷新</span><i class="dot" title="有结果等你看" hidden></i></button>
+        <button class="primary" type="button" data-act="new">＋ 记个问题</button>
+      </div></div>
+      <p id="issue-review-notice" class="small" role="status" hidden></p>
+      <div id="issue-review-strip" role="status" aria-live="polite" hidden></div>
+      <div class="tabs" id="issue-tabs" role="tablist" aria-label="按状态查看"></div>
+      <div class="chips" id="issue-chips" aria-label="初判分类"></div>
+      <div class="chips" id="issue-sources" role="group" aria-label="按来源筛选">
+        <button class="chip" type="button" data-act="source" data-k="human" aria-pressed="false">人工录入</button>
+        <button class="chip" type="button" data-act="source" data-k="ai" aria-pressed="false">AI 提交</button>
+      </div>
+      <select class="featsel" id="issue-feat" aria-label="按功能点筛选"></select>
+    </div>
+    <div class="rows" id="issue-rows"></div>
+    <div class="selbar" id="issue-selbar" hidden></div>
+  </section>
+  <section class="detail" aria-label="问题详情">
+    <div class="ihead" id="issue-head"></div>
+    <div class="thread" id="issue-thread" aria-live="polite"></div>
+    <details id="issue-inbox" class="inbox-panel" hidden><summary></summary><div class="inbox-list"></div></details>
+    <div class="fixterm" id="issue-term" hidden></div>
+    <div class="replybox" id="issue-reply"></div>
+  </section>
+</section>
+<section id="tests" hidden aria-label="测试">
+  <div class="ts-page">
+    <div class="ts-top"><h1>测试</h1><span id="ts-tabs" class="ts-seg" role="group" aria-label="测试页的三块"></span><span id="ts-where" class="muted small"></span><span class="spacer"></span><span id="ts-envsel"></span><button id="ts-runall" type="button">整套跑一遍</button></div>
+    <div id="ts-pane-sets">
+      <div id="ts-filters" class="ts-filters" aria-label="筛选"></div>
+      <p id="ts-error" class="ts-err" role="alert" hidden></p>
+      <p id="ts-full" class="ts-full muted small" hidden></p>
+      <div class="ts-tablewrap"><table id="ts-table"></table></div>
+      <p class="ts-foot">「需要看的」= 有失败、跑不起来、有提示，或者有改动等你确认。「提示」只用程序能算的固定规则：跑不起来、从没失败过、时过时不过。点一行打开测试集查看器。</p>
+      <p class="ts-foot">功能点下线或被替代时，挂在它下面的测试集自动算过期：不再运行、不删除，在「过期」里能找到。进行中的需求新建的测试集，只在那个需求里运行。</p>
+    </div>
+    <div id="ts-pane-manual" data-bench="1" hidden></div>
+    <div id="ts-pane-env" hidden></div>
+  </div>
+</section>
+<section id="map"><p id="map-note" class="empty"></p><iframe id="map-frame" title="大图"></iframe>
+  <aside id="map-edit" aria-label="调整大图" aria-hidden="true">
+    <div class="dhead"><div><b>调整大图</b><div class="meta"><span>固定会话</span><span id="map-edit-tag"></span><span>改动直接写进 .relayforge/ 的事实文件</span></div></div>
+      <button id="map-demo-live" type="button" hidden>开启真实编辑</button><button id="map-edit-close" type="button" aria-label="关闭">✕</button></div>
+    <div id="map-term"></div>
+  </aside>
+</section>
+</div>
+<p id="notice" hidden role="status" title="点一下关掉"></p>
+<div id="stage-menu" class="stage-menu" hidden role="menu"></div>
+<dialog id="stage-dlg" aria-labelledby="stage-dlg-title">
+  <h3 id="stage-dlg-title"></h3>
+  <div id="stage-dlg-body"></div>
+  <div class="row"><button id="stage-dlg-no" type="button">再想想</button><button id="stage-dlg-yes" type="button" class="primary"></button></div>
+</dialog>
+<button id="quote" type="button" hidden>填到聊天框</button>
+<dialog id="issue-dlg"><form id="issue-dlg-form" method="dialog"><h2 id="issue-dlg-title"></h2><div id="issue-dlg-body"></div>
+  <div class="actions"><button type="button" class="quiet" data-act="dcancel" id="issue-dlg-cancel">取消</button><button class="primary" id="issue-dlg-ok" type="submit">确定</button></div></form></dialog>
+<dialog id="issue-review" aria-labelledby="issue-review-title">
+  <h2 id="issue-review-title">AI 复查待处理问题</h2>
+  <p class="muted">当前分支 <code id="issue-review-branch"></code></p>
+  <div class="ask"><span>是不是真的存在</span><span>能不能合并</span><span>是不是已经过期</span></div>
+  <p id="issue-review-status" role="status"></p>
+  <div id="issue-review-results" aria-live="polite"></div>
+  <footer class="actions">
+    <button id="issue-review-discard" type="button" class="quiet" title="问题的状态都不变；下次点「刷新」重新复查" hidden>不处理，关掉结果</button>
+    <span class="spacer"></span>
+    <button id="issue-review-close" type="button">关闭</button>
+    <button id="issue-review-apply" class="primary" type="button" hidden>确认处理</button>
+  </footer>
+</dialog>
+<dialog id="fresh-dlg" aria-label="功能点核对的建议"></dialog>
+<dialog id="branch-confirm" aria-labelledby="branch-confirm-title" aria-describedby="branch-confirm-message">
+  <h1 id="branch-confirm-title">切换分支？</h1>
+  <p id="branch-confirm-message"></p>
+  <p class="muted">继续切换后，这些需求会留在原分支，等你回来发布。需求和修复的工作目录不受影响。</p>
+  <div class="actions"><span class="spacer"></span><button id="branch-confirm-cancel" type="button" autofocus>取消</button><button id="branch-confirm-go" type="button" class="go">仍然切换</button></div>
+</dialog>
+<dialog id="publish-dlg" aria-labelledby="publish-title">
+  <div id="publish-box">
+    <h1 id="publish-title">发布</h1>
+    <p id="publish-target" class="pub-target"></p>
+    <p id="publish-deploy" class="pub-deploy"></p>
+    <p id="publish-create" class="muted" hidden></p>
+    <label id="publish-remotes" hidden>推送到哪个远端<select id="publish-remote"></select></label>
+    <div id="publish-carry"></div>
+    <div id="publish-local" hidden>
+      <p id="publish-local-count"></p>
+      <p class="muted">包含开发中和待验收的需求；这些需求尚未合入项目主目录的分支。</p>
+    </div>
+    <div id="publish-notes"></div>
+    <label id="publish-ack-row" class="pub-ack" hidden><input type="checkbox" id="publish-ack"><span id="publish-ack-text"></span></label>
+    <p id="publish-error" class="error" role="alert" hidden></p>
+    <p id="publish-working" class="muted" role="status" hidden></p>
+    <div class="pub-actions">
+      <button id="publish-check" type="button" title="从远端抓取最新的情况（不会改动你的代码），再看一遍">检查远端</button>
+      <button id="publish-pull" type="button" hidden></button>
+      <button id="publish-ai" type="button" hidden title="新开一个聊天，请 AI 把远端的合并进来；它不会推送"></button>
+      <button id="publish-back" type="button" hidden></button>
+      <span class="spacer"></span>
+      <button id="publish-cancel" type="button">取消</button>
+      <button id="publish-go" type="button" class="go">发布</button>
+    </div>
+    <details id="publish-past"><summary>以前的发布 <span id="publish-past-count" class="muted"></span></summary><ul id="publish-past-list"></ul></details>
+  </div>
+</dialog>
+<dialog id="session-replay" aria-labelledby="session-replay-title">
+  <header>
+    <h2 id="session-replay-title">会话回放</h2>
+    <span id="session-replay-status" class="muted mono" aria-live="polite"></span>
+    <form method="dialog"><button class="quiet" type="submit">关闭</button></form>
+  </header>
+  <div class="replay-scroll"><div id="session-replay-body"></div>
+    <button id="session-replay-more" class="quiet" type="button" hidden>加载后续轮次</button>
+  </div>
+</dialog>
+<dialog id="ts-viewer" aria-label="测试集查看器"></dialog>
+<dialog id="ts-dlg"></dialog>
+<dialog id="ts-done" aria-label="确认完成之前"></dialog>
+<dialog id="about-dlg" aria-labelledby="about-title">
+  <h1 id="about-title">关于 RelayForge</h1>
+  <p class="muted">版本 <span id="about-version"></span></p>
+  <form method="dialog"><button type="submit">关闭</button></form>
+</dialog>
+<dialog id="settings-dlg" aria-labelledby="settings-title">
+  <form id="settings-form" novalidate>
+    <nav class="settings-nav" role="tablist" aria-orientation="vertical" aria-labelledby="settings-title">
+      <h1 id="settings-title">设置</h1>
+      <button class="settings-tab" type="button" role="tab" id="settings-tab-general" aria-controls="settings-pane-general" aria-selected="true">通用</button>
+      <button class="settings-tab" type="button" role="tab" id="settings-tab-agents" aria-controls="settings-pane-agents" aria-selected="false" tabindex="-1">Agents</button>
+    </nav>
+    <div class="settings-body" id="settings-body">
+      <div class="settings-pane" id="settings-pane-general" role="tabpanel" aria-labelledby="settings-tab-general">
+        <fieldset id="language-options">
+          <legend>语言</legend>
+          <select name="language" aria-label="语言">
+            <option value="en">English</option>
+            <option value="zh-CN">简体中文</option>
+          </select>
+          <p class="muted">用于应用界面和 Agent 的回复。</p>
+        </fieldset>
+        <label class="settings-monitor"><input type="checkbox" id="settings-monitor" name="monitor"><span><b>后台记录</b><small>会话每说完一轮，把这一轮做了什么（工具调用、成功失败、被拦下、等批准、用时）记到本机的 ~/.relayforge/monitor/，不进仓库，不记工具的输出。以后可以让 AI 读这个文件夹，分析它有没有照规矩做、在哪里打转。</small></span></label>
+        <fieldset id="dropped-options"><legend>已取消需求的分支</legend>
+          <p class="muted">取消需求时分支先保留，方便恢复；超过下面的天数或个数（较早取消的先清理），在确认完成或取消需求时清理掉。点了「保留」的不清理。</p>
+          <label>保留天数 <input id="dropped-days" type="number" min="1" max="3650" step="1" required></label>
+          <label>最多保留 <input id="dropped-max" type="number" min="1" max="1000" step="1" required> 个</label>
+        </fieldset>
+      </div>
+      <div class="settings-pane" id="settings-pane-agents" role="tabpanel" aria-labelledby="settings-tab-agents" hidden>
+        <fieldset id="agent-options"><legend>底层工具</legend>
+          <label class="agent-option" data-agent="claude"><input type="radio" name="agent" value="claude" required><span class="agent-name"><b>Claude Code</b><small>使用本机的 Claude Code CLI</small><span class="agent-sub" data-auth-sub></span></span><span class="agent-auth" data-auth aria-live="polite"></span></label>
+          <label class="agent-option" data-agent="codex"><input type="radio" name="agent" value="codex" required><span class="agent-name"><b>Codex</b><small>使用本机的 Codex CLI</small><span class="agent-sub" data-auth-sub></span></span><span class="agent-auth" data-auth aria-live="polite"></span></label>
+        </fieldset>
+        <div class="settings-cli-actions">
+          <button id="settings-cli-check" type="button">检查 CLI 更新</button>
+          <button id="settings-cli-models" type="button">刷新模型列表</button>
+        </div>
+        <p id="settings-cli-status" class="muted" role="status" hidden></p>
+        <div class="subagent-fields">
+          <label for="settings-subagent-cli">Subagent 默认 CLI</label>
+          <select id="settings-subagent-cli" aria-describedby="settings-subagent-status"></select>
+          <p class="muted">默认跟随开发会话的 CLI。也可在这里指定 CLI，或为单个需求调整。</p>
+          <p id="settings-subagent-status" class="muted" role="status" hidden></p>
+          <label for="settings-subagent-model">Subagent 默认模型</label>
+          <select id="settings-subagent-model"></select>
+          <p class="muted">指定模型后，开发 Agent 在它适合子任务时优先使用。</p>
+        </div>
+        <p class="muted">保存后用于新会话。已有会话继续使用原来的工具。<br>请先安装所选工具并完成登录。</p>
+        <fieldset id="approval-options"><legend>无界面会话的审批</legend>
+          <p class="muted">后台跑的会话（测试会话再测一轮、合并前的同步、问题的修复）要批准时怎么办。两种都只在沙箱里：要越出沙箱的一律不放行。</p>
+          <label><input type="radio" name="headlessApproval" value="auto"> <b>自动</b>：沙箱里的命令直接执行，不打扰你</label>
+          <label><input type="radio" name="headlessApproval" value="ask"> <b>每次问我</b>：在应用右下角逐条等你批准</label>
+        </fieldset>
+      </div>
+    </div>
+    <div class="settings-foot">
+      <p id="settings-error" class="error" role="alert" hidden></p>
+      <div class="settings-actions"><button id="settings-cancel" type="button">取消</button><button id="settings-save" type="submit" class="go">保存</button></div>
+    </div>
+  </form>
+</dialog>
+<dialog id="req-subagent-dlg" aria-labelledby="req-subagent-title">
+  <form id="req-subagent-form">
+    <h1 id="req-subagent-title">本需求的 Subagent</h1>
+    <div class="subagent-fields">
+      <label for="req-subagent-cli">CLI</label>
+      <select id="req-subagent-cli"></select>
+      <label for="req-subagent-model">模型</label>
+      <select id="req-subagent-model"></select>
+      <p id="req-subagent-status" class="muted" role="status" hidden></p>
+      <p class="muted">配置仅用于当前需求。授权时请在立项对话中回复「这个需求可以用 subagent」。</p>
+    </div>
+    <p id="req-subagent-error" class="error" role="alert" hidden></p>
+    <div class="settings-actions">
+      <button id="req-subagent-cancel" type="button">取消</button>
+      <button id="req-subagent-save" type="submit" class="go">保存</button>
+    </div>
+  </form>
+</dialog>
+<dialog id="new-dlg" aria-labelledby="new-heading">
+  <form id="new" method="dialog">
+    <h1 id="new-heading">新建需求</h1>
+    <textarea id="new-title" rows="7" aria-label="需求说明" placeholder="想做什么？写一两句话就行，细节开聊以后再说。&#10;可以粘贴截图，或者把图片拖进来。"></textarea>
+    <ul id="new-images"></ul>
+    <details id="new-model-settings">
+      <summary><strong>模型设置</strong><small id="new-model-summary">使用默认设置</small></summary>
+      <div class="req-session-phases">
+        <fieldset class="req-session-phase">
+          <legend>立项会话</legend>
+          <div class="req-session-fields">
+            <label>CLI<select id="new-intake-cli"></select></label>
+            <label>模型<select id="new-intake-model"></select></label>
+          </div>
+        </fieldset>
+        <fieldset class="req-session-phase">
+          <legend>开发会话</legend>
+          <div class="req-session-fields">
+            <label>CLI<select id="new-development-cli"></select></label>
+            <label>模型<select id="new-development-model"></select></label>
+          </div>
+        </fieldset>
+        <fieldset class="req-session-phase">
+          <legend>测试会话</legend>
+          <div class="req-session-fields">
+            <label>CLI<select id="new-testing-cli"></select></label>
+            <label>模型<select id="new-testing-model"></select></label>
+          </div>
+          <p class="muted small">默认跟开发一样（开发会话的选择以后改了，测试会话跟着变）。想用和开发不同的模型来测，可以单独选，更容易发现问题。</p>
+          <p id="new-testing-note" class="muted small" hidden></p>
+        </fieldset>
+      </div>
+    </details>
+    <p id="new-error" class="error" hidden></p>
+    <div class="row">
+      <button id="new-pick" type="button" class="icon" title="添加图片" aria-label="添加图片"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M20.5 15.5l-5-5-8.5 8.5"/></svg></button>
+      <span class="spacer"></span>
+      <span class="muted hint">⌘↩ 创建</span>
+      <button id="new-cancel" type="button">取消</button>
+      <button id="new-ok" type="submit" class="go">创建</button>
+    </div>
+  </form>
+  <div class="dlg-drop">松开，把图片加到这个需求里</div>
+</dialog>
+<div id="hitl" hidden></div>
+<script src="../../node_modules/@xterm/xterm/lib/xterm.js"></script>
+<script src="../../node_modules/@xterm/addon-fit/lib/addon-fit.js"></script>
+<script src="scripts/html-copy.js"></script>
+<script src="scripts/html-text.js"></script>
+<script src="scripts/core.js"></script>
+<script src="scripts/inbox-model.js"></script>
+<script src="scripts/inbox-panel.js"></script>
+<script src="scripts/deps-model.js"></script>
+<script src="scripts/conflicts-model.js"></script>
+<script src="scripts/board-page-model.js"></script>
+<script src="scripts/terminal.js"></script>
+<script src="scripts/reqs.js"></script>
+<script src="scripts/board.js"></script>
+<script src="scripts/stage-menu.js"></script>
+<script src="scripts/requirement-sessions.js"></script>
+<script src="scripts/subagent-model.js"></script>
+<script src="scripts/subagent.js"></script>
+<script src="scripts/new-req.js"></script>
+<script src="scripts/intake.js"></script>
+<script src="scripts/designs.js"></script>
+<script src="scripts/stage-tabs-model.js"></script>
+<script src="scripts/panel.js"></script>
+<script src="scripts/attention.js"></script>
+<script src="scripts/layout.js"></script>
+<script src="scripts/fresh-model.js"></script>
+<script src="scripts/fresh.js"></script>
+<script src="scripts/map.js"></script>
+<script src="scripts/actions.js"></script>
+<script src="scripts/merge.js"></script>
+<script src="scripts/compose.js"></script>
+<script src="scripts/issues.js"></script>
+<script src="scripts/issue-thread.js"></script>
+<script src="scripts/issue-actions.js"></script>
+<script src="scripts/issue-review-model.js"></script>
+<script src="scripts/issue-review.js"></script>
+<script src="scripts/trace-model.js"></script>
+<script src="scripts/trace.js"></script>
+<script src="scripts/session-history-model.js"></script>
+<script src="scripts/session-history.js"></script>
+<script src="scripts/summary-model.js"></script>
+<script src="scripts/summary.js"></script>
+<script src="scripts/tests-model.js"></script>
+<script src="scripts/tests.js"></script>
+<script src="scripts/test-viewer.js"></script>
+<script src="scripts/cases-model.js"></script>
+<script src="scripts/cases.js"></script>
+<script src="scripts/env-model.js"></script>
+<script src="scripts/envs.js"></script>
+<script src="scripts/bench-model.js"></script>
+<script src="scripts/bench.js"></script>
+<script src="scripts/publish-model.js"></script>
+<script src="scripts/publish.js"></script>
+<script src="scripts/branch-model.js"></script>
+<script src="scripts/branches.js"></script>
+<script src="scripts/cli-auth-model.js"></script>
+<script src="scripts/settings.js"></script>
+<script src="scripts/demo.js"></script>
+<script src="scripts/hitl-model.js"></script>
+<script src="scripts/hitl.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

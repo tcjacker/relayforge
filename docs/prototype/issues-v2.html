@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>问题 · RelayForge 交互稿 v2</title>
+<style>
+:root{color-scheme:dark;--bg:#111318;--panel:#171a21;--card:#1d222b;--line:#2c323d;--text:#e6e9ef;--muted:#a1a8b4;--blue:#9bbaff;--green:#80dba6;--amber:#edbf70;--red:#f0a08e;--tri:#192331;--tri-line:#35465e}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+button,select,input,textarea{font:inherit;color:inherit;border:1px solid var(--line);border-radius:6px;background:#20242d;padding:6px 10px}
+button,select{cursor:pointer}
+button:hover:not(:disabled){border-color:#7892b7}
+button:disabled{opacity:.45;cursor:default}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+button.primary{background:#94deb4;color:#11251b;border-color:transparent;font-weight:600}
+button.quiet{background:transparent;color:var(--muted)}
+button.quiet:hover:not(:disabled){color:var(--text)}
+button.link{background:transparent;border:0;padding:0;color:var(--blue)}
+.muted{color:var(--muted)}.small{font-size:12px}
+.mono{font:12px ui-monospace,SFMono-Regular,monospace;color:var(--muted)}
+header.top{height:48px;border-bottom:1px solid var(--line);background:var(--panel);display:flex;align-items:center;gap:18px;padding:0 20px}
+header.top small{margin-left:auto;color:var(--muted)}
+.shell{display:grid;grid-template-columns:60px clamp(280px,28vw,410px) minmax(0,1fr);height:calc(100dvh - 48px)}
+nav.rail{background:var(--panel);border-right:1px solid var(--line);text-align:center;padding:12px 6px}
+nav.rail span{display:block;border-radius:8px;margin-bottom:8px;padding:5px 0;color:var(--muted);font-size:11px}
+nav.rail i{display:block;font:20px/1.3 monospace;font-style:normal}
+nav.rail .on{background:#293344;color:#c7d8ff}
+/* list column */
+.listcol{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;min-width:0;min-height:0}
+.listtop{padding:16px 12px 8px;flex:none}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+h1{margin:0;font-size:24px}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin:14px 0 10px;border-bottom:1px solid var(--line)}
+.tab{background:transparent;border:0;border-bottom:2px solid transparent;border-radius:6px 6px 0 0;padding:4px 0 5px;text-align:center;line-height:1.25;color:var(--muted)}
+.tab b{display:block;font-size:16px;font-weight:600}
+.tab span{font-size:11px;white-space:nowrap}
+.tab[aria-selected=true]{color:var(--text);border-bottom-color:var(--blue);background:#1d2330}
+.tab.attn b{color:var(--amber)}
+.tab.attn span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--amber);margin-right:3px;vertical-align:1px}
+.tab.attn:not([aria-selected=true]){background:#2a2518}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.chip{border-radius:14px;font-size:12px;padding:1px 9px;background:transparent;color:var(--muted)}
+.chip[aria-pressed=true]{background:#293a50;color:#cde0ff;border-color:#627d9c}
+.featsel{width:100%;font-size:13px}
+.rows{flex:1;overflow:auto;min-height:0;padding:4px 0 24px}
+.rw{display:flex;align-items:stretch;border-top:1px solid var(--line);border-left:2px solid transparent}
+.rw:hover{background:#1b2029}
+.rw.cur{background:#202937;border-left-color:var(--blue)}
+.pk{flex:none;width:32px;display:flex;justify-content:center;align-items:flex-start;padding-top:12px}
+label.pk{cursor:pointer}
+.pk input{width:16px;height:16px;padding:0;margin:0;accent-color:#94deb4;cursor:pointer}
+.row{display:block;flex:1;min-width:0;text-align:left;border:0;border-radius:0;background:transparent;padding:9px 12px 9px 12px}
+.pk+.row{padding-left:2px}
+.row strong{display:block;font-weight:550;line-height:1.45;overflow-wrap:anywhere}
+.row .meta{display:flex;flex-wrap:wrap;gap:3px 8px;margin-top:3px;font-size:12px;color:var(--muted)}
+.rw.deferred{opacity:.55}
+.ph{font-weight:600}.ph.blue{color:var(--blue)}.ph.amber{color:var(--amber)}.ph.quiet{font-weight:400;color:var(--muted)}.ph.green{color:var(--green)}
+.src{border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:11px;line-height:1.5}
+.empty{padding:28px 14px;color:var(--muted);text-align:center}
+/* selection bar */
+.selbar{flex:none;border-top:1px solid #414a57;background:#1d2330;padding:10px 12px 11px;box-shadow:0 -8px 18px #0006}
+.selbar[hidden]{display:none}
+.selbar .r1{display:flex;align-items:center;gap:8px}
+.selbar .r1 b{margin-right:auto;font-weight:600}
+.selbar .note{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
+.selbar .note.warn{color:var(--amber)}
+.selbar button.link{font-size:12px;text-align:left}
+/* siblings */
+.sibs{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.sibs .muted{margin-right:2px}
+.sibchip{display:inline-flex;align-items:baseline;gap:6px;max-width:100%;border-radius:14px;padding:1px 10px;font-size:12px;background:#20242d}
+.sibchip .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
+.sibchip .st{flex:none}
+.blist{list-style:none;padding:0;margin:8px 0}
+.blist li{border-top:1px solid var(--line);padding:7px 2px}
+.blist li:first-child{border-top:0}
+.blist .f{display:block;font-size:12px;color:var(--muted)}
+/* detail */
+.detail{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--bg);position:relative}
+.backlink{display:none;margin:12px 16px 0;align-self:flex-start}
+.dhead{padding:20px clamp(16px,3vw,40px) 10px;flex:none;border-bottom:1px solid var(--line)}
+.dhead .inner,.thread .inner,.replybox .inner{max-width:780px;margin:0 auto}
+.dhead h2{margin:6px 0 2px;font-size:clamp(19px,1.8vw,26px);line-height:1.4;overflow-wrap:anywhere}
+.pill{border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-size:11px;margin-left:8px}
+.strip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:13px;position:relative}
+.fchip{border:1px solid var(--line);background:#20242d;border-radius:14px;padding:1px 10px;font-size:12px}
+.fchip.ai{border-style:dashed;color:var(--amber);border-color:#6a5a36;background:#2a2518}
+.fchip.link{color:var(--blue);cursor:pointer}
+.fchip.none{color:var(--muted)}
+.strip button.s{font-size:12px;padding:1px 10px;border-radius:14px}
+.picker{position:absolute;top:100%;left:0;z-index:5;margin-top:6px;background:var(--panel);border:1px solid #414a57;border-radius:8px;padding:6px;min-width:230px;box-shadow:0 8px 24px #0008}
+.picker button{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:5px}
+.picker button:hover{background:#243044}
+.thread{flex:1;overflow:auto;min-height:0;padding:18px clamp(16px,3vw,40px) 24px}
+.thread .inner{display:flex;flex-direction:column;gap:14px;overflow-wrap:anywhere}
+.entry{border-radius:8px}
+.lbl{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:4px}
+.lbl .at{margin-left:auto}
+.aitag{border:1px solid #3d4a60;color:#b3c6e8;border-radius:4px;padding:0 5px;font-size:11px;line-height:1.5}
+.report{background:var(--card);border:1px solid var(--line);padding:12px 14px}
+.report p,.bubble p,.card p{margin:2px 0;white-space:pre-wrap}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.thumbs button.th{padding:0;border-radius:6px;overflow:hidden;line-height:0;position:relative}
+.thumbs img{width:96px;height:68px;object-fit:cover;display:block}
+.thumbs .x{position:absolute;right:2px;top:2px;min-height:0;padding:0 6px;line-height:1.4;background:#000a;border-radius:4px}
+details.ops{margin-top:10px;border:1px solid var(--line);border-radius:6px;background:#161a21;padding:6px 10px}
+details.ops summary{cursor:pointer;color:var(--muted);font-size:13px}
+details.ops ol{margin:6px 0 2px;padding-left:20px;font:12px/1.7 ui-monospace,monospace;color:#b5beca}
+.bubble{padding:9px 12px;border-radius:8px;max-width:86%}
+.bubble.me{align-self:flex-end;background:#26374b}
+.bubble.ai{align-self:flex-start;background:#202633}
+.sys{text-align:center;font-size:12px;color:var(--muted)}
+.sys span{display:inline-block;padding:1px 12px;border-radius:12px;background:#1a1f27}
+.sys.close{border-top:1px solid var(--line);padding-top:10px}
+.card{background:var(--tri);border:1px solid var(--tri-line);border-radius:9px;padding:14px 16px}
+.card h3{margin:2px 0 4px;font-size:18px;display:flex;align-items:center;gap:8px}
+.kdot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.card .q{margin:10px 0 2px;padding:9px 12px;border-left:3px solid var(--amber);background:#2a2518;border-radius:0 6px 6px 0}
+.card .feat{margin-top:8px;font-size:12px;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.collapsed{font-size:12px;color:var(--muted);padding:0 4px}
+.collapsed::before{content:"· ";}
+.fix{background:#152421;border-color:#2f5a4b}
+.fix .part{margin-top:10px}
+.fix .part b{display:block;font-size:12px;color:var(--green);font-weight:600}
+.check{display:inline-block;margin-top:3px;border:1px solid #2f5a4b;background:#1b3029;color:#bfe9d1;border-radius:5px;padding:1px 9px;font-size:12px}
+.hint{font-size:12px;color:var(--muted);margin-left:6px}
+.wait{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.sim{border:1px dashed #6b7686;background:transparent;color:var(--muted);font-size:12px;border-radius:6px}
+.analysing{display:flex;align-items:center;gap:10px}
+.spin{width:14px;height:14px;border:2px solid #3b4a60;border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+/* reply */
+.replybox{flex:none;border-top:1px solid var(--line);background:var(--panel);padding:10px clamp(16px,3vw,40px) 12px}
+.replybox.hot{box-shadow:inset 0 2px 0 var(--amber);background:#201d14}
+.replybox textarea{width:100%;min-height:44px;max-height:160px;resize:none;display:block;background:#20242d}
+.replybox.hot textarea{border-color:#8a713a}
+.replybox .tools{display:flex;align-items:center;gap:8px;margin-top:6px}
+.replybox .tools .grow{flex:1;font-size:12px;color:var(--muted)}
+.replybox .thumbs{margin:0 0 8px}
+.closedbar{display:flex;align-items:center;gap:10px;justify-content:center;color:var(--muted);font-size:13px}
+.noselect{margin:auto;color:var(--muted)}
+/* dialog */
+dialog{width:min(480px,94vw);background:var(--panel);color:inherit;border:1px solid #414a57;border-radius:12px;padding:22px;max-height:88dvh;overflow:auto}
+dialog::backdrop{background:#070a10b8}
+dialog h2{margin:0 0 14px;font-size:20px}
+label.field{display:block;margin:12px 0}
+label.field>*{display:block;width:100%;margin-top:4px}
+label.field textarea{min-height:68px;resize:vertical}
+dialog .actions{justify-content:flex-end}
+dialog img.big{max-width:100%;max-height:60dvh;display:block;margin:0 auto;border-radius:6px}
+details.samples{margin:12px 0}details.samples summary{cursor:pointer;color:var(--muted)}
+details.samples button{display:block;width:100%;text-align:left;margin-top:5px}
+dialog ul{padding-left:18px;margin:8px 0}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#2b3444;border:1px solid #4a5568;padding:6px 14px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.toast.on{opacity:1}
+@media(max-width:920px) and (min-width:680px){.shell{grid-template-columns:60px minmax(260px,34%) minmax(0,1fr)}.bubble{max-width:94%}}
+@media(max-width:679px){
+ .shell{display:block;height:calc(100dvh - 48px);position:relative}
+ nav.rail{display:none}
+ .listcol,.detail{height:100%;border:0}
+ .detail{display:none}
+ body.reading .listcol{display:none}body.reading .detail{display:flex}
+ .backlink{display:block}
+ header.top{padding:0 16px}
+ button,select{min-height:40px}
+ input,select,textarea{font-size:16px}
+ .dhead{padding:8px 16px 10px}.thread{padding:14px 16px}.replybox{padding:8px 16px 10px}
+ .bubble{max-width:94%}
+ .actions button{flex-grow:1}
+ .tab b{font-size:15px}
+}
+</style>
+</head>
+<body>
+<header class="top"><b>RelayForge</b><span class="muted">/　relayforge</span><small>交互试用 · 模拟初判</small></header>
+<div class="shell">
+ <nav class="rail" aria-label="主导航"><span><i>▥</i>需求</span><span class="on" aria-current="page"><i>⊙</i>问题</span><span><i>▢</i>聊天</span><span><i>⑂</i>大图</span></nav>
+ <section class="listcol" aria-label="问题列表">
+  <div class="listtop">
+   <div class="bar"><h1>问题</h1><button class="primary" data-act="new">＋ 记个问题</button></div>
+   <div class="tabs" id="tabs" role="tablist" aria-label="按状态查看"></div>
+   <div class="chips" id="chips" aria-label="初判分类"></div>
+   <select class="featsel" id="featsel" aria-label="按功能点筛选"></select>
+  </div>
+  <div class="rows" id="rows"></div>
+  <div class="selbar" id="selbar" hidden></div>
+ </section>
+ <section class="detail" id="detail" aria-label="问题详情">
+  <button class="link backlink" data-act="back">‹ 返回问题列表</button>
+  <div class="dhead" id="dhead"></div>
+  <div class="thread" id="thread" aria-live="polite"></div>
+  <div class="replybox" id="reply"></div>
+ </section>
+</div>
+<dialog id="dlg"><form id="dform" method="dialog"><h2 id="dtitle"></h2><div id="dbody"></div><div class="actions"><button type="button" class="quiet" data-act="dcancel" id="dcancel">取消</button><button class="primary" id="dok" type="submit">确定</button></div></form></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s);
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0'), pad3=n=>String(n).padStart(3,'0');
+
+/* ---------- 常量 ---------- */
+const FEATS={'RF-105':'只读渲染','RF-134':'模块的用户旅程','RF-103':'文档登记','RF-110':'需求列表','RF-121':'设计稿保存','RF-128':'修复会话'};
+const fname=c=>c+' '+FEATS[c];
+const ST=['待处理','处理中','待你确认','已解决','不处理'];
+const KIND={bug:'是问题',req:'可转需求',usage:'已有用法',ask:'待补充'};
+const KCLR={bug:'#f0a08e',req:'#9bbaff',usage:'#80dba6',ask:'#edbf70'};
+const SCLR=['#a1a8b4','#9bbaff','#edbf70','#80dba6','#a1a8b4'];
+const CANNED={
+ bug:['按你描述的操作，结果和现有约定不一致，属于已有功能出错，修复会话可以直接复现。','操作步骤和错误结果都很明确，这是已有行为出了偏差，不是新需求。'],
+ req:['这是希望产品多做一件事，目前没有对应功能，需要先立项再开发。','现有功能没有覆盖这个场景，要做就得先确定范围，更适合作为需求。'],
+ usage:['产品已经能做到这件事，不需要改动。','这个入口已经存在，只是不太容易找到。']
+};
+const USAGE_HOW={default:'在列表顶部的状态页签里切到对应状态就能看到；需要跨状态时，可以用功能点筛选。',
+ doc:'在文档登记里打开那份文档，右侧「状态」一栏可以直接改成现行、参考或已被替代。'};
+const ASKS=['你当时在哪个页面，点的是哪个按钮？','你预期看到什么，实际发生了什么？每次都会出现吗？','能说说操作的先后顺序吗？比如先打开哪个，再切到哪个。'];
+const FIX={
+ 'RF-134':{summary:'切换模块时重新读取选中模块的旅程，不再沿用上一次的结果。',verify:'依次打开两个有旅程的模块，核对右侧标题和步骤是否跟着变。',prevent:'连续切换两个模块后旅程跟着变'},
+ 'RF-103':{summary:'文档名称区域改为可收缩，状态固定在右侧，长标题自动换行。',verify:'把窗口缩到最窄，打开标题最长的文档，看状态是否仍然可见。',prevent:'窄窗口下长标题不遮住状态'},
+ 'RF-105':{summary:'渲染前统一整理标题和锚点位置，折叠状态改变后重新计算偏移。',verify:'折叠前一节再点目录，确认落点正好在目标标题处。',prevent:'折叠章节后锚点落点正确'},
+ def:{summary:'定位到问题所在的位置并修正，同时补上相关的边界情况。',verify:'按提报时的操作步骤再走一遍，核对结果是否符合预期。',prevent:'按提报步骤走一遍结果正确'}
+};
+
+/* ---------- 数据 ---------- */
+const S={issues:[],pick:new Set(),tab:0,kind:'all',feat:'all',sel:null,session:5,picker:false,shotId:1,shots:{},seeding:true,lastSel:null,lastLen:0,dlg:null};
+function shotSvg(label,hue){
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200"><rect width="320" height="200" fill="#161a21"/><rect width="320" height="22" fill="#20242d"/><rect x="0" y="22" width="70" height="178" fill="#1b2029"/><g fill="#2c323d"><rect x="80" y="36" width="150" height="10" rx="3"/><rect x="80" y="56" width="220" height="8" rx="3"/><rect x="80" y="72" width="190" height="8" rx="3"/><rect x="80" y="88" width="210" height="8" rx="3"/></g><rect x="84" y="114" width="190" height="40" rx="5" fill="none" stroke="hsl(${hue},70%,68%)" stroke-width="2" stroke-dasharray="5 3"/><text x="90" y="138" font-size="13" fill="hsl(${hue},70%,75%)" font-family="sans-serif">${label}</text></svg>`;
+ return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+function addShot(url){const id=S.shotId++;S.shots[id]=url;return id}
+const stamp=(i)=>{if(!S.seeding){const d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())}return '11-'+pad(8+i.id%8)+' '+pad(9+(i.thread.length%8))+':'+pad((i.id*13+i.thread.length*7)%60)};
+const push=(i,e)=>{e.at=stamp(i);i.thread.push(e);return e};
+const sys=(i,text,close)=>push(i,{t:'sys',text,close:!!close});
+const last=(i,t)=>{for(let k=i.thread.length-1;k>=0;k--)if(i.thread[k].t===t)return k;return -1};
+const sess=n=>pad(n);
+
+function classify(t){
+ if(/导出|PDF|希望|能不能加|能否加|新增.*功能/.test(t))return 'req';
+ if(/找不到|在哪里|在哪儿|怎么/.test(t))return 'usage';
+ if(/(切换|打开|折叠|缩小|点击|保存|拖).{0,24}(仍|还是|没有更新|不更新|被遮住|截断|偏移|重复|错位)|被遮住|截断|偏移|没有更新|仍显示/.test(t))return 'bug';
+ return 'ask';
+}
+function guessFeat(t){return /旅程/.test(t)?'RF-134':/文档/.test(t)?'RF-103':/渲染|标题|锚点|页面/.test(t)?'RF-105':null}
+function allText(i){return [i.title,i.desc,...i.thread.filter(e=>e.t==='user').map(e=>e.text)].join(' ')}
+
+function addJudge(i,kind,feat){
+ const j=i.judgement,rounds=i.thread.filter(e=>e.t==='judge'&&e.kind==='ask').length;
+ let reason,q=null;
+ if(kind==='ask'){reason='目前的信息还不足以判断是哪里出了问题。';q=ASKS[Math.min(rounds,ASKS.length-1)]}
+ else if(kind==='usage'){reason=CANNED.usage[i.id%2]+(feat==='RF-103'||/文档/.test(allText(i))?USAGE_HOW.doc:USAGE_HOW.default)}
+ else reason=CANNED[kind][i.id%2];
+ j.kind=kind;j.reason=reason;
+ if(!j.confirmedFeature)j.feature=feat||j.feature||null;
+ push(i,{t:'judge',kind,reason,q});
+}
+function makeIssue(o){
+ const i={id:o.id,title:o.title,desc:o.desc||'',source:o.src||'你',state:0,judgement:{kind:null,reason:'',feature:null,confirmedFeature:false},thread:[],fix:null,req:null,deferred:false,busy:false,dismiss:null,session:null,draft:'',draftShots:[],fixback:false,batch:null};
+ push(i,{t:'report',text:o.desc||o.title,shots:(o.shots||[]).map(x=>addShot(Array.isArray(x)?shotSvg(...x):x)),ops:o.ops||null,src:i.source});
+ return i;
+}
+function startFix(i,how){
+ i.session=i.session||S.session++;i.state=1;i.deferred=false;i.fixback=false;i.batch=null;
+ sys(i,(how||'你选择开始修复')+' · 修复会话 '+sess(i.session));
+}
+/* 一起修：同一个修复会话带几条，batch 是共用的编号数组 */
+function startBatch(list){
+ list=list.slice().sort((a,b)=>b.id-a.id);
+ const n=S.session++,ids=list.map(x=>x.id);
+ list.forEach(i=>{
+  const others=list.filter(x=>x!==i).map(x=>'#'+pad3(x.id)).join('、');
+  i.session=n;startFix(i,'和 '+others+' 一起修');i.batch=ids;
+ });
+ return list;
+}
+const siblings=i=>i.batch?i.batch.map(byId).filter(j=>j&&j!==i&&j.batch===i.batch):[];
+function inflight(i){return i.batch?[i,...siblings(i)].filter(j=>j.state===1&&j.session===i.session).sort((a,b)=>b.id-a.id):[i]}
+const SUM_VAR=['先按提报的步骤复现，找到出错的位置后修正，并补上相近的边界情况。','原因是状态没有跟着变化而更新，改成每次进入时重新计算。','把重复出现的处理合并成一处，避免两边各改各的。'];
+const VER_VAR=['按提报时的操作步骤再走一遍，核对结果是否符合预期。','换一个窗口宽度和一份不同的内容，各试一次。','先照旧操作一遍确认修好了，再看相邻的功能有没有受影响。'];
+const PRE_VAR=['按提报步骤走一遍结果正确','窄窗口和宽窗口下表现一致','重复操作两次结果仍然一致'];
+function fixFor(i){
+ if(!i.batch)return undefined;
+ const k=(i.batch.indexOf(i.id)+i.thread.filter(e=>e.t==='fix').length)%3;
+ return{summary:'针对「'+i.title+'」：'+SUM_VAR[k],verify:VER_VAR[k],prevent:PRE_VAR[k]};
+}
+function handBack(i,fix){
+ const f=fix||FIX[i.judgement.feature]||FIX.def;
+ i.fix={summary:f.summary,verify:f.verify,prevent:f.prevent};i.state=2;i.fixback=false;
+ push(i,{t:'fix',fix:{...i.fix}});
+}
+function confirmFix(i){i.state=3;i.fixback=false;sys(i,'你确认修好了 · 已解决',true)}
+function dismiss(i,text){
+ const m=text.match(/#\s*(\d+)/);
+ i.state=4;i.deferred=false;
+ if(m){i.dismiss={type:'dup',of:+m[1],text};sys(i,'标记为重复 · #'+pad3(+m[1]),true)}
+ else{i.dismiss={type:'drop',text};sys(i,'不处理 · '+text,true)}
+}
+function convert(i){
+ const n=i.thread.length;
+ i.req={id:'R-'+pad3(i.id),title:i.title,desc:i.desc||i.title,shots:i.thread.filter(e=>e.t==='report'||e.t==='user').reduce((a,e)=>a+(e.shots||[]).length,0),entries:n};
+ i.state=4;i.deferred=false;
+ sys(i,'转为需求 · 草稿 '+i.req.id);sys(i,'问题已关闭，后续在需求里跟进',true);
+}
+
+/* ---------- 种子数据 ---------- */
+(function seed(){
+ let idc=33;
+ const mk=o=>{o.id=idc--;const i=makeIssue(o);S.issues.push(i);
+  if(o.kind){addJudge(i,o.kind,o.feat);i.judgement.feature=o.feat||null;i.judgement.confirmedFeature=!!o.conf}
+  return i};
+ const aiAsk=(i,txt)=>{push(i,{t:'user',text:txt,shots:[]});push(i,{t:'ai',text:'收到，我再确认一点。'})};
+ /* 待处理 */
+ mk({title:'归档文档仍出现在现行列表',desc:'检查主线文档列表时，同一份归档文档仍出现在「现行」分组里。',src:'Agent',kind:'bug',feat:'RF-103'});
+ mk({title:'能不能加一个把全部问题导出成 PDF 的功能',desc:'月底要给团队看一遍所有问题，希望能一键导出成 PDF。',kind:'req'});
+ mk({title:'点了按钮没有反应',desc:'',kind:'ask'});
+ mk({title:'找不到已经解决的问题',desc:'上周确认修好的那条，现在列表里看不到了。',kind:'usage'});
+ mk({title:'窄窗口下，文档名称遮住了状态',desc:'把窗口缩小后，长文档标题盖住了右侧的状态标签。',src:'测试页',shots:[['窄窗口 · 文档列表',200]],ops:['打开「文档登记」页面','把窗口宽度拖到 700px 以下','选中标题最长的一份文档','观察右侧状态标签位置'],kind:'bug',feat:'RF-103'});
+ mk({title:'希望大图里可以按层折叠模块',desc:'模块多了以后一屏看不完，想把某一层整体收起来。',kind:'req',feat:'RF-134',conf:true});
+ mk({title:'折叠章节后，锚点跳转位置偏移',desc:'先折叠前一节，再点右侧目录，页面停在目标标题下方一截。',shots:[['锚点落点偏下',30]],kind:'bug',feat:'RF-105',conf:true});
+ mk({title:'文档详情的返回按钮文字被截断',desc:'窄窗口打开文档详情，返回按钮只显示第一个字。',kind:'bug',feat:'RF-103'});
+ mk({title:'设计稿的旧版本怎么看',desc:'改过几次之后想对比最早那版。',kind:'usage',feat:'RF-121'});
+ {const i=mk({title:'有时候打开会有点卡',desc:'不是每次都卡。',kind:'ask'});
+  push(i,{t:'user',text:'在需求页，刚打开的时候',shots:[]});push(i,{t:'ai',text:'收到，我换个问法。'});addJudge(i,'ask',null)}
+ {const i=mk({title:'深色模式下代码块边框偏淡',desc:'晚上用的时候几乎看不到代码块的边框。',kind:'bug',feat:'RF-105',conf:true});i.deferred=true;sys(i,'以后再说')}
+ {const i=mk({title:'导出的页面也想带上目录',desc:'导出时如果能带目录就更方便。',kind:'req',feat:'RF-105'});i.deferred=true;sys(i,'以后再说')}
+ mk({title:'页面标题里出现了两个连续空格',desc:'在只读页面里，标题中间的空格比预期宽。',src:'Agent',kind:'bug',feat:'RF-105'});
+ mk({title:'旅程页没有说明每一步的出处',desc:'看旅程时不知道每一步是谁说的。',kind:'ask',feat:'RF-134'});
+ /* 处理中 */
+ {const i=mk({title:'切换项目后，需求列表仍显示旧项目的条目',desc:'从项目 A 切到项目 B，列表里还有 A 的几条需求。',kind:'bug',feat:'RF-110',conf:true});i.session=2;startFix(i)}
+ {const i=mk({title:'保存设计稿后缩略图没有更新',desc:'保存之后回到列表，缩略图还是旧的。',src:'Agent',kind:'bug',feat:'RF-121',conf:true});i.session=4;startFix(i);push(i,{t:'user',text:'顺便看看改名之后是不是也一样。',shots:[]})}
+ {const i=mk({title:'修复会话编号在历史记录里重复',desc:'历史记录里出现了两个「会话 04」。',kind:'bug',feat:'RF-128'});i.session=4;startFix(i)}
+ {const a=mk({title:'需求列表的空状态文案出现了两遍',desc:'列表里没有条目时，「还没有需求」连着显示了两次。',kind:'bug',feat:'RF-110',conf:true});
+  const b=mk({title:'需求详情的返回链接点了没有反应',desc:'从需求详情点左上角的返回，页面停着不动。',src:'Agent',kind:'bug',feat:'RF-110',conf:true});
+  startBatch([a,b])}
+ /* 待你确认 */
+ {const i=mk({title:'切换模块后，仍显示上一个模块的旅程',desc:'在大图里依次打开两个模块，右侧旅程仍停在第一个模块。',shots:[['旅程停在上一个模块',150]],kind:'bug',feat:'RF-134',conf:true});i.session=3;startFix(i);handBack(i)}
+ {const i=mk({title:'页面标题出现重复空格',desc:'标题中出现两个空格。',kind:'bug',feat:'RF-105',conf:true});i.session=2;startFix(i);handBack(i)}
+ {const i=mk({title:'需求列表筛选后，计数没有更新',desc:'选了一个状态，列表变了，但页签上的数字没变。',kind:'bug',feat:'RF-110',conf:true});i.session=1;startFix(i);handBack(i,{summary:'筛选条件改变时重新统计各状态的条数。',verify:'依次切换状态和功能点，核对页签数字与列表条数一致。',prevent:'筛选后页签计数与列表一致'})}
+ /* 已解决 */
+ {const i=mk({title:'文档登记里怎么改状态',desc:'想把一份旧文档标成参考。',kind:'usage',feat:'RF-103',conf:true});sys(i,'你确认已有用法解决了问题 · 已解决',true);i.state=3}
+ {const i=mk({title:'锚点标题被顶栏遮住',desc:'点目录后标题被固定顶栏盖住一半。',kind:'bug',feat:'RF-105',conf:true});i.session=1;startFix(i);handBack(i);confirmFix(i)}
+ {const i=mk({title:'旅程步骤的序号从 0 开始',desc:'第一步显示成「0」。',src:'测试页',ops:['打开「大图」','选择任一有旅程的模块','查看右侧第一步序号'],kind:'bug',feat:'RF-134',conf:true});i.session=2;startFix(i);handBack(i);confirmFix(i)}
+ {const i=mk({title:'问题列表怎么只看某个功能点的',desc:'',kind:'usage',feat:'RF-110',conf:true});sys(i,'你确认已有用法解决了问题 · 已解决',true);i.state=3}
+ {const i=mk({title:'设计稿保存按钮点两次会出现两份',desc:'手快点了两下，列表里多了一份。',kind:'bug',feat:'RF-121',conf:true});i.session=3;startFix(i);handBack(i);confirmFix(i)}
+ /* 不处理 */
+ {const i=mk({title:'希望把问题导出为 PDF',desc:'给没有账号的同事看。',shots:[['导出入口设想',270]],kind:'req',feat:'RF-110',conf:true});push(i,{t:'user',text:'范围先按当前筛选的结果。',shots:[]});push(i,{t:'ai',text:'好的，我把这一点记进草稿里。'});convert(i)}
+ {const i=mk({title:'同一份文档在列表里出现两次',desc:'和之前反馈的现象一样。',kind:'bug',feat:'RF-103',conf:true});dismiss(i,'#33')}
+ {const i=mk({title:'想把主题色换成绿色',desc:'',kind:'req'});dismiss(i,'暂时只保留一套主题，等需求规划时再看')}
+ {const i=mk({title:'示例项目路径在窄窗口下显示不全',desc:'路径被省略号截掉了。',src:'Agent',kind:'bug',feat:'RF-105',conf:true});dismiss(i,'只出现在示例项目里，实际项目不受影响')}
+ S.seeding=false;
+ S.issues.sort((a,b)=>b.id-a.id);S.tab=0;S.sel=S.issues.find(i=>i.state===0&&!i.deferred).id;
+})();
+
+/* ---------- 查询 ---------- */
+const byId=id=>S.issues.find(i=>i.id===id);
+const cur=()=>byId(S.sel);
+const featOK=i=>S.feat==='all'||(S.feat==='none'?!i.judgement.feature:i.judgement.feature===S.feat);
+const eligible=i=>!!i&&i.state===0&&i.judgement.kind==='bug'&&!i.deferred&&!i.busy;
+const pickList=()=>[...S.pick].map(byId).filter(eligible).sort((a,b)=>b.id-a.id);
+function multiHint(l){
+ const k=new Set(l.map(i=>i.judgement.feature||''));
+ if(k.size>1)return '涉及 '+k.size+' 个功能点，分开修更稳。';
+ if(k.has('')&&l.length>1)return '这几条都还没关联功能点，分开修更稳。';
+ return '';
+}
+function prunePick(){if(S.tab!==0)S.pick.clear();else S.pick=new Set(pickList().map(i=>i.id))}
+function phrase(i){
+ if(i.state===0){if(i.busy)return['分析中','blue'];if(i.deferred)return['以后再说','quiet'];if(i.judgement.kind==='ask')return['等你补充','amber'];return['等你决定','blue']}
+ if(i.state===1)return[i.batch?'修复中 · 一起修 '+i.batch.length+' 条':'修复中','blue'];
+ if(i.state===2)return['等你确认','amber'];
+ if(i.state===3)return['已解决','green'];
+ return[i.req?'已转需求':i.dismiss&&i.dismiss.type==='dup'?'重复':'不处理','quiet'];
+}
+function visible(){
+ return S.issues.filter(i=>i.state===S.tab&&featOK(i)&&(S.tab!==0||S.kind==='all'||i.judgement.kind===S.kind))
+  .sort((a,b)=>(a.deferred-b.deferred)||b.id-a.id);
+}
+function reveal(i){
+ if(S.tab!==i.state)S.tab=i.state;
+ if(!featOK(i))S.feat='all';
+ if(S.tab===0&&S.kind!=='all'&&i.judgement.kind!==S.kind)S.kind='all';
+}
+
+/* ---------- 渲染：左栏 ---------- */
+function renderTabs(){
+ const base=S.issues.filter(featOK);
+ $('#tabs').innerHTML=ST.map((n,k)=>{const c=base.filter(i=>i.state===k).length;
+  return `<button class="tab${k===2&&c>0?' attn':''}" role="tab" aria-selected="${S.tab===k}" data-act="tab" data-k="${k}"><b>${c}</b><span>${n}</span></button>`}).join('');
+}
+function renderChips(){
+ const el=$('#chips');el.hidden=S.tab!==0;if(S.tab!==0){el.innerHTML='';return}
+ const base=S.issues.filter(i=>i.state===0&&featOK(i));
+ const defs=[['all','全部'],...Object.entries(KIND)];
+ el.innerHTML=defs.map(([k,n])=>{const c=k==='all'?base.length:base.filter(i=>i.judgement.kind===k).length;
+  return `<button class="chip" aria-pressed="${S.kind===k}" data-act="kind" data-k="${k}">${n} ${c}</button>`}).join('');
+}
+function renderFeatSelect(){
+ const sel=$('#featsel');
+ if(!sel.options.length)sel.innerHTML=[['all','全部功能点'],...Object.keys(FEATS).map(c=>[c,fname(c)]),['none','未关联']].map(([v,n])=>`<option value="${v}">${esc(n)}</option>`).join('');
+ sel.value=S.feat;
+}
+function renderRows(){
+ const v=visible();
+ $('#rows').innerHTML=v.length?v.map(i=>{
+  const [p,c]=phrase(i),f=i.judgement.feature;
+  const pk=S.tab!==0?'':eligible(i)?`<label class="pk"><input type="checkbox" data-act="chk" data-id="${i.id}" aria-label="选择 #${pad3(i.id)}，一起修"${S.pick.has(i.id)?' checked':''}></label>`:'<span class="pk"></span>';
+  return `<div class="rw${i.deferred?' deferred':''}${i.id===S.sel?' cur':''}">${pk}<button class="row" data-act="open" data-id="${i.id}" aria-current="${i.id===S.sel}">
+   <strong>${esc(i.title)}</strong>
+   <span class="meta"><span>#${pad3(i.id)}</span><span title="${f?esc(fname(f)):''}">${f?f:'未关联'}</span>${i.source!=='你'?`<span class="src">${esc(i.source)}</span>`:''}<span class="ph ${c}">${p}</span></span></button></div>`}).join('')
+  :'<div class="empty">这个筛选下还没有问题。</div>';
+}
+function renderSelbar(){
+ const el=$('#selbar'),l=pickList();
+ if(!l.length){el.hidden=true;el.innerHTML='';return}
+ const shown=new Set(visible().map(i=>i.id)),hid=l.filter(i=>!shown.has(i.id)).length;
+ const fs=new Set(l.map(i=>i.judgement.feature||'')),f=fs.size===1?[...fs][0]:'';
+ const more=f?S.issues.filter(i=>eligible(i)&&i.judgement.feature===f&&!S.pick.has(i.id)).length:0;
+ const hint=multiHint(l);
+ el.hidden=false;
+ el.innerHTML=`<div class="r1"><b>已选 ${l.length} 条</b><button class="quiet" data-act="selclear">取消选择</button><button class="primary" data-act="batchfix"${l.length<2?' disabled title="至少选 2 条"':''}>一起修</button></div>`
+  +(hid?`<div class="note">其中 ${hid} 条不在当前筛选里</div>`:'')
+  +(more?`<div class="note"><button class="link" data-act="selfeat" data-c="${f}">把 ${f} 的另外 ${more} 条也选上</button></div>`:'')
+  +(hint?`<div class="note warn">${hint}</div>`:'');
+}
+function renderList(){prunePick();renderTabs();renderChips();renderFeatSelect();renderRows();renderSelbar()}
+function refreshPick(refocus){renderRows();renderSelbar();if(refocus){const r=document.querySelector(`.row[data-id="${S.sel}"]`);if(r)r.focus()}}
+
+/* ---------- 渲染：右栏 ---------- */
+function thumbs(ids,removable){
+ return ids&&ids.length?`<div class="thumbs">${ids.map(id=>`<span style="position:relative"><button class="th" data-act="zoom" data-sid="${id}" aria-label="放大截图"><img alt="截图" src="${S.shots[id]}"></button>${removable?`<button class="x" data-act="rmshot" data-sid="${id}" aria-label="移除这张截图">×</button>`:''}</span>`).join('')}</div>`:'';
+}
+function judgeCard(i,e,idx,lastJ){
+ if(idx!==lastJ)return `<div class="collapsed">之前判断：${KIND[e.kind]}</div>`;
+ const j=i.judgement,k=e.kind,open=i.state===0&&!i.busy,b=(a,t,p)=>`<button data-act="${a}"${p?' class="primary"':' class="quiet"'}>${t}</button>`;
+ let acts='';
+ if(open){
+  if(i.deferred)acts=b('undefer','拿回来处理')+'<span class="hint">已标记「以后再说」，随时可以拿回来</span>'+b('drop','不处理');
+  else if(k==='bug')acts=b('fix','开始修复',1)+b('toreq','其实是新需求')+b('defer','以后再说')+b('drop','不处理');
+  else if(k==='req')acts=b('toreq','转为需求',1)+b('fixasbug','按问题直接修')+b('defer','以后再说')+b('drop','不处理');
+  else if(k==='usage')acts=b('solved','解决了',1)+b('stillno','还是不行')+b('drop','不处理');
+  else acts=b('investigate','直接交给 AI 排查')+b('drop','不处理');
+ }
+ return `<div class="entry card"><div class="lbl"><span class="aitag">AI · 模拟</span><span>AI 初判</span><span class="at">${esc(e.at)}</span></div>
+  <h3><span class="kdot" style="background:${KCLR[k]}"></span>${KIND[k]}</h3>
+  <p>${esc(e.reason)}</p>
+  ${k==='ask'?`<div class="q"><b>我想问：</b>${esc(e.q)}</div>`:''}
+  ${k!=='ask'&&j.feature?`<div class="feat">建议关联：${esc(fname(j.feature))}</div>`:''}
+  ${acts?`<div class="actions">${acts}</div>`:''}</div>`;
+}
+function fixCard(i,e,idx,lastF){
+ const f=e.fix,open=i.state===2&&idx===lastF,n=sess(i.session||0);
+ return `<div class="entry card fix"><div class="lbl"><span>修复报告 · 修复会话 ${n}</span><span class="at">${esc(e.at)}</span></div>
+  <div class="part"><b>改了什么</b><p>${esc(f.summary)}</p></div>
+  <div class="part"><b>怎样验证</b><p>${esc(f.verify)}</p><button disabled aria-disabled="true" style="margin-top:4px">去验证</button><span class="hint">之后接测试页</span></div>
+  <div class="part"><b>防止再发生</b><span class="check">用例 · ${esc(f.prevent)}</span><span class="hint">之后接用例登记</span></div>
+  ${open?`<div class="actions"><button class="primary" data-act="confirmfix">确认修好了</button><button class="quiet" data-act="stillbad">还有问题</button></div>`:''}</div>`;
+}
+function entry(i,e,idx,lj,lf){
+ switch(e.t){
+  case 'report':return `<div class="entry report"><div class="lbl"><span>提报 · ${esc(e.src)}</span><span class="at">${esc(e.at)}</span></div>
+   <p>${esc(e.text)}</p>${thumbs(e.shots)}${e.ops?`<details class="ops"><summary>操作记录（${e.ops.length} 步）</summary><ol>${e.ops.map(o=>`<li>${esc(o)}</li>`).join('')}</ol></details>`:''}</div>`;
+  case 'user':return `<div class="entry bubble me"><div class="lbl"><span>你</span><span class="at">${esc(e.at)}</span></div>${e.text?`<p>${esc(e.text)}</p>`:''}${thumbs(e.shots)}</div>`;
+  case 'ai':return `<div class="entry bubble ai"><div class="lbl"><span class="aitag">AI · 模拟</span><span class="at">${esc(e.at)}</span></div><p>${esc(e.text)}</p></div>`;
+  case 'sys':return `<div class="sys${e.close?' close':''}"><span>${esc(e.text)}</span></div>`;
+  case 'judge':return judgeCard(i,e,idx,lj);
+  case 'fix':return fixCard(i,e,idx,lf);
+ }
+ return '';
+}
+function sibsHtml(i,all){
+ const l=siblings(i);if(!l.length)return '';
+ const sc=['','blue','amber','green'];
+ return `<div class="sibs"><span class="muted small">一起修的还有</span>${l.map(j=>{const st=j.state===2?'等你确认':j.state===3?'已解决':j.state===1?'修复中':ST[j.state];
+  return `<button class="sibchip" data-act="jump" data-id="${j.id}" title="#${pad3(j.id)} ${esc(j.title)}"><span class="mono">#${pad3(j.id)}</span><span class="t">${esc(j.title)}</span>${all||j.state!==1?`<span class="st ph ${j.state===2?'amber':j.state===3?'green':j.state===1?'blue':'quiet'}">${st}</span>`:''}</button>`}).join('')}</div>`;
+}
+function threadHtml(i){
+ const lj=last(i,'judge'),lf=last(i,'fix');
+ let h=i.thread.map((e,k)=>entry(i,e,k,lj,lf)).join('');
+ if(i.busy)h+=`<div class="entry card"><div class="lbl"><span class="aitag">AI · 模拟</span><span>AI 初判</span></div><div class="analysing"><span class="spin"></span><b>正在分析…</b></div><p class="muted small">已收到。你可以返回列表继续记别的问题。</p></div>`;
+ if(i.state===1){
+  const n=inflight(i).length;
+  h+=`<div class="wait"><span>修复会话 ${sess(i.session)} 正在处理${i.batch?' · 一起修 '+i.batch.length+' 条':''}</span><button class="quiet" data-act="opensess">打开会话</button><button class="sim" data-act="handback">模拟：修复会话交回${i.batch?'（'+n+' 条）':''}</button>${sibsHtml(i,false)}</div>`;
+ }
+ if(i.state===2&&i.batch&&siblings(i).length)h+=`<div class="wait">${sibsHtml(i,true)}<span class="hint" style="margin-left:0;flex-basis:100%">每一条都要单独看过再确认。</span></div>`;
+ return `<div class="inner">${h}</div>`;
+}
+function stripHtml(i){
+ const j=i.judgement,f=j.feature;
+ let h='<span class="muted small">相关功能点</span>';
+ if(!f)h+=`<span class="fchip none">未关联</span><button class="s" data-act="pick">关联功能点</button>`;
+ else if(!j.confirmedFeature)h+=`<span class="fchip ai">${esc(fname(f))} · AI 判断，待确认</span><button class="s" data-act="featok" aria-label="功能点判断正确">对</button><button class="s" data-act="pick" aria-label="更改功能点">改</button>`;
+ else h+=`<button class="fchip link" data-act="featfilter" title="只看这个功能点的问题">${esc(fname(f))}</button>`;
+ if(S.picker)h+=`<div class="picker" role="menu">${Object.keys(FEATS).map(c=>`<button role="menuitem" data-act="setfeat" data-c="${c}">${esc(fname(c))}</button>`).join('')}</div>`;
+ return `<div class="strip">${h}</div>`;
+}
+function renderHead(i){
+ if(!i){$('#dhead').innerHTML='';return}
+ const p=phrase(i);
+ $('#dhead').innerHTML=`<div class="inner"><div><span class="mono">问题 #${pad3(i.id)}</span><span class="pill" style="color:${SCLR[i.state]}">${ST[i.state]}</span><span class="pill">${esc(p[0])}</span></div>
+  <h2>${esc(i.title)}</h2><div class="muted small">来源：${esc(i.source)}</div>${stripHtml(i)}</div>`;
+}
+function replyKey(i){return [i.id,i.state,i.busy,replyHot(i),i.draftShots.length,i.fixback,i.deferred].join('|')}
+function replyHot(i){return i.fixback||(i.state===0&&!i.busy&&!i.deferred&&i.judgement.kind==='ask')}
+function placeholder(i){
+ if(i.state===1)return '补充给修复会话…';
+ if(i.state===2)return i.fixback?`说说还有什么问题，发送后回到修复会话 ${sess(i.session)}…`:'有话想说，直接回复…';
+ if(i.judgement.kind==='ask'&&!i.busy)return '回答 AI 的问题，或补充你看到的情况…';
+ return '不同意这个判断，或想补充什么，直接说…';
+}
+let rkey='';
+function renderReply(i){
+ const el=$('#reply');
+ if(!i){el.hidden=true;return}
+ el.hidden=false;
+ const k=replyKey(i)+(i.state>2?'c':'')+(i.req?'r':'');
+ if(k===rkey)return;rkey=k;
+ el.className='replybox'+(replyHot(i)?' hot':'');
+ if(i.state>2){
+  el.innerHTML=`<div class="closedbar">${i.req?'<span>已转为需求，后续在需求里跟进</span>':`<span>这条问题已${i.state===3?'解决':'关闭'}</span><button class="quiet" data-act="reopen">重新打开</button>`}</div>`;return;
+ }
+ el.innerHTML=`<div class="inner">${thumbs(i.draftShots,true)}<textarea id="rtext" rows="1" aria-label="回复" placeholder="${esc(placeholder(i))}"></textarea>
+  <div class="tools"><button class="quiet" data-act="attach" aria-label="添加截图">▣ 截图</button><input type="file" id="rfile" accept="image/*" multiple hidden><span class="grow">Enter 发送 · Shift+Enter 换行 · 可直接粘贴截图</span><button class="primary" data-act="send">发送</button></div></div>`;
+ const t=$('#rtext');t.value=i.draft;autosize(t);
+}
+function autosize(t){t.style.height='auto';t.style.height=Math.min(t.scrollHeight+2,160)+'px'}
+function renderDetail(){
+ const i=cur();
+ document.body.classList.toggle('reading',!!i&&document.body.classList.contains('reading'));
+ if(!i){$('#dhead').innerHTML='';$('#thread').innerHTML='<div class="noselect">选择一条问题查看详情</div>';renderReply(null);return}
+ renderHead(i);renderReply(i);
+ const th=$('#thread'),stick=S.lastSel!==i.id||S.lastLen!==i.thread.length+'|'+i.state+'|'+i.busy;
+ const top=th.scrollTop;
+ th.innerHTML=threadHtml(i);
+ if(stick)th.scrollTop=th.scrollHeight;else th.scrollTop=top;
+ S.lastSel=i.id;S.lastLen=i.thread.length+'|'+i.state+'|'+i.busy;
+}
+function render(){renderList();renderDetail()}
+function after(i){S.picker=false;if(i)reveal(i);render()}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),1800)}
+const focusReply=()=>{const t=$('#rtext');if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length)}};
+
+/* ---------- AI 模拟 ---------- */
+function analyse(i,reply){
+ i.busy=true;after(i);
+ setTimeout(()=>{
+  const prev=i.judgement.kind;
+  let kind,text=allText(i);
+  if(reply){kind=classify(reply);if(kind==='ask'){kind=classify(text);if(prev==='usage'&&kind==='usage')kind='ask'}}
+  else kind=classify(text);
+  const feat=guessFeat(text);
+  if(reply){
+   push(i,{t:'ai',text:kind==='ask'?'收到。还差一点信息，我换个问法。':kind==='bug'?'谢谢，这下清楚了：这是已有功能的问题。':kind==='req'?'明白了，这更像是希望产品多做一件事。':'这个其实已经能做到，用法写在下面。'});
+  }
+  addJudge(i,kind,feat);
+  i.busy=false;
+  const cs=cur();if(cs&&cs.id===i.id)after(i);else render();
+ },1000);
+}
+function send(){
+ const i=cur();if(!i||i.state>2)return;
+ const text=i.draft.trim(),shots=i.draftShots.slice();
+ if(!text&&!shots.length)return;
+ push(i,{t:'user',text,shots});
+ i.draft='';i.draftShots=[];
+ if(i.state===2){i.state=1;i.fixback=false;sys(i,'回到修复会话 '+sess(i.session));after(i);rkey='';renderReply(i)}
+ else if(i.state===1){after(i);rkey='';renderReply(i)}
+ else{i.deferred=false;if(!i.busy){rkey='';analyse(i,text||'（附了截图）')}else after(i)}
+ rkey='';renderReply(i);
+}
+
+/* ---------- 对话框 ---------- */
+const dlg=$('#dlg');
+function openDialog(o){
+ $('#dtitle').textContent=o.title;$('#dbody').innerHTML=o.body;
+ $('#dok').textContent=o.ok||'确定';$('#dok').hidden=!o.ok;$('#dcancel').textContent=o.cancel||'取消';
+ S.dlg=o;dlg.showModal();if(o.onOpen)o.onOpen();
+ const f=dlg.querySelector('input:not([type=file]),textarea');if(f)f.focus();
+}
+function closeDialog(){S.dlg=null;if(dlg.open)dlg.close()}
+$('#dform').addEventListener('submit',e=>{
+ e.preventDefault();const o=S.dlg;if(!o)return;
+ const r=o.onOk?o.onOk($('#dform')):undefined;if(r!==false)closeDialog();
+});
+dlg.addEventListener('close',()=>{S.dlg=null});
+let draftNew=[];
+function newShotsHtml(){return draftNew.length?thumbs(draftNew,true):''}
+function openReport(){
+ draftNew=[];
+ openDialog({title:'记个问题',ok:'记下',body:`
+  <label class="field">哪里出了问题？<input name="title" required maxlength="180" placeholder="用一句话说说看到的现象"></label>
+  <label class="field">补充说明（选填）<textarea name="desc" placeholder="你做了什么，实际看到了什么？"></textarea></label>
+  <div><b>截图（选填）</b><p class="muted small" style="margin:2px 0 6px">在上面的输入框里粘贴截图，或点下面选择图片。</p><div id="newshots"></div><button type="button" data-act="pickfile">选择图片</button><input type="file" id="nfile" accept="image/*" multiple hidden></div>
+  <details class="samples"><summary>试用示例</summary>
+   <button type="button" data-act="sample" data-t="切换模块后，旅程还是上一个模块的">是问题：切换模块后，旅程还是上一个模块的</button>
+   <button type="button" data-act="sample" data-t="希望能把全部问题导出为 PDF">可转需求：希望能把全部问题导出为 PDF</button>
+   <button type="button" data-act="sample" data-t="找不到已经解决的问题">已有用法：找不到已经解决的问题</button>
+   <button type="button" data-act="sample" data-t="点了按钮没有反应">待补充：点了按钮没有反应</button></details>
+  <p class="muted small">提交后 AI 先初判，下一步由你决定。</p>`,
+  onOk(f){
+   const title=f.elements.title.value.trim();if(!title){f.elements.title.focus();return false}
+   const id=Math.max(...S.issues.map(x=>x.id))+1;
+   const i=makeIssue({id,title,desc:f.elements.desc.value.trim(),shots:[]});
+   i.thread[0].shots=draftNew.slice();
+   S.issues.unshift(i);S.sel=id;S.kind='all';S.feat='all';S.tab=0;
+   if(innerWidth<680)document.body.classList.add('reading');
+   closeDialog();analyse(i);return false;
+  }});
+}
+function addFiles(files,target){
+ for(const f of files){if(!f.type.startsWith('image/'))continue;const id=addShot(URL.createObjectURL(f));target.push(id)}
+}
+function refreshNew(){const el=$('#newshots');if(el)el.innerHTML=newShotsHtml()}
+
+/* ---------- 事件 ---------- */
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-act]');
+ if(!t){if(S.picker&&!e.target.closest('.picker')){S.picker=false;renderHead(cur())}return}
+ const a=t.dataset.act,i=cur();
+ switch(a){
+  case 'tab':if(+t.dataset.k!==0)S.pick.clear();S.tab=+t.dataset.k;S.kind='all';ensureSel();render();break;
+  case 'kind':S.kind=t.dataset.k;ensureSel();render();break;
+  case 'open':S.sel=+t.dataset.id;S.picker=false;if(innerWidth<680)document.body.classList.add('reading');render();break;
+  case 'back':document.body.classList.remove('reading');break;
+  case 'new':openReport();break;
+  case 'dcancel':closeDialog();break;
+  case 'sample':{const f=$('#dform').elements.title;f.value=t.dataset.t;f.focus();break}
+  case 'pickfile':$('#nfile').click();break;
+  case 'zoom':openDialog({title:'截图',cancel:'关闭',body:`<img class="big" alt="放大的截图" src="${S.shots[t.dataset.sid]}">`});break;
+  case 'rmshot':{const id=+t.dataset.sid;if(S.dlg&&$('#newshots')){draftNew=draftNew.filter(x=>x!==id);refreshNew()}else if(i){i.draftShots=i.draftShots.filter(x=>x!==id);rkey='';renderReply(i);focusReply()}break}
+  case 'attach':$('#rfile').click();break;
+  case 'send':send();break;
+  case 'pick':S.picker=!S.picker;renderHead(i);break;
+  case 'setfeat':i.judgement.feature=t.dataset.c;i.judgement.confirmedFeature=true;S.picker=false;sys(i,'关联功能点 · '+fname(t.dataset.c));after(i);break;
+  case 'featok':i.judgement.confirmedFeature=true;sys(i,'你确认了功能点 · '+fname(i.judgement.feature));after(i);break;
+  case 'featfilter':S.feat=i.judgement.feature;S.tab=i.state;render();break;
+  case 'fix':startFix(i);after(i);break;
+  case 'fixasbug':startFix(i,'你选择按问题直接修');after(i);break;
+  case 'investigate':startFix(i,'你选择直接交给 AI 排查');after(i);break;
+  case 'defer':i.deferred=true;sys(i,'以后再说');after(i);break;
+  case 'undefer':i.deferred=false;sys(i,'拿回来处理');after(i);break;
+  case 'solved':i.state=3;sys(i,'你确认已有用法解决了问题 · 已解决',true);after(i);break;
+  case 'stillno':i.draft='还是不行，';rkey='';renderReply(i);focusReply();break;
+  case 'toreq':openDialog({title:'转为需求',ok:'创建需求草稿',body:`<p>这条问题会变成一份需求草稿，下面这些会一起带过去：</p><ul><li>问题描述</li><li>截图（${i.thread.reduce((n,e)=>n+((e.t==='report'||e.t==='user')&&e.shots?e.shots.length:0),0)} 张）</li><li>整个对话（${i.thread.length} 条）</li></ul><p class="muted small">原问题会移到「不处理」，标记为「已转需求」。</p>`,onOk(){convert(i);after(i)}});break;
+  case 'drop':openDialog({title:'不处理',ok:'确定',body:`<label class="field">原因，或重复的问题编号（如 #18）<input name="why" required maxlength="120" placeholder="一句话就够"></label>`,onOk(f){const v=f.elements.why.value.trim();if(!v){f.elements.why.focus();return false}dismiss(i,v);after(i)}});break;
+  case 'reqview':openDialog({title:'需求草稿 '+i.req.id,cancel:'关闭',body:`<h3 style="margin:0 0 6px">${esc(i.req.title)}</h3><p>${esc(i.req.desc)}</p><p class="muted small">带过来的内容：截图 ${i.req.shots} 张 · 对话 ${i.req.entries} 条 · 来源 问题 #${pad3(i.id)}</p><p class="muted small">（模拟的草稿，仅用于演示）</p>`});break;
+  case 'opensess':toast('（模拟）这里会打开修复会话 '+sess(i.session));break;
+  case 'handback':inflight(i).forEach(j=>handBack(j,fixFor(j)));after(i);break;
+  case 'confirmfix':{
+   confirmFix(i);
+   const sb=siblings(i),order=[...sb.filter(j=>j.id<i.id),...sb.filter(j=>j.id>i.id)].sort((a,b)=>b.id-a.id),
+    pend=sb.filter(j=>j.state===2),nx=order.find(j=>j.state===2);
+   if(nx){S.sel=nx.id;after(nx);toast('还有 '+pend.length+' 条等你确认')}else after(i);
+   break}
+  case 'jump':{const j=byId(+t.dataset.id);if(j){S.sel=j.id;S.picker=false;if(innerWidth<680)document.body.classList.add('reading');after(j)}break}
+  case 'chk':{const id=+t.dataset.id;if(t.checked)S.pick.add(id);else S.pick.delete(id);renderSelbar();break}
+  case 'selclear':S.pick.clear();refreshPick();break;
+  case 'selfeat':S.issues.filter(x=>eligible(x)&&x.judgement.feature===t.dataset.c).forEach(x=>S.pick.add(x.id));refreshPick();break;
+  case 'batchfix':{
+   const l=pickList();if(l.length<2)break;
+   const hint=multiHint(l);
+   openDialog({title:'一起修 '+l.length+' 条问题',ok:'开始修复 '+l.length+' 条',
+    body:`<p>这几条会放进同一个修复会话，修好后逐条交给你确认。</p><ul class="blist">${l.map(x=>`<li><span class="mono">#${pad3(x.id)}</span> ${esc(x.title)}<span class="f">${x.judgement.feature?esc(fname(x.judgement.feature)):'未关联功能点'}</span></li>`).join('')}</ul>${hint?`<p class="small" style="color:var(--amber)">${hint}</p>`:''}`,
+    onOk(){
+     const go=pickList();if(go.length<2)return;
+     const done=startBatch(go);S.pick.clear();S.sel=done[0].id;S.picker=false;
+     if(innerWidth<680)document.body.classList.add('reading');after(done[0]);
+    }});break}
+  case 'stillbad':i.fixback=true;rkey='';renderReply(i);focusReply();break;
+  case 'reopen':i.batch=null;i.state=0;i.dismiss=null;i.fixback=false;sys(i,'重新打开');after(i);break;
+ }
+});
+function ensureSel(){const v=visible();if(!v.some(x=>x.id===S.sel))S.sel=v[0]?v[0].id:null}
+$('#featsel').addEventListener('change',e=>{S.feat=e.target.value;ensureSel();render()});
+document.addEventListener('change',e=>{
+ if(e.target.id==='nfile'){addFiles(e.target.files,draftNew);e.target.value='';refreshNew()}
+ if(e.target.id==='rfile'){const i=cur();addFiles(e.target.files,i.draftShots);e.target.value='';rkey='';renderReply(i);focusReply()}
+});
+document.addEventListener('input',e=>{if(e.target.id==='rtext'){const i=cur();i.draft=e.target.value;autosize(e.target)}});
+document.addEventListener('keydown',e=>{
+ const t=e.target;
+ if(t.id==='rtext'&&e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send();return}
+ if(e.key===' '&&!dlg.open&&S.tab===0&&!e.altKey&&!e.ctrlKey&&!e.metaKey&&(t===document.body||(t.classList&&t.classList.contains('row')))){
+  const c=cur();
+  if(eligible(c)){e.preventDefault();if(S.pick.has(c.id))S.pick.delete(c.id);else S.pick.add(c.id);refreshPick(t!==document.body)}
+  return;
+ }
+ if((e.key==='ArrowDown'||e.key==='ArrowUp')&&!dlg.open&&!/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)&&!e.altKey&&!e.ctrlKey&&!e.metaKey){
+  const v=visible();if(!v.length)return;
+  let k=v.findIndex(x=>x.id===S.sel);k=Math.max(0,Math.min(v.length-1,k+(e.key==='ArrowDown'?1:-1)));
+  e.preventDefault();S.sel=v[k].id;S.picker=false;render();
+  const r=document.querySelector(`.row[data-id="${S.sel}"]`);if(r){r.scrollIntoView({block:'nearest'});if(t.classList&&t.classList.contains('row'))r.focus()}
+ }
+ if(e.key==='Escape'&&S.picker){S.picker=false;renderHead(cur())}
+});
+document.addEventListener('keyup',e=>{if(e.key===' '&&e.target.classList&&e.target.classList.contains('row')&&eligible(cur()))e.preventDefault()});
+document.addEventListener('paste',e=>{
+ const files=[...(e.clipboardData?e.clipboardData.items:[])].filter(x=>x.kind==='file'&&x.type.startsWith('image/')).map(x=>x.getAsFile()).filter(Boolean);
+ if(!files.length)return;
+ if(dlg.open&&$('#newshots')){e.preventDefault();addFiles(files,draftNew);refreshNew()}
+ else if(e.target.id==='rtext'){e.preventDefault();const i=cur();addFiles(files,i.draftShots);rkey='';renderReply(i);focusReply()}
+});
+
+render();
+</script>
+</body>
+</html>

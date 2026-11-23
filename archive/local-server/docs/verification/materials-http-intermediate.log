@@ -1,0 +1,90 @@
+test_dirty_noscript_prepare_and_activate_refused_before_domain_mutation (test_seed_material_web.MaterialFormTests.test_dirty_noscript_prepare_and_activate_refused_before_domain_mutation) ... ok
+test_import_requires_literal_registered_fragment_no_decision_inference (test_seed_material_web.MaterialFormTests.test_import_requires_literal_registered_fragment_no_decision_inference) ... ok
+test_reject_paths_readonly_unknown_ids_duplicate_and_missing_bodies (test_seed_material_web.MaterialFormTests.test_reject_paths_readonly_unknown_ids_duplicate_and_missing_bodies) ... ok
+test_revision_covers_draft_publication_state_and_evidence (test_seed_material_web.MaterialFormTests.test_revision_covers_draft_publication_state_and_evidence) ... ok
+test_seven_editors_preview_save_empty_and_exact_newlines (test_seed_material_web.MaterialFormTests.test_seven_editors_preview_save_empty_and_exact_newlines) ... ok
+test_stale_save_retains_input_and_exposes_latest_bundle (test_seed_material_web.MaterialFormTests.test_stale_save_retains_input_and_exposes_latest_bundle) ... ok
+test_strict_sections_preserve_unedited_bytes_and_offer_raw_repair (test_seed_material_web.MaterialFormTests.test_strict_sections_preserve_unedited_bytes_and_offer_raw_repair) ... ok
+test_dirty_main_and_forward_baseline_conflicts_remain_visible (test_seed_material_web.MaterialHTTPPostgresTests.test_dirty_main_and_forward_baseline_conflicts_remain_visible) ... 127.0.0.1 - - [07/Nov/2026 11:01:51] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:52] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:01:52] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:53] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:54] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:01:55] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:56] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:57] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:01:59] "POST /action HTTP/1.1" 409 -
+ok
+test_failed_ready_records_survive_new_process_without_activation (test_seed_material_web.MaterialHTTPPostgresTests.test_failed_ready_records_survive_new_process_without_activation) ... 127.0.0.1 - - [07/Nov/2026 11:02:01] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:01] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:02] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:03] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:04] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:02:05] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:06] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:07] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:09] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:09] "GET /materials?area=context HTTP/1.1" 200 -
+ok
+test_forged_candidate_paths_xss_and_revision_consistency (test_seed_material_web.MaterialHTTPPostgresTests.test_forged_candidate_paths_xss_and_revision_consistency) ... 127.0.0.1 - - [07/Nov/2026 11:02:11] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:12] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:02:13] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:02:14] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:02:14] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:15] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:16] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:17] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:17] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:18] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:20] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:02:21] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:21] "GET /api/revision HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:21] "GET / HTTP/1.1" 200 -
+ok
+test_http_full_bundle_preview_save_prepare_confirm_history_and_reload (test_seed_material_web.MaterialHTTPPostgresTests.test_http_full_bundle_preview_save_prepare_confirm_history_and_reload) ... 127.0.0.1 - - [07/Nov/2026 11:02:23] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:23] "GET /materials?area=agents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:24] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:25] "POST /action HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:26] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:26] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:27] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:28] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:29] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:30] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:31] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:02:33] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:02:34] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:35] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:36] "GET /materials?area=context HTTP/1.1" 200 -
+ok
+test_http_parallel_old_pages_only_one_save_and_one_activation_win (test_seed_material_web.MaterialHTTPPostgresTests.test_http_parallel_old_pages_only_one_save_and_one_activation_win) ... 127.0.0.1 - - [07/Nov/2026 11:02:38] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:39] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:40] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:02:40] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:40] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:41] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:42] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:43] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:43] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:44] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:46] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:46] "POST /action HTTP/1.1" 409 -
+ok
+test_two_stale_pages_save_prepare_and_activate_preserve_inputs (test_seed_material_web.MaterialHTTPPostgresTests.test_two_stale_pages_save_prepare_and_activate_preserve_inputs) ... 127.0.0.1 - - [07/Nov/2026 11:02:47] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:48] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:49] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:50] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:02:51] "POST /action HTTP/1.1" 409 -
+127.0.0.1 - - [07/Nov/2026 11:02:51] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:52] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:53] "GET /materials?area=context&saved=0 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:54] "GET /materials?area=context HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:55] "POST /action HTTP/1.1" 303 -
+127.0.0.1 - - [07/Nov/2026 11:02:56] "GET /materials?area=context&saved=1 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:02:57] "POST /action HTTP/1.1" 409 -
+ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 67.177s
+
+OK

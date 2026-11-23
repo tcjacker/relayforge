@@ -1,0 +1,4 @@
+验收 URL: http://127.0.0.1:49462/materials?area=context
+隔离仓库: /var/folders/b8/p16sj3dj7zx2b6_7jlpdlxxh0000gn/T/tmplklr100e schema: seed_web_b4302e90510a4e39a99fda5c38173092
+命令：fail=模拟后续验证失败；normal=恢复验证；restart=重启 HTTP 监听；quit=清理退出
+验收> 

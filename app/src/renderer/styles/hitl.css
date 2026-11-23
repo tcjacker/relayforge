@@ -1,0 +1,14 @@
+/* 后台运行的会话需要你：右下角的卡片（scripts/hitl.js） */
+#hitl { position: fixed; right: 16px; bottom: 16px; z-index: 60; width: 380px; max-width: calc(100vw - 32px); max-height: 70vh; display: flex; flex-direction: column;
+  background: #171a21; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 28px rgba(0, 0, 0, .18); overflow: hidden; }
+#hitl[hidden] { display: none; }
+.hitl-bar { all: unset; cursor: pointer; padding: 8px 12px; font-weight: 600; background: #2a2414; color: var(--wait); }
+.hitl-list { overflow-y: auto; }
+.hitl-card { padding: 10px 12px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+.hitl-what { display: flex; gap: 6px; align-items: baseline; min-width: 0; }
+.hitl-what code { white-space: pre-wrap; word-break: break-all; font-size: 12px; max-height: 6em; overflow: auto; }
+.hitl-tool { flex: none; font-size: 12px; padding: 0 6px; border-radius: 4px; background: #1e222b; color: var(--muted); }
+.hitl-text { white-space: pre-wrap; max-height: 10em; overflow: auto; font-size: 13px; }
+.hitl-why { font-size: 12px; }
+.hitl-card textarea { width: 100%; box-sizing: border-box; resize: vertical; font: inherit; }
+.hitl-acts { display: flex; gap: 6px; justify-content: flex-end; }

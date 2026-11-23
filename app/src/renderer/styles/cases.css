@@ -1,0 +1,51 @@
+/* 测试用例：需求面板里验收条件下面的用例（.uc）、「待确认的用例改动」（#req-case-changes，样式照「这个需求改了以前的数据」）、
+   加、改用例和归类的对话框（#uc-dlg）。颜色和按钮的写法和 tests.css 一致。 */
+#req-body .uc, #req-case-changes, #uc-dlg { --panel: #171a21; --card: #1d222b; --line: #2c323d; --text: #e6e9ef; --muted: #a1a8b4; --blue: #9bbaff; --green: #80dba6; --amber: #edbf70; --red: #f0a08e }
+#req-body .uc { margin: 6px 0 4px; font-size: 12px; color: var(--text) }
+#req-body .uc-head { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; color: var(--muted) }
+#req-body .uc-head.warn { color: var(--amber) }
+#req-body .uc-head.warn > span::before { content: '! '; font-weight: 700 }
+#req-body .uc button.link, #req-case-changes button.link { background: transparent; border: 0; padding: 0; color: var(--blue); font: inherit; font-size: 12px; cursor: pointer }
+#req-body details.uc-case { border: 1px solid var(--line); border-radius: 7px; background: var(--card); padding: 5px 9px; margin: 5px 0 0 }
+#req-body details.uc-case.sup { border-style: dashed; border-color: #405677 }
+#req-body details.uc-case summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; list-style: none }
+#req-body details.uc-case summary::-webkit-details-marker { display: none }
+#req-body details.uc-case summary::before { content: '▸'; color: var(--muted); font-size: 10px } #req-body details.uc-case[open] summary::before { content: '▾' }
+#req-body .uc-case summary b { font-weight: 600; color: var(--muted) } #req-body .uc-case .uc-name { color: var(--text); overflow-wrap: anywhere }
+#req-body .uc-s { font-weight: 700; width: 12px; text-align: center } #req-body .uc-s.pass { color: var(--green) } #req-body .uc-s.fail, #req-body .uc-s.broken { color: var(--red) }
+#req-body .uc-s.unrun { color: var(--amber) } #req-body .uc-s.unlinked { color: var(--muted) }
+#req-body dl.uc-body { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 8px; margin: 6px 0 2px }
+#req-body dl.uc-body dt { color: var(--muted) } #req-body dl.uc-body dd { margin: 0; overflow-wrap: anywhere }
+#req-body .uc-links { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; margin: 4px 0 0 }
+#req-body button.uc-link { font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text); background: #20242d; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; cursor: pointer }
+#req-body button.uc-link.pass { border-color: #35604a } #req-body button.uc-link.fail, #req-body button.uc-link.broken { border-color: #6d4239 } #req-body button.uc-link.unrun { border-color: #6a5730 }
+#req-body .uc-acts { display: flex; gap: 6px; align-items: center; margin: 6px 0 0 }
+#req-body .uc-acts button, #req-case-changes button { font: inherit; font-size: 12px; color: var(--text); border: 1px solid var(--line); border-radius: 6px; background: #20242d; padding: 2px 8px; cursor: pointer }
+#req-body .uc-acts button.quiet { background: transparent; color: var(--muted) }
+#req-case-changes { color: var(--text) }
+#req-case-changes h2 .n { font-weight: 400 }
+#req-case-changes .note { margin: 0 0 4px; font-size: 12px; color: var(--muted) }
+#req-case-changes .ts-chg pre { margin: 0; padding: 6px 9px; background: #0e1014; border: 1px solid var(--line); border-radius: 6px; color: #c9cfd9; white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace }
+#req-case-changes button.primary, #uc-dlg button.primary { background: #94deb4; color: #11251b; border-color: transparent; font-weight: 600 }
+#req-case-changes .ts-err, #uc-dlg .ts-err { color: var(--red); font-size: 12px }
+#uc-dlg { background: var(--panel); color: var(--text); border: 1px solid #414a57; border-radius: 12px; padding: 20px; width: min(560px, 94vw); max-height: 88vh; overflow: auto }
+#uc-dlg::backdrop { background: #070a10c8 }
+#uc-dlg h2 { margin: 0 0 10px; font-size: 18px }
+#uc-dlg p { margin: 6px 0; font-size: 13px; color: var(--muted) }
+#uc-dlg label.uc-f { display: block; margin: 8px 0; font-size: 13px; color: var(--muted) }
+#uc-dlg label.uc-f > input, #uc-dlg label.uc-f > select, #uc-dlg label.uc-f > textarea { display: block; width: 100%; margin-top: 4px; font: inherit; color: var(--text); background: #20242d; border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; box-sizing: border-box }
+#uc-dlg .uc-row { display: flex; gap: 10px } #uc-dlg .uc-row .grow { flex: 1 }
+#uc-dlg .uc-kinds label { display: block; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin: 6px 0; cursor: pointer }
+#uc-dlg .uc-kinds small { display: block; color: var(--muted); margin: 2px 0 0 20px }
+#uc-dlg button { font: inherit; color: var(--text); border: 1px solid var(--line); border-radius: 6px; background: #20242d; padding: 5px 12px; cursor: pointer }
+#uc-dlg button.quiet { background: transparent; color: var(--muted) }
+#uc-dlg .ts-row { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px }
+#gate .gate-warn { color: #e7c27d }
+/* 查看器：这条数据对接的用例 */
+#ts-viewer .tv-uc { border: 1px solid #405677; border-radius: 8px; background: #192331; padding: 8px 11px; margin: 0 0 10px; font-size: 12px }
+#ts-viewer .tv-uc dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 8px; margin: 5px 0 0 } #ts-viewer .tv-uc dt { color: var(--muted) } #ts-viewer .tv-uc dd { margin: 0 }
+#ts-viewer .tv-uc.none { border-color: #6a5730; background: #231f15 }
+#ts-viewer .tv-case .uc-tag { font: 10px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--blue); margin-left: 4px }
+#req-case-changes .ts-chg .ov { grid-template-columns: minmax(0, 1fr) } /* 面板窄：原来和改成上下排 */
+#req-case-changes .ts-chg pre { max-height: none; overflow: visible; font-size: 12px; line-height: 1.6; font-family: inherit }
+#req-body .uc-acts button.quiet, #req-body .uc button { text-decoration: none }

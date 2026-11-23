@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>需求</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F4FD1}a:hover{color:#163A9C}
+</style>
+</helmet>
+<div style="min-height: 1180px; background: #F4F5F7; color: #15171C; font-family: Inter, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif; font-size: 14px; line-height: 1.5">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #DDE1E8">
+<div style="max-width: 1440px; margin: 0 auto; padding: 0 32px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px">
+<div style="display: flex; align-items: center; gap: 10px; padding: 14px 0">
+<span style="font-weight: 700; font-size: 16px">RelayForge</span>
+<span style="color: #5A6170">项目：示例游戏引擎</span>
+<a href="New.dc.html" style="display: inline-flex; align-items: center; min-height: 44px">新建产品</a>
+</div>
+<nav aria-label="主导航" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+<a href="Home.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">首页</a>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">产品功能</a>
+<a href="Progress.dc.html" aria-current="page" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #15171C; font-weight: 600; border-bottom: 2px solid #1F4FD1">需求</a>
+<a href="Control.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">研发管控</a>
+<a href="Context.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">设计资料</a>
+<a href="Tests.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; color: #5A6170; border-bottom: 2px solid transparent">测试与体验</a>
+</nav>
+<span style="padding: 3px 10px; border: 1px dashed #8A919E; border-radius: 4px; color: #5A6170; font-size: 12px">示例数据</span>
+</div>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 28px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div>
+<h1 style="margin: 0; font-size: 24px; font-weight: 700">需求</h1>
+<p style="margin: 4px 0 0; color: #5A6170">每一次想让产品发生的变化都是一条需求。它可以影响多个功能点：每个功能点一个开发任务，整条需求一起验收；验收通过后，它的修改才并入 PRD。</p>
+</div>
+<button type="button" onClick="{{openNew}}" style="min-height: 36px; padding: 0 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">提一个需求</button>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<section aria-label="需求列表" style="flex: 1 1 280px; max-width: 360px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; overflow: hidden">
+<div style="display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 10px 0">
+<sc-for list="{{filters}}" as="t" hint-placeholder-count="3">
+<button type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="min-height: 30px; padding: 0 12px; font: inherit; font-size: 13px; font-weight: {{t.weight}}; color: {{t.ink}}; background: {{t.bg}}; border: none; border-radius: 15px; cursor: pointer">{{t.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 10px 8px; border-bottom: 1px solid #DDE1E8">
+<sc-for list="{{scaleFilters}}" as="t" hint-placeholder-count="4">
+<button type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="min-height: 26px; padding: 0 10px; font: inherit; font-size: 12px; font-weight: {{t.weight}}; color: {{t.ink}}; background: {{t.bg}}; border: 1px solid {{t.edge}}; border-radius: 13px; cursor: pointer">{{t.label}}</button>
+</sc-for>
+</div>
+<div style="padding: 8px">
+<sc-for list="{{list}}" as="q" hint-placeholder-count="4">
+<button type="button" onClick="{{q.pick}}" aria-pressed="{{q.pressed}}" style="display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 10px; box-sizing: border-box; font: inherit; text-align: left; color: #15171C; background: {{q.bg}}; border: none; border-radius: 6px; cursor: pointer">
+<span style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; color: #5A6170; font-family: ui-monospace, SFMono-Regular, Menlo, monospace">{{q.code}}</span><span style="padding: 1px 8px; border-radius: 4px; background: {{q.scaleBg}}; font-size: 12px">{{q.scale}}</span><span style="padding: 1px 8px; border-radius: 10px; background: {{q.statusBg}}; font-size: 12px">{{q.status}}</span></span>
+<span style="font-weight: 600">{{q.title}}</span>
+<span style="font-size: 13px; color: #5A6170">{{q.scope}}</span>
+</button>
+</sc-for>
+</div>
+</section>
+
+<section aria-label="需求详情" style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 8px; overflow: hidden">
+<div style="padding: 18px 24px; background: #F8F9FB; border-bottom: 1px solid #DDE1E8">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<span style="font-size: 12px; letter-spacing: 0.06em; color: #5A6170">需求 / {{sel.code}}</span>
+<span style="padding: 2px 10px; border-radius: 4px; background: {{sel.scaleBg}}; font-size: 13px">{{sel.scale}}</span>
+<span style="padding: 2px 10px; border-radius: 4px; background: {{sel.statusBg}}; font-size: 13px">{{sel.status}}</span>
+</div>
+<h2 style="margin: 6px 0 4px; font-size: 22px; font-weight: 700">{{sel.title}}</h2>
+<div style="color: #5A6170">来源：{{sel.src}} · {{sel.when}}</div>
+<div style="margin-top: 8px; padding: 8px 12px; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 6px; font-size: 13px; color: #3A4050">{{sel.scaleNote}}</div>
+</div>
+
+<div style="padding: 20px 24px 28px; display: flex; flex-direction: column; gap: 22px">
+
+<div>
+<h3 style="margin: 0 0 4px; font-size: 13px; font-weight: 600; color: #5A6170">要发生的变化</h3>
+<p style="margin: 0">{{sel.desc}}</p>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">影响</h3>
+<span style="font-size: 13px; color: #5A6170">{{impactNote}}</span>
+</div>
+<div style="border: 1px solid #DDE1E8; border-radius: 8px; overflow: hidden">
+<sc-for list="{{impact}}" as="g" hint-placeholder-count="4">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 12px 14px; border-top: 1px solid #EEF0F3">
+<div style="flex: 0 0 132px; font-size: 13px; font-weight: 600; color: #5A6170">{{g.title}}</div>
+<div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<sc-if value="{{g.empty}}" hint-placeholder-val="{{false}}"><span style="color: #5A6170">{{g.emptyText}}</span></sc-if>
+<sc-for list="{{g.items}}" as="x" hint-placeholder-count="2">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: baseline">
+<span style="flex: none; padding: 1px 8px; border-radius: 10px; background: {{x.tagBg}}; font-size: 12px">{{x.tag}}</span>
+<span style="flex: 1 1 240px">{{x.text}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+<span style="font-size: 13px; color: #5A6170">「有记录」来自功能点依赖、任务和用例，是完整的；「推断」是 Copilot 的判断，可能有遗漏。受影响的下游功能点只会收到提示，不要求逐个核对。</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">PRD 增量</h3>
+<span style="font-size: 13px; color: #5A6170">这条需求要对 PRD 做的修改；验收通过后才并入 PRD</span>
+</div>
+<sc-if value="{{noDelta}}" hint-placeholder-val="{{false}}">
+<p style="margin: 0; color: #5A6170">{{noDeltaText}}</p>
+</sc-if>
+<sc-for list="{{deltas}}" as="d" hint-placeholder-count="1">
+<div style="padding: 12px 14px; border: 1px solid #DDE1E8; border-radius: 8px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<strong>{{d.feat}}</strong>
+<span style="font-size: 13px; color: #5A6170">基于：{{d.base}}</span>
+<span style="padding: 1px 8px; border-radius: 10px; background: {{d.stateBg}}; font-size: 12px">{{d.state}}</span>
+</div>
+<sc-for list="{{d.items}}" as="i" hint-placeholder-count="2">
+<div style="display: flex; gap: 10px; align-items: baseline">
+<span style="flex: 0 0 40px; text-align: center; padding: 1px 0; border-radius: 4px; background: {{i.bg}}; font-size: 12px; font-weight: 600">{{i.op}}</span>
+<span>{{i.text}}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">开发任务</h3>
+<span style="font-size: 13px; color: #5A6170">一个功能点一个任务；阶段由 Coding Agent 开工时写入仓库</span>
+</div>
+<sc-if value="{{noDevs}}" hint-placeholder-val="{{false}}">
+<p style="margin: 0; padding: 16px; text-align: center; color: #5A6170; border: 1px dashed #B9C0CC; border-radius: 6px">{{devNote}}</p>
+</sc-if>
+<sc-for list="{{devs}}" as="r" hint-placeholder-count="2">
+<div style="border: 1px solid #DDE1E8; border-radius: 8px; overflow: hidden">
+<button type="button" onClick="{{r.toggle}}" aria-expanded="{{r.expanded}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; width: 100%; min-height: 40px; padding: 8px 12px; box-sizing: border-box; font: inherit; text-align: left; color: #15171C; background: #F8F9FB; border: none; cursor: pointer">
+<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" style="flex: none; transform: rotate({{r.rot}}deg)"><path d="M4 2l4 4-4 4" fill="none" stroke="#5A6170" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<strong>{{r.feat}}</strong>
+<span style="padding: 1px 8px; border-radius: 10px; background: {{r.statusBg}}; font-size: 12px">{{r.status}}</span>
+<span style="flex: 1 1 160px; min-width: 0; font-size: 13px; color: #5A6170">{{r.prd}}</span>
+<span style="flex: none; font-size: 13px; color: #5A6170">{{r.summary}}</span>
+</button>
+<sc-if value="{{r.open}}" hint-placeholder-val="{{true}}">
+<div style="padding: 4px 4px 6px">
+<div style="padding: 6px 12px; font-size: 12px; color: #5A6170; font-family: ui-monospace, SFMono-Regular, Menlo, monospace">{{r.file}}</div>
+<sc-if value="{{r.hasCases}}" hint-placeholder-val="{{false}}">
+<div style="padding: 4px 12px 8px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 13px; font-weight: 600; color: #5A6170">程序检查的用例</div>
+<sc-for list="{{r.cases}}" as="u" hint-placeholder-count="1">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: baseline">
+<a href="Tests.dc.html" style="flex: none; font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace">{{u.id}}</a>
+<span style="flex: 1 1 240px">{{u.text}}</span>
+<span style="flex: none; padding: 1px 8px; border-radius: 10px; background: {{u.bg}}; font-size: 12px">{{u.result}}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{r.empty}}" hint-placeholder-val="{{false}}">
+<p style="margin: 0 8px 8px; padding: 16px; text-align: center; color: #5A6170; border: 1px dashed #B9C0CC; border-radius: 6px">还没有开工。Coding Agent 开工时会生成阶段计划写入上面这个文件。</p>
+</sc-if>
+<sc-for list="{{r.stages}}" as="g" hint-placeholder-count="3">
+<div style="display: flex; gap: 14px; padding: 14px 12px; border-top: 1px solid #EEF0F3; background: {{g.rowBg}}; border-radius: 6px">
+<span style="flex: none; width: 26px; height: 26px; border-radius: 50%; background: {{g.dot}}; color: {{g.dotInk}}; text-align: center; line-height: 26px; font-size: 13px; font-weight: 600">{{g.n}}</span>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<strong>{{g.title}}</strong>
+<span style="padding: 1px 8px; border-radius: 10px; background: {{g.tagBg}}; font-size: 12px">{{g.status}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 6px 20px">
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">主要工作</div><div>{{g.work}}</div></div>
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">完成标准</div><div>{{g.done}}</div></div>
+</div>
+<div style="font-size: 13px; color: #3A4050"><span style="font-weight: 600">现状　</span>{{g.now}}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">验收任务</h3>
+<span style="font-size: 13px; color: #5A6170">针对整条需求；引用需要真实模型或你亲自试的用例</span>
+</div>
+<sc-if value="{{noAccs}}" hint-placeholder-val="{{false}}">
+<p style="margin: 0; padding: 16px; text-align: center; color: #5A6170; border: 1px dashed #B9C0CC; border-radius: 6px">{{noAccText}}</p>
+</sc-if>
+<sc-for list="{{accs}}" as="c" hint-placeholder-count="1">
+<div style="padding: 14px; border: 1px solid #DDE1E8; border-radius: 8px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<strong>{{c.title}}</strong>
+<span style="padding: 1px 8px; border-radius: 10px; background: {{c.statusBg}}; font-size: 12px">{{c.status}}</span>
+<span style="padding: 1px 8px; border-radius: 4px; background: #EEF0F3; font-size: 12px">{{c.by}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 6px 20px">
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">引用的用例</div>
+<sc-for list="{{c.cases}}" as="u" hint-placeholder-count="1">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: baseline; margin-top: 4px">
+<a href="Tests.dc.html" style="flex: none; font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace">{{u.id}}</a>
+<span style="flex: 1 1 200px">{{u.text}}</span>
+<span style="flex: none; padding: 1px 8px; border-radius: 10px; background: {{u.bg}}; font-size: 12px">{{u.result}}</span>
+</div>
+</sc-for>
+</div>
+<div><div style="font-size: 13px; font-weight: 600; color: #5A6170">依赖</div><div>{{c.dep}}</div></div>
+</div>
+<div style="font-size: 13px; color: #3A4050"><span style="font-weight: 600">现状　</span>{{c.now}}</div>
+<sc-if value="{{c.canPass}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" onClick="{{c.pass}}" style="min-height: 34px; padding: 0 14px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">记为通过</button>
+<button type="button" style="min-height: 34px; padding: 0 14px; font: inherit; color: #15171C; background: #FFFFFF; border: 1px solid #B9C0CC; border-radius: 6px; cursor: pointer">不通过，说明原因</button>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+
+</div>
+</section>
+
+</div>
+</main>
+
+<sc-if value="{{chatOpen}}" hint-placeholder-val="{{false}}">
+<section aria-label="Copilot 对话" style="position: fixed; right: 24px; bottom: 24px; width: 400px; max-width: calc(100% - 32px); z-index: 10; background: #FFFFFF; border: 1px solid #C9D3EA; border-radius: 12px; box-shadow: 0 16px 40px rgba(21, 23, 28, 0.22); display: flex; flex-direction: column; overflow: hidden">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; background: #163A9C; color: #FFFFFF">
+<span style="font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap"><strong>Copilot</strong> · {{pageName}}</span>
+<button type="button" onClick="{{toggleChat}}" style="flex: none; min-height: 24px; padding: 0 8px; font: inherit; font-size: 12px; color: #FFFFFF; background: none; border: 1px solid #8FA8E6; border-radius: 6px; cursor: pointer">收起</button>
+</div>
+<div style="padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 320px; max-height: 560px; overflow-y: auto">
+<sc-for list="{{msgs}}" as="m" hint-placeholder-count="1">
+<div style="display: flex; flex-direction: column">
+<sc-if value="{{m.me}}" hint-placeholder-val="{{false}}">
+<div style="align-self: flex-end; max-width: 88%; padding: 9px 13px; background: #1F4FD1; color: #FFFFFF; border-radius: 12px 12px 2px 12px">{{m.text}}</div>
+</sc-if>
+<sc-if value="{{m.ai}}" hint-placeholder-val="{{true}}">
+<div style="align-self: flex-start; max-width: 96%; padding: 9px 13px; background: #F4F5F7; border-radius: 12px 12px 12px 2px">{{m.text}}</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="padding: 10px 12px; border-top: 1px solid #DDE1E8; background: #F8F9FB; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="2">
+<button type="button" onClick="{{c.pick}}" style="min-height: 32px; padding: 6px 12px; font: inherit; font-size: 13px; text-align: left; color: #163A9C; background: #E6EDFB; border: none; border-radius: 8px; cursor: pointer">{{c.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; gap: 8px; align-items: flex-end">
+<textarea id="chat-text" aria-label="和 Copilot 讨论" placeholder="描述你想调整的内容" rows="3" value="{{draft}}" onChange="{{setDraft}}" style="flex: 1 1 auto; min-width: 0; padding: 8px 10px; font: inherit; border: 1px solid #B9C0CC; border-radius: 6px; resize: vertical; background: #FFFFFF"></textarea>
+<button type="button" onClick="{{send}}" style="flex: none; min-height: 34px; padding: 0 14px; font: inherit; font-weight: 600; color: #FFFFFF; background: #1F4FD1; border: none; border-radius: 6px; cursor: pointer">发送</button>
+</div>
+</div>
+</section>
+</sc-if>
+<sc-if value="{{chatClosed}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{toggleChat}}" style="position: fixed; right: 24px; bottom: 24px; z-index: 10; min-height: 38px; padding: 0 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: #163A9C; border: none; border-radius: 19px; box-shadow: 0 12px 32px rgba(21, 23, 28, 0.22); cursor: pointer">Copilot</button>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+renderVals() {
+const st = this.state || {};
+const CODE = { 'Lifecycle FSM': 'RF-101', 'Scenario Plugin': 'RF-102', '小时推进': 'RF-103', 'NPC 亲历记忆': 'RF-104', '态度与世界状态': 'RF-105', '世界状态快照': 'RF-098', '不属于功能点': 'task' };
+const BASE = [
+{ id: 'REQ-10', scale: '缺陷', title: '没有快照时打开列表会报错', status: '开发中', src: '问题清单', when: '11-11 提出', desc: 'PRD 写的是「按保存时间列出全部快照」。一份快照都没有时，列表应该是空的，现在却整页报错。这是实现不符合 PRD，不是要改产品。', feats: ['世界状态快照'],
+delta: [{ feat: '世界状态快照', base: 'PRD v2', to: 'v2，行为描述不变', items: [['新增', '复现用例：一份快照都没有时打开列表；显示空列表，不报错']] }],
+dev: [{ feat: '世界状态快照', prd: '基于 PRD v2', stages: [['修复空列表', '没有快照时返回空列表', '复现用例通过，原有用例不回退', 'doing', 'Worker 正在修改列表查询']] }],
+acc: [['原有用例和复现用例全部通过', '程序', '没有快照时打开列表，显示空列表；UC-01、UC-03 仍然通过。', '本需求的开发任务', '未开始', '开发任务完成后由程序判定，不需要你试用']] },
+{ id: 'REQ-9', scale: '小改', title: '快照列表的时间精确到分钟', status: '待验收', src: '调整功能点 · 世界状态快照', when: '11-11 提出', desc: '列表里的保存时间从「11-10」改成「11-10 14:32」。', feats: ['世界状态快照'],
+delta: [{ feat: '世界状态快照', base: 'PRD v2', to: 'v3', items: [['修改', '快照列表的保存时间显示到分钟']] }],
+dev: [{ feat: '世界状态快照', prd: '基于 PRD v2', stages: [['改时间格式', '列表的时间显示到分钟', '原有用例仍然通过', 'done', '已合入，程序测试通过']] }],
+acc: [['你看一眼列表', '你试用', '打开快照列表，时间显示到分钟。', '本需求的开发任务', '待验收', '开发任务已完成，等你看一眼']] },
+{ id: 'ENG-1', scale: '工程任务', title: '时间推进的测试不再依赖本机时区', status: '开发中', src: '问题清单', when: '11-10 提出', desc: '现在的测试在不同时区的机器上结果不一样。这是测试自身的问题，不改变产品的任何行为。', feats: [],
+delta: [], dev: [{ feat: '不属于功能点', prd: '不涉及 PRD', stages: [['固定测试用的时区', '测试里显式指定时区，不读本机设置', '在两个不同时区下运行，结果一致', 'done', '已合入'], ['清理依赖本机时间的断言', '把用当前时间作输入的测试改成固定时间', '全部已通过的用例仍然通过', 'doing', 'Worker 正在逐个修改']] }],
+acc: [] },
+{ id: 'REQ-7', title: '保存快照时可以加备注', status: '待验收', src: '调整功能点 · 世界状态快照', when: '11-08 提出', desc: '保存快照时可以填写一句备注，列表里显示出来，方便之后找到想看的那一份。', feats: ['世界状态快照'],
+delta: [{ feat: '世界状态快照', base: 'PRD v2', to: 'v3', items: [['新增', '保存快照时可以填写备注'], ['修改', '快照列表除了时间，还显示备注']] }],
+dev: [{ feat: '世界状态快照', prd: '基于 PRD v2', stages: [
+['保存备注', '保存快照时一并保存备注', '带备注保存后再读取，备注与保存时一致', 'done', '已合入，程序测试通过'],
+['列表显示备注', '在快照列表里显示备注', '列表每一行显示时间和备注；没有备注的显示为空', 'done', '已合入']] }],
+acc: [['你保存一份带备注的快照并在列表里找到它', '你试用', '保存时填写备注，列表里能看到这句备注。', '本需求的开发任务', '待验收', '开发任务已完成，等你试用']] },
+{ id: 'REQ-6', title: '第一个场景可以试玩', status: '未开始', src: '提需求', when: '11-01 提出', desc: '把生命周期、时间推进和 NPC 心智合在一起，由你完整试玩第一个场景。它不改动任何功能点，只做验收。', feats: [], lock: true, delta: [], dev: [],
+acc: [['你完整试玩第一个场景', '你试玩', '从开场到结束走完一个场景，过程中没有顺序错误，NPC 只提到它经历过的事。', '需求 REQ-3 和 REQ-5 完成', '未开始', '等待依赖的需求完成']] },
+{ id: 'REQ-5', title: 'NPC 有自己的记忆和态度', status: '讨论中', src: '提需求', when: '10-30 提出', desc: 'NPC 只知道自己经历或看到的事，对玩家的态度随之变化。', feats: ['NPC 亲历记忆', '态度与世界状态'], delta: [{ feat: 'NPC 亲历记忆', base: '还没有 PRD', to: 'v1', items: [['新增', '只记录 NPC 亲历和目击的事件'], ['新增', '对话时只引用自己的记忆']] }, { feat: '态度与世界状态', base: '还没有 PRD', to: 'v1', items: [['新增', '态度随发生过的事件更新'], ['新增', '态度影响对话']] }], dev: [], devNote: '方案还在讨论：记忆保留多久没有定。你决定之后才会生成开发任务。', acc: [] },
+{ id: 'REQ-4', title: '跨日交接要有顺序校验', status: '待验收', src: '调整功能点 · Lifecycle FSM', when: '11-06 提出', desc: '跨日交接必须在整点提交完成之后进行；顺序颠倒时拒绝并报告。', feats: ['Lifecycle FSM'], waits: 'REQ-3',
+delta: [{ feat: 'Lifecycle FSM', base: 'REQ-3 的增量（尚未并入）', to: 'v2', items: [['新增', '跨日交接的顺序校验：必须在整点提交完成之后进行'], ['修改', '顺序颠倒时拒绝并报告；原先只校验整点提交']] }],
+dev: [{ feat: 'Lifecycle FSM', prd: '基于 REQ-3 的增量', stages: [['跨日交接校验', '实现跨日交接的顺序校验；顺序颠倒时拒绝并报告', '整点提交先于跨日交接；错误顺序被拒绝，不悄悄继续', 'done', '已合入，程序测试通过']] }],
+acc: [['把时间推过零点，确认提交先于交接', '你试用', '从 23 点推进到 0 点，记录里提交出现在跨日交接之前。', '本需求的开发任务', '等你决定', '你试过一次，发现恰好落在整点时两条校验的先后没写明；这一点定下来才能判定通过']] },
+{ id: 'REQ-3', title: '场景能按生命周期推进', status: '开发中', src: '新建产品', when: '10-28 提出', desc: '每个场景按同一套阶段推进，场景以插件形式接入，世界时间按小时前进。', feats: ['Lifecycle FSM', 'Scenario Plugin', '小时推进'],
+delta: [{ feat: 'Lifecycle FSM', base: '还没有 PRD', to: 'v1', items: [['新增', '统一的生命周期阶段和钩子'], ['新增', '整点提交的顺序校验']] }, { feat: 'Scenario Plugin', base: '还没有 PRD', to: 'v1', items: [['新增', '场景以插件形式注册和加载'], ['新增', '插件按生命周期钩子被调用']] }, { feat: '小时推进', base: '还没有 PRD', to: 'v1', items: [['新增', '按小时推进世界时间'], ['新增', '整点触发一次提交']] }],
+dev: [
+{ feat: 'Lifecycle FSM', prd: '还没有 PRD，从零开始', stages: [
+['钩子接口与阶段定义', '定义生命周期有哪些阶段、钩子接口和阶段切换规则', '接口合入主干，阶段只能按定义的顺序切换', 'done', '接口已合入，相关程序测试通过'],
+['整点提交校验', '实现整点提交的顺序校验', '提交顺序错误时拒绝并报告', 'done', '已合入，程序测试通过'],
+['接入运行时入口', '让引擎主循环通过生命周期钩子推进场景，替换原有的推进代码', '最小场景经由钩子跑完一个小时，原有测试不回退', 'doing', 'Worker 正在修改入口调用并运行测试'],
+['与场景插件、小时推进联调', '用一个最小场景插件，配合小时推进跑完整一天', '固定答案下一整天各阶段按顺序被调用', 'todo', '依赖 Scenario Plugin 的注册与加载']] },
+{ feat: 'Scenario Plugin', prd: '还没有 PRD，从零开始', stages: [
+['插件接口定义', '定义场景插件的接口和它能用的生命周期钩子', '接口合入主干', 'done', '接口定义已合入'],
+['注册与加载', '实现插件的注册、发现和加载', '注册一个最小场景插件后，引擎能列出并加载它', 'ready', '可派工，等你派工'],
+['与生命周期联调', '让生命周期各阶段调用到已加载的插件', '各阶段都调用到这个插件', 'todo', '依赖 Lifecycle FSM 接入运行时入口']] },
+{ feat: '小时推进', prd: '还没有 PRD，从零开始', stages: [
+['推进逻辑', '实现按小时推进世界时间', '每次推进一小时，整点必定触发一次提交', 'done', '推进逻辑已合入'],
+['与生命周期联调', '按生命周期规定的顺序触发提交和跨日交接', '从 23 点推进一小时，日期进入下一天并触发跨日交接', 'done', '联调通过；这条用例改坏后不报警，需要补强'],
+['补强验收样例', '补一条改坏后会报警的整点提交用例', '把提交顺序改错时，用例报错', 'ready', '可派工，等你派工']] }
+],
+acc: [
+['用真实模型跑最小场景的一整天', 'AI 用真实模型', '一整天内各阶段按顺序被调用，没有顺序错误；结果与固定答案分别留证据。', '本需求的 3 个开发任务', '未开始', '等待开发任务完成'],
+['你试玩最小场景', '你试玩', '你按验收样例走一遍，时间显示和场景推进符合预期。', '上一个验收任务通过', '未开始', '等待上一个验收任务']] },
+{ id: 'REQ-2', title: '快照可以按时间列出', status: '已完成', src: '调整功能点 · 世界状态快照', when: '10-12 提出，10-20 完成', desc: '按保存时间列出全部快照，并能在回放页面里选择要看的那一份。', feats: ['世界状态快照'],
+delta: [{ feat: '世界状态快照', base: 'PRD v1', to: 'v2', items: [['新增', '按保存时间列出全部快照'], ['修改', '回放页面：从列表里选择要看的快照']] }],
+dev: [{ feat: '世界状态快照', prd: '基于 PRD v1', stages: [
+['按时间列出', '按保存时间列出全部快照', '列表按时间排序，可以逐份打开', 'done', '已合入，程序测试通过'],
+['回放页面接入列表', '在只读回放页面上选择要看的快照', '从列表选中一份后，页面显示它的状态', 'done', '已合入']] }],
+acc: [['你在回放页面上选一份快照查看', '你试用', '选中任意一份快照，页面显示的状态与保存时一致。', '本需求的开发任务', '已通过', '你于 10-20 试用通过，功能点随后上线']] },
+{ id: 'REQ-1', title: '世界状态可以留档回放', status: '已完成', src: '新建产品', when: '10-05 提出，10-10 完成', desc: '任何时刻的世界状态都能保存下来，之后可以只读回看。', feats: ['世界状态快照'],
+delta: [{ feat: '世界状态快照', base: '还没有 PRD', to: 'v1', items: [['新增', '保存某一时刻的世界状态'], ['新增', '只读回看已保存的状态']] }],
+dev: [{ feat: '世界状态快照', prd: '还没有 PRD，从零开始', stages: [
+['保存与读取', '实现快照的保存和读取', '保存后再读取，内容与保存时一致', 'done', '已合入，程序测试通过'],
+['只读回放页面', '在网页上查看某一份快照', '页面显示的状态与快照一致，不能修改', 'done', '已合入']] }],
+acc: [['你保存一份快照再回看', '你试用', '保存后再读取，内容与保存时一致。', '本需求的开发任务', '已通过', '你于 10-10 试用通过']] }
+];
+const UC = [
+{ id: 'UC-01', feats: ['世界状态快照'], text: '保存一份快照后再读取；内容与保存时一致。', how: '程序', req: 'REQ-1', prd: 'merged', result: '通过', sens: '会报警', ev: [['10-08', 'REQ-1 · 开发任务 · 世界状态快照', '通过']] },
+{ id: 'UC-02', feats: ['世界状态快照'], text: '你保存一份快照，之后在只读回放里回看；看到的状态与保存时一致。', how: '人工', req: 'REQ-1', prd: 'merged', result: '通过', sens: '不适用', ev: [['10-10', 'REQ-1 · 验收任务', '通过，你试用']] },
+{ id: 'UC-03', feats: ['世界状态快照'], text: '保存三份快照后打开列表；按保存时间排序，可以逐份打开。', how: '程序', req: 'REQ-2', prd: 'merged', result: '通过', sens: '未检验', ev: [['10-16', 'REQ-2 · 开发任务 · 世界状态快照', '通过']] },
+{ id: 'UC-04', feats: ['世界状态快照'], text: '你在回放页面上选一份快照；页面显示的状态与保存时一致。', how: '人工', req: 'REQ-2', prd: 'merged', result: '通过', sens: '不适用', ev: [['10-20', 'REQ-2 · 验收任务', '通过，你试用']] },
+{ id: 'UC-05', feats: ['世界状态快照'], text: '带备注保存快照后再读取；备注与保存时一致。', how: '程序', req: 'REQ-7', prd: 'pending', result: '通过', sens: '会报警', ev: [['11-09', 'REQ-7 · 开发任务 · 世界状态快照', '通过']] },
+{ id: 'UC-06', feats: ['世界状态快照'], text: '你保存一份带备注的快照；在列表里能看到这句备注。', how: '人工', req: 'REQ-7', prd: 'pending', result: '尚未运行', sens: '不适用', ev: [] },
+{ id: 'UC-07', feats: ['Lifecycle FSM'], text: '整点提交的调用顺序错误；应拒绝并报告。', how: '程序', req: 'REQ-3', prd: 'pending', result: '通过', sens: '会报警', ev: [['11-03', 'REQ-3 · 开发任务 · Lifecycle FSM', '通过']] },
+{ id: 'UC-08', feats: ['Lifecycle FSM'], text: '用固定答案跑完最小场景的一整天；各阶段按顺序被调用。', how: '固定答案', req: 'REQ-3', prd: 'pending', result: '通过', sens: '未检验', ev: [['11-10', 'REQ-3 · 开发任务 · Lifecycle FSM', '通过；只算固定答案，不算真实模型']] },
+{ id: 'UC-09', feats: ['小时推进'], text: '从 23 点推进一小时；日期进入下一天并触发跨日交接。', how: '程序', req: 'REQ-3', prd: 'pending', result: '通过', sens: '不报警', ev: [['11-09', 'REQ-3 · 开发任务 · 小时推进', '通过'], ['11-09', '改坏检查', '把提交顺序改错后，这条用例仍然通过']] },
+{ id: 'UC-10', feats: ['Scenario Plugin'], text: '注册一个最小场景插件；生命周期各阶段都调用到它。', how: '程序', req: 'REQ-3', prd: 'pending', result: '尚未运行', sens: '未检验', ev: [] },
+{ id: 'UC-11', feats: ['Lifecycle FSM', 'Scenario Plugin', '小时推进'], text: '用真实模型跑最小场景的一整天；各阶段按顺序被调用，没有顺序错误。', how: '真实模型', req: 'REQ-3', prd: 'pending', result: '尚未运行', sens: '不适用', ev: [] },
+{ id: 'UC-12', feats: ['Lifecycle FSM', 'Scenario Plugin', '小时推进'], text: '你试玩最小场景；时间显示和场景推进符合预期。', how: '人工', req: 'REQ-3', prd: 'pending', result: '尚未运行', sens: '不适用', ev: [] },
+{ id: 'UC-13', feats: ['Lifecycle FSM'], text: '你把时间从 23 点推进到 0 点；记录里提交出现在跨日交接之前。', how: '人工', req: 'REQ-4', prd: 'pending', result: '待判定', sens: '不适用', ev: [['11-08', 'REQ-4 · 验收任务', '你试过一次，恰好落在整点时先后看不出来，等你决定校验顺序']] },
+{ id: 'UC-14', feats: ['Lifecycle FSM'], text: '跨日交接排在整点提交之前；应拒绝并报告。', how: '程序', req: 'REQ-4', prd: 'pending', result: '通过', sens: '会报警', ev: [['11-07', 'REQ-4 · 开发任务 · Lifecycle FSM', '通过']] },
+{ id: 'UC-15', feats: ['Lifecycle FSM'], text: '跨日交接恰好落在整点；两条校验都应执行。', how: '尚未确定', req: 'REQ-4', prd: 'proposed', result: '尚未运行', sens: '未检验', ev: [] },
+{ id: 'UC-16', feats: ['NPC 亲历记忆'], text: 'NPC 不在场时发生一件事，之后与它对话；它不应提到这件事。', how: '真实模型', req: 'REQ-5', prd: 'pending', result: '尚未运行', sens: '不适用', ev: [] },
+{ id: 'UC-17', feats: [], text: '你从开场到结束完整试玩第一个场景；没有顺序错误，NPC 只提到它经历过的事。', how: '人工', req: 'REQ-6', prd: 'pending', result: '尚未运行', sens: '不适用', ev: [] }
+];
+const UCBG = { '通过': '#E3F2EE', '尚未运行': '#EEF0F3', '待判定': '#FCEBDD', '不报警': '#FCEBDD' };
+const ucPrd = (c) => (c.prd === 'merged' ? '已在 PRD' : (c.prd === 'pending' ? '待并入 · ' + c.req : 'AI 建议，待你确认'));
+const ucPrdBg = (c) => (c.prd === 'merged' ? '#E3F2EE' : (c.prd === 'pending' ? '#FDF6E7' : '#FCEBDD'));
+const ACC_UC = { 'REQ-7': [['UC-06']], 'REQ-6': [['UC-17']], 'REQ-4': [['UC-13']], 'REQ-3': [['UC-11'], ['UC-12']], 'REQ-2': [['UC-04']], 'REQ-1': [['UC-02']] };
+const ST_STAGE = { done: ['已完成', '#E3F2EE', '#0B5D4F', '#FFFFFF', 'transparent'], doing: ['AI 开发中', '#E6F0FC', '#1F4FD1', '#FFFFFF', '#F3F6FE'], ready: ['待派工', '#FCEBDD', '#EEF0F3', '#15171C', 'transparent'], todo: ['未开始', '#EEF0F3', '#EEF0F3', '#5A6170', 'transparent'] };
+const SBG = { '讨论中': '#FCEBDD', '已确认，等待开工': '#EEF0F3', '开发中': '#E6F0FC', '待验收': '#F0EAFB', '已完成': '#E3F2EE', '未开始': '#EEF0F3', '已通过': '#E3F2EE', '等你决定': '#FCEBDD', '进行中': '#E6F0FC', 'AI 开发中': '#E6F0FC', '等待开工': '#EEF0F3', '待验收': '#F0EAFB', '已验收，等待并入': '#F0EAFB' };
+const SCBG = { '完整': '#EEF0F3', '小改': '#E3F2EE', '缺陷': '#FCEBDD', '工程任务': '#F0EAFB' };
+const SCNOTE = {
+'完整': '完整流程：每个受影响的功能点一个开发任务并拆阶段，整条需求验收通过后并入 PRD。',
+'小改': '小改：只影响一个功能点，而且没有其他功能点依赖它。开发任务不拆阶段，你看一眼确认后并入 PRD。',
+'缺陷': '缺陷：实现不符合 PRD。不改 PRD 里的行为描述，只补一条复现用例；原有用例和复现用例由程序判定通过即可。',
+'工程任务': '工程任务：重构或基础设施，不属于任何功能点，不修改 PRD，也不需要你验收；完成标准是已通过的用例全部仍然通过。'
+};
+const scaleOf = (q) => q.scale || '完整';
+const passed = st.passed || {};
+const raw = (st.extra || []).concat(BASE);
+const allPassed = (q) => q.status === '已完成' || (q.acc.length > 0 && (passed[q.id] || 0) >= q.acc.length);
+const doneOf = (id) => { const q = raw.filter((x) => x.id === id)[0]; return q && allPassed(q) && (!q.waits || doneOf(q.waits)); };
+const reqs = raw.map((q) => {
+if (q.status === '已完成' || !allPassed(q)) return q;
+const wait = q.waits && !doneOf(q.waits);
+return Object.assign({}, q, { status: wait ? '已验收，等待并入' : '已完成', when: q.when + (wait ? '' : '，刚刚完成'), waiting: wait });
+});
+const filter = st.filter || 'active';
+const scf = st.scf || '全部';
+const shown = reqs.filter((q) => (filter === 'all' || (filter === 'done') === (q.status === '已完成')) && (scf === '全部' || scaleOf(q) === scf));
+const picked = reqs.filter((q) => q.id === st.picked)[0] || shown[0] || reqs[0];
+const FL = [['active', '进行中 ' + reqs.filter((q) => q.status !== '已完成').length], ['done', '历史 ' + reqs.filter((q) => q.status === '已完成').length], ['all', '全部']];
+const filters = FL.map((t) => { const on = t[0] === filter; return { label: t[1], pressed: on ? 'true' : 'false', weight: on ? 600 : 400, ink: on ? '#FFFFFF' : '#3A4050', bg: on ? '#15171C' : 'transparent', pick: () => this.setState({ filter: t[0], picked: null }) }; });
+const scaleFilters = ['全部', '完整', '小改', '缺陷', '工程任务'].map((l) => { const on = l === scf; return { label: l === '全部' ? '全部规模' : l, pressed: on ? 'true' : 'false', weight: on ? 600 : 400, ink: on ? '#FFFFFF' : '#3A4050', bg: on ? '#3A4050' : '#FFFFFF', edge: on ? '#3A4050' : '#DDE1E8', pick: () => this.setState({ scf: l, picked: null }) }; });
+const list = shown.map((q) => ({ scale: scaleOf(q), scaleBg: SCBG[scaleOf(q)], code: q.id, title: q.title, status: q.status, statusBg: SBG[q.status], scope: q.feats.length ? '影响 ' + q.feats.length + ' 个功能点 · ' + q.dev.length + ' 个开发任务 · ' + q.acc.length + ' 个验收任务' : '只做验收 · ' + q.acc.length + ' 个验收任务', pressed: q.id === picked.id ? 'true' : 'false', bg: q.id === picked.id ? '#E6EDFB' : 'transparent', pick: () => this.setState({ picked: q.id }) }));
+const DOWN = { 'Lifecycle FSM': ['Scenario Plugin', '小时推进'], '小时推进': ['NPC 亲历记忆'], 'NPC 亲历记忆': ['态度与世界状态'] };
+const GUESS = { 'REQ-7': ['只读回放页面的布局可能要为备注留出位置'], 'REQ-4': ['小时推进的整点提交用例 UC-09 可能受校验顺序影响'], 'REQ-3': ['世界状态快照保存的内容里可能要加入生命周期阶段'] };
+const devSt = (r) => (!r.stages.length ? '等待开工' : (r.stages.some((g) => g[3] === 'doing') ? 'AI 开发中' : (r.stages.every((g) => g[3] === 'done') ? '已完成，待验收' : '待派工')));
+const impactOf = (q) => {
+const direct = q.feats;
+const down = [];
+direct.forEach((n) => (DOWN[n] || []).forEach((d) => { if (direct.indexOf(d) < 0 && down.indexOf(d) < 0) down.push(d); }));
+const tasks = [];
+reqs.forEach((o) => { if (o.id === q.id || o.status === '已完成') return; o.dev.forEach((d) => {
+if (direct.indexOf(d.feat) >= 0) tasks.push({ rec: true, text: o.id + ' 的开发任务 · ' + d.feat + '（' + devSt(d) + '）要按这条需求重新核对' });
+else if (down.indexOf(d.feat) >= 0) tasks.push({ rec: false, text: o.id + ' 的开发任务 · ' + d.feat + '（' + devSt(d) + '）可能要重新核对' });
+}); });
+const cases = [];
+UC.forEach((c) => { if (c.req === q.id || c.result !== '通过') return;
+if (c.feats.some((n) => direct.indexOf(n) >= 0)) cases.push({ rec: true, text: c.id + ' 的证据会过期，需要重跑：' + c.text });
+else if (c.feats.some((n) => down.indexOf(n) >= 0)) cases.push({ rec: false, text: c.id + ' 可能需要重跑：' + c.text });
+});
+return { direct, down, tasks, cases, guess: GUESS[q.id] || [] };
+};
+const openMapR = st.devOpen || {};
+const devs = picked.dev.map((r, k) => {
+const key = picked.id + ':' + k;
+const dn = r.stages.filter((g) => g[3] === 'done').length;
+const di = r.stages.map((g) => g[3]).indexOf('doing');
+const open = openMapR[key] !== undefined ? openMapR[key] : (di >= 0 || picked.dev.length === 1);
+const status = !r.stages.length ? '等待开工' : (di >= 0 ? 'AI 开发中' : (dn === r.stages.length ? '已完成' : '进行中'));
+const dc = UC.filter((c) => c.req === picked.id && (c.how === '程序' || c.how === '固定答案') && c.feats.indexOf(r.feat) >= 0).map((c) => ({ id: c.id, text: c.text, result: c.result + (c.sens === '不报警' ? '，改坏后不报警' : ''), bg: c.sens === '不报警' ? '#FCEBDD' : (UCBG[c.result] || '#EEF0F3') }));
+return { cases: dc, hasCases: dc.length > 0, feat: r.feat, prd: r.prd, status, statusBg: SBG[status], summary: r.stages.length ? (di >= 0 ? '阶段 ' + (di + 1) + ' / ' + r.stages.length : '已完成 ' + dn + ' / ' + r.stages.length) : '', file: '.relayforge/requirements/' + picked.id + '/' + (CODE[r.feat] || 'RF-NEW') + '.json', open, expanded: open ? 'true' : 'false', rot: open ? 90 : 0, empty: !r.stages.length,
+toggle: () => this.setState({ devOpen: Object.assign({}, openMapR, { [key]: !open }) }),
+stages: r.stages.map((g, i) => { const t = ST_STAGE[g[3]]; return { n: i + 1, title: g[0], work: g[1], done: g[2], now: g[4], status: t[0], tagBg: t[1], dot: t[2], dotInk: t[3], rowBg: t[4] }; }) };
+});
+const src = raw.filter((x) => x.id === picked.id)[0];
+const np = src.status === '已完成' ? src.acc.length : (passed[picked.id] || 0);
+const devDone = picked.dev.every((r) => r.stages.length > 0 && r.stages.every((g) => g[3] === 'done'));
+const accs = picked.acc.map((c, i) => {
+const ok = i < np;
+const stt = ok ? '已通过' : c[4];
+const ids = ((ACC_UC[picked.id] || [])[i]) || [];
+const refs = UC.filter((u) => ids.indexOf(u.id) >= 0).map((u) => ({ id: u.id, text: u.text, result: ok ? '通过' : u.result, bg: UCBG[ok ? '通过' : u.result] || '#EEF0F3' }));
+return { cases: refs.length ? refs : [{ id: '—', text: c[2], result: ok ? '通过' : '尚未运行', bg: ok ? '#E3F2EE' : '#EEF0F3' }], title: c[0], by: c[1], example: c[2], dep: c[3], status: stt, statusBg: SBG[stt], now: ok && src.status !== '已完成' ? '你刚刚记为通过' : c[5], canPass: !ok && i === np && devDone && !picked.lock, pass: () => this.setState({ passed: Object.assign({}, passed, { [picked.id]: np + 1 }), picked: picked.id, filter: 'all' }) };
+});
+const OPBG = { '新增': '#E3F2EE', '修改': '#E6F0FC', '删除': '#FCEBDD' };
+const deltas = (picked.delta || []).map((d) => {
+const merged = picked.status === '已完成';
+const state = merged ? '已并入 PRD，成为 ' + d.to : (picked.waiting ? '验收已通过；等 ' + picked.waits + ' 并入后再并入' : '尚未并入；验收通过后并入，成为 ' + d.to);
+return { feat: d.feat, base: d.base, state, stateBg: merged ? '#E3F2EE' : (picked.waiting ? '#F0EAFB' : '#EEF0F3'), items: d.items.map((i) => ({ op: i[0], bg: OPBG[i[0]], text: i[1] })).concat(UC.filter((c) => c.req === picked.id && c.prd !== 'proposed' && c.feats[0] === d.feat).map((c) => ({ op: '新增', bg: OPBG['新增'], text: '用例 ' + c.id + '：' + c.text }))) };
+});
+const chat = st.chat || [];
+const flow = st.flow || { stage: 'idle' };
+const chatOpen = !!st.chatOpen;
+const ai = (text) => ({ me: false, ai: true, text });
+const me = (text) => ({ me: true, ai: false, text });
+const COMBOS = [['只影响 世界状态快照', ['世界状态快照']], ['只影响 Lifecycle FSM', ['Lifecycle FSM']], ['影响 NPC 亲历记忆 和 态度与世界状态', ['NPC 亲历记忆', '态度与世界状态']]];
+const create = (scale) => () => {
+const id = 'REQ-' + (11 + (st.extra || []).length);
+const small = scale === '小改'; const bug = scale === '缺陷';
+const q = { id, scale, title: flow.text, status: '已确认，等待开工', src: '提需求', when: '刚刚提出', desc: flow.text, feats: flow.feats,
+delta: flow.feats.map((n) => ({ feat: n, base: '现行 PRD', to: bug ? '版本不变，行为描述不变' : '下一个版本', items: bug ? [['新增', '复现用例：' + flow.text]] : [['修改', flow.text]] })),
+dev: flow.feats.map((n) => ({ feat: n, prd: '基于现行 PRD', stages: [] })),
+acc: [bug ? ['原有用例和复现用例全部通过', '程序', '复现用例通过，原有用例不回退。', '本需求的开发任务', '未开始', '开发任务完成后由程序判定，不需要你试用'] : (small ? ['你看一眼确认', '你试用', flow.text, '本需求的开发任务', '未开始', '等待开发任务完成'] : ['验收：' + flow.text, '你试用', '讨论时没有写明，开工前补充。', '本需求的 ' + flow.feats.length + ' 个开发任务', '未开始', '等待开发任务完成'])] };
+const said = small ? '按小改创建' : (bug ? '这其实是缺陷，不改 PRD' : '按完整流程创建');
+this.setState({ extra: [q].concat(st.extra || []), picked: id, filter: 'active', scf: '全部', flow: { stage: 'idle' }, chat: chat.concat([me(said), ai('已创建 ' + id + '，规模是「' + scale + '」。' + (bug ? '它不改 PRD 的行为描述，只补一条复现用例，由程序判定通过。' : (small ? '开发任务不拆阶段，做完后你看一眼确认就并入 PRD。' : 'PRD 现在不变；增量已记下，验收通过后才并入。')))]) });
+};
+const say = (input) => {
+const text = (input || '').trim();
+if (!text) return;
+if (flow.stage === 'want') { this.setState({ chat: chat.concat([me(text), ai('明白：' + text + '。它会影响哪些功能点？这决定要生成几个开发任务，也决定能不能按小改处理。')]), flow: { stage: 'scope', text }, draft: '' }); return; }
+this.setState({ chat: chat.concat([me(text), ai('收到。原型里这一页只接通了「提一个需求」的流程。')]), draft: '' });
+};
+let chips = [];
+if (flow.stage === 'scope') chips = COMBOS.map((c) => ({ label: c[0], pick: () => {
+const im = impactOf({ id: 'NEW', feats: c[1] });
+const canSmall = c[1].length === 1 && im.down.length === 0;
+const impactText = '影响：' + (im.down.length ? '下游 ' + im.down.join('、') + ' 会收到提示；' : '没有下游功能点；') + im.tasks.length + ' 个在途任务要重新核对；' + im.cases.length + ' 条已通过用例的证据会过期。';
+const scaleText = canSmall ? '规模建议：小改。理由是只影响一个功能点，而且没有其他功能点依赖它。开发任务不拆阶段，做完你看一眼确认。你也可以改成完整流程，或者告诉我这其实是缺陷。' : '规模：完整流程。' + (c[1].length > 1 ? '它影响 ' + c[1].length + ' 个功能点' : '有功能点依赖它') + '，不能按小改处理。';
+this.setState({ chat: chat.concat([me(c[0]), ai('整理如下：需求「' + flow.text + '」；直接修改 ' + c[1].join('、') + '。' + impactText + scaleText)]), flow: { stage: 'confirm', text: flow.text, feats: c[1], canSmall } });
+} }));
+if (flow.stage === 'confirm') chips = (flow.canSmall ? [{ label: '按小改创建', pick: create('小改') }, { label: '按完整流程创建', pick: create('完整') }, { label: '这其实是缺陷，不改 PRD', pick: create('缺陷') }] : [{ label: '按完整流程创建', pick: create('完整') }]).concat([{ label: '再讨论一下', pick: () => this.setState({ chat: chat.concat([me('再讨论一下'), ai('好，说说哪里要调整？')]), flow: { stage: 'want' } }) }]);
+return {
+impact: (() => {
+const im = impactOf(picked);
+const tag = (rec) => (rec ? { tag: '有记录', tagBg: '#E3F2EE' } : { tag: '推断', tagBg: '#FDF6E7' });
+const grp = (title, items, emptyText) => ({ title, items, empty: !items.length, emptyText });
+return [
+grp('直接修改的功能点', im.direct.map((n) => Object.assign({ text: n }, tag(true))), '不修改任何功能点'),
+grp('下游功能点', im.down.map((n) => Object.assign({ text: n + ' 依赖上面被修改的功能点，会收到提示' }, tag(true))), '没有功能点依赖它们'),
+grp('在途任务', im.tasks.map((t) => Object.assign({ text: t.text }, tag(t.rec))), '没有其他在途任务受影响'),
+grp('用例和证据', im.cases.map((t) => Object.assign({ text: t.text }, tag(t.rec))), '没有已通过的用例受影响'),
+grp('其他判断', im.guess.map((t) => Object.assign({ text: t }, tag(false))), 'Copilot 没有发现其他影响')
+];
+})(),
+impactNote: picked.status === '讨论中' ? '方案还没确认，以下是目前的估计' : '确认需求时生成并保留，是当时判断的记录',
+filters, list, devs, accs, deltas, noDelta: !(picked.delta || []).length,
+scaleFilters,
+noDeltaText: scaleOf(picked) === '工程任务' ? '不修改任何 PRD。工程任务不改变产品的行为。' : '不修改任何 PRD。',
+noAccText: scaleOf(picked) === '工程任务' ? '不需要你验收。开发任务完成且已通过的用例全部仍然通过，就算完成。' : '方案确认后才会生成验收任务。',
+sel: { scale: scaleOf(picked), scaleBg: SCBG[scaleOf(picked)], scaleNote: SCNOTE[scaleOf(picked)], code: picked.id, title: picked.title, status: picked.status, statusBg: SBG[picked.status], src: picked.src, when: picked.when, desc: picked.desc },
+feats: picked.feats.map((n) => ({ name: n })), noFeats: !picked.feats.length,
+noDevs: !picked.dev.length, devNote: picked.devNote || '这条需求不改动功能点，没有开发任务。',
+noAccs: !picked.acc.length,
+openNew: () => this.setState({ chatOpen: true, chat: chat.concat([ai('说说你想让产品发生什么变化？先把方案讨论清楚，你确认后才创建需求、生成任务。')]), flow: { stage: 'want' } }),
+pageName: '需求', chatOpen, chatClosed: !chatOpen,
+toggleChat: () => this.setState({ chatOpen: !chatOpen }),
+msgs: [ai('我能看到全部需求和它们的任务。想让产品发生变化，点「提一个需求」，或者直接告诉我。')].concat(chat),
+chips,
+draft: st.draft || '',
+setDraft: (e) => this.setState({ draft: e.target.value }),
+send: () => say(st.draft)
+};
+}
+}
+</script>
+</body>
+</html>

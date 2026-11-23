@@ -1,0 +1,161 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>问题 · RelayForge 交互稿</title>
+<style>
+:root{color-scheme:dark;--bg:#111318;--panel:#171a21;--line:#2c323d;--muted:#a1a8b4;--blue:#9bbaff;--green:#80dba6;--amber:#edbf70}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#e6e9ef;font:14px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}header,nav,aside{background:var(--panel)}header{height:48px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;padding:0 20px}header small{margin-left:auto}.shell{display:grid;grid-template-columns:64px minmax(320px,1fr) minmax(300px,33%);height:calc(100vh - 48px)}nav{border-right:1px solid var(--line);text-align:center;padding:12px 6px}nav span{display:block;border-radius:8px;margin-bottom:8px;padding:5px;color:var(--muted);font-size:11px}nav i{display:block;font:20px/1.3 monospace}nav .on{background:#293344;color:#c7d8ff}main,aside{overflow:auto}main{padding:26px clamp(16px,3vw,48px)}aside{border-left:1px solid var(--line);padding:24px}h1{margin:0;font-size:25px}h2{font-size:21px;line-height:1.45}h3{font-size:13px;margin:23px 0 6px;color:#b8c1ce}.bar,.tools,.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.bar{justify-content:space-between}.tools{margin:20px 0 26px}.actions{margin:14px 0}button,select,input,textarea{font:inherit;color:inherit;border:1px solid var(--line);border-radius:6px;background:#20242d;padding:6px 10px}button,select{cursor:pointer}button:hover{border-color:#7892b7}button:disabled{opacity:.45;cursor:default}button.primary{background:#94deb4;color:#11251b;border-color:transparent;font-weight:600}.quiet,small,.meta{color:var(--muted);font-size:12px}.mono{font:12px ui-monospace,monospace;color:var(--muted)}.group{margin-bottom:23px}.group h3{display:flex;align-items:center;gap:8px;margin:0 0 7px}.dot{width:8px;height:8px;border:2px solid currentColor;border-radius:50%}.row{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding:3px 10px}.row.selected{background:#202937;box-shadow:inset 2px 0 var(--blue)}.item{flex:1;min-width:0;text-align:left;border:0;background:transparent;padding:10px 0}.item strong{display:block;font-size:14px;font-weight:550}.item small{display:block;margin-top:3px}.flag,.pill{border-radius:5px;padding:2px 6px;font-size:11px}.flag{color:#efbf78;background:#332b20}.pill{border:1px solid var(--line)}.block{padding:12px;border:1px solid var(--line);border-radius:7px;background:#1d222b}.block p{margin:4px 0}.detail p{white-space:pre-wrap}.link{color:var(--blue);background:transparent;border:0;padding:0}.history{padding-left:18px;color:#b5beca;font-size:13px}.history li{padding-bottom:5px}dialog{width:min(460px,94vw);background:var(--panel);color:inherit;border:1px solid #414a57;border-radius:12px;padding:22px}dialog::backdrop{background:#070a10b8}dialog h2{margin:0 0 16px}label.field{display:block;margin:12px 0}label.field>*{display:block;width:100%;margin-top:4px}textarea{min-height:68px;resize:vertical}.photo{max-width:100%;max-height:200px}.empty{padding:24px 0;color:var(--muted)}.foot{padding-top:16px;border-top:1px solid var(--line);margin-top:24px}.hint{color:var(--amber)}@media(max-width:679px){.shell{grid-template-columns:54px 1fr;height:auto}.shell nav{grid-row:span 2}aside{grid-column:2;border-top:1px solid var(--line)}main,aside{padding:18px}.tools{margin:12px 0}}
+.mobile-back{display:none}
+@media(max-width:679px){.shell{display:block}.shell nav{display:none}.shell aside{display:none}body.reading main{display:none}body.reading aside{display:block;border:0}.mobile-back{display:block;color:var(--blue);margin-bottom:18px}header{padding:0 16px}.row{min-height:60px}button,select{min-height:44px}.item{min-width:0}input:not([type=checkbox]),select,textarea{font-size:16px}dialog{max-height:85dvh;overflow:auto}.actions button{flex-grow:1}.tools select{max-width:100%}aside{padding-bottom:48px}}
+
+@media(min-width:680px){.shell{grid-template-columns:60px clamp(260px,28vw,410px) minmax(0,1fr);height:calc(100dvh - 48px)}main{padding:20px 12px;background:var(--panel);border-right:1px solid var(--line)}main .bar,main .tools{padding:0 5px}.tools{gap:5px;margin:12px 0 20px}.tools select{font-size:12px;max-width:100%;padding:5px}.item strong{line-height:1.45}.row{gap:5px;padding-inline:6px}aside{background:var(--bg);padding:clamp(18px,2.8vw,42px);border:0}.detail h2{font-size:clamp(21px,2vw,31px);margin:8px 0}.detail h3{margin-top:16px}.detail .actions{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:12px 0;margin-bottom:0}.detail .block{padding:14px 18px}.detail .block p{margin:2px 0 10px}.detail .block p:last-child{margin-bottom:0}}
+.workarea,.workarea>*{min-width:0}.detail{overflow-wrap:anywhere}.context .foot{margin-top:12px}.context .history{margin:6px 0}.content-col p{margin-top:3px}
+@media(min-width:1150px){.workarea{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,27%);gap:clamp(20px,2.8vw,44px);margin:14px 0 20px}.context{border-left:1px solid var(--line);padding-left:20px}.context .foot{border:0;padding-top:6px}.detail .context h3,.detail .content-col h3:first-child{margin-top:0}}
+@media(min-width:680px) and (max-width:920px){.shell{grid-template-columns:0 minmax(234px,34%) minmax(0,1fr)}.shell nav{visibility:hidden;padding:0}.detail h2{line-height:1.35}aside{padding:16px}.item small{font-size:11px}}
+.triage{background:#192331;padding:16px 18px;border:1px solid #35465e;border-radius:9px}.triage h2{font-size:19px;margin:5px 0}.triage .actions{position:static;background:transparent;border:0;padding:0}.thumb{width:76px;height:64px;object-fit:cover;border-radius:6px}.capture,.samples{margin:12px 0}.capture p{margin:4px 0 8px}#previews{display:flex;flex-wrap:wrap;gap:8px}#previews div{position:relative}#previews button{position:absolute;right:0;top:0;min-height:22px;padding:0 5px}.samples button{display:block;width:100%;text-align:left;margin-top:5px}dialog{max-height:87dvh;overflow:auto}summary{cursor:pointer}#kinds{display:flex;gap:6px;flex-wrap:wrap;margin:-8px 0 16px}#kinds[hidden]{display:none}#kinds button{font-size:12px;border-radius:16px}#kinds button[aria-pressed=true]{background:#293a50;color:#cde0ff;border-color:#627d9c}.thread{padding:14px;margin:14px 0;border:1px solid var(--line);border-radius:8px}.thread h3{margin:0 0 12px}.bubble{padding:9px 12px;background:#202633;border-radius:8px;margin:8px 14% 8px 0;white-space:pre-wrap}.bubble.mine{margin:8px 0 8px 14%;background:#26374b}.bubble small{display:block}.thread textarea{width:100%;min-height:56px;margin:8px 0}.thread form{text-align:right}main{height:calc(100dvh - 48px);overflow:auto}#tail{text-align:center;padding:12px}.tools{margin-bottom:18px}</style>
+<header><b>RelayForge</b><span class="quiet">/　relayforge</span><small>交互试用 · 模拟初判</small></header><div class="shell"><nav aria-label="主导航"><span><i>▥</i>需求</span><span class="on"><i>⊙</i>问题</span><span><i>▢</i>聊天</span><span><i>⑂</i>大图</span></nav>
+<main><div class="bar"><h1>问题</h1><button class="primary" id="add">＋ 记个问题</button></div><div class="tools"><select id="scope" aria-label="状态范围"><option value="0">待处理</option><option value="1">处理中</option><option value="2">待你确认</option><option value="3">已解决</option><option value="4">不处理</option><option value="all">全部状态</option></select><select id="filter" aria-label="筛选功能点"></select><button id="batch" hidden></button></div><div id="kinds" aria-label="初判分类"></div><div id="list"></div><p id="tail" class="quiet"></p></main><aside><button class="mobile-back" onclick="document.body.classList.remove('reading')">‹ 返回问题列表</button><div class="detail" id="detail" aria-live="polite"></div></aside></div>
+<dialog id="modal"><form id="form"><h2 id="mt"></h2><div id="fields"></div><div class="actions"><button type="button" id="cancel">取消</button><button class="primary" id="ok">保存</button></div></form></dialog>
+<script>
+const $=id=>document.getElementById(id), esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fs=['RF-105 · 只读渲染','RF-134 · 模块的用户旅程','RF-103 · 文档登记'], states=['待处理','处理中','待你确认','已解决','不处理'],colors=['#a1a8b4','#9bbaff','#edbf70','#80dba6','#a1a8b4'];
+let rows=[],active=18,picked=new Set(),session=3,submit;
+function issue(id,title,f,state,src,desc,extra={}){return {id,title,f,state,src,desc,history:['记录问题 · '+src],...extra}}
+rows=[issue(18,'切换模块后，仍显示上一个模块的旅程',fs[1],2,'人工测试','在大图里依次打开两个模块，右侧旅程仍停在第一个模块。',{run:2,fix:'切换模块时重新读取选中模块的旅程。',verify:'依次打开两个有旅程的模块，核对右侧标题和步骤。',prevent:'增加连续切换两个模块的回归用例。',history:['记录问题 · 人工测试','开始修复 · 会话 02','已提交复验']}),issue(17,'窄窗口下，文档名称遮住了状态',fs[2],0,'用户试用','缩小窗口后，长文档标题覆盖了右侧状态。'),issue(16,'归档文档仍出现在现行列表',fs[2],0,'Agent','检查主线文档列表时，同一份归档文档仍出现在现行分组。',{flag:true}),issue(15,'文档详情的返回按钮文字被截断',fs[2],0,'用户试用','在窄窗口下打开文档详情，返回按钮只显示第一个字。'),issue(14,'折叠章节后，锚点跳转位置偏移',fs[0],1,'用户试用','折叠前一节再点击目录，定位到目标标题下方。',{run:1}),issue(13,'页面标题出现重复空格',fs[0],3,'用户试用','标题中出现两个空格。',{fix:'清理标题模板。',verify:'重新打开页面检查标题。',prevent:'已校对同页标题。'}),issue(12,'同一文档在列表出现两次',fs[2],4,'用户试用','重复反馈。',{reason:'与 #16 同一现象'})];
+const opts=(arr)=>arr.map(x=>'<option>'+esc(x)+'</option>').join('');$('filter').innerHTML=opts(['全部功能点',...fs,'待关联']);
+const label=i=>'#'+String(i.id).padStart(3,'0'), source=i=>i.src+(i.flag?' · 待核实':''),eligible=i=>i.state===0&&!i.flag&&i.f;
+const names={all:'全部',defect:'是问题',request:'可转需求',unsure:'待补充细节',usage:'已有解决方案'};
+let kind='all',limit=16;
+function matches(i){const status=$('scope').value;return (status==='all'||String(i.state)===status)&&(status!=='0'||kind==='all'||(!i.busy&&i.kind===kind))}
+function queueData(){return rows.filter(matches)}
+function queueItem(i){return '<div class="row '+(i.id===active?'selected':'')+'"><button class="item" data-id="'+i.id+'"><strong>'+esc(i.title)+'</strong><small>'+label(i)+'　·　'+(i.busy?'分析中':i.state===0?(names[i.kind]||states[0]):states[i.state])+'</small></button></div>'}
+function render(){
+ const visible=queueData();
+ if(!visible.some(i=>i.id===active))active=visible[0]?.id;
+ const filters=$('kinds');filters.hidden=$('scope').value!=='0';
+ filters.innerHTML=Object.entries(names).map(([key,title])=>'<button data-kind="'+key+'" aria-pressed="'+(kind===key)+'">'+title+' <small>'+rows.filter(i=>i.state===0&&(key==='all'||(!i.busy&&i.kind===key))).length+'</small></button>').join('');
+ $('list').innerHTML=visible.slice(0,limit).map(queueItem).join('')||'<p class="empty">这个筛选下还没有问题。</p>';
+ $('tail').textContent=visible.length?(limit<visible.length?'继续滚动查看更多':'已显示全部 '+visible.length+' 条'):'';
+ const i=rows.find(i=>i.id===active);if(!i){$('detail').textContent='选择一条问题查看详情';return}
+ const btn=(a,t,primary=false)=>'<button data-act="'+a+'" class="'+(primary?'primary':'')+'">'+t+'</button>';
+ $('detail').innerHTML='<div class="bar"><span class="mono">问题 '+label(i)+'</span><span class="pill" style="color:'+colors[i.state]+'">'+states[i.state]+'</span></div><h2>'+esc(i.title)+'</h2><div class="meta">'+source(i)+'</div><h3>关联功能点</h3>'+(i.f?'<button data-act="filter" class="link">'+esc(i.f)+' ↗</button>':btn('assign','关联功能点'))+'<h3>发现的现象</h3><p>'+esc(i.desc||'尚未补充描述。')+'</p>'+(i.img?'<img class="photo" alt="提报时附上的截图" src="'+i.img+'">':'')+(i.run?'<div class="meta">修复会话 '+String(i.run).padStart(2,'0')+' · '+rows.filter(x=>x.run===i.run).map(label).join('、')+'</div>':'')+(i.fix?'<h3>修复与复验</h3><div class="block"><small>修复摘要</small><p>'+esc(i.fix)+'</p><small>怎样复验</small><p>'+esc(i.verify)+'</p><small>防止再发生</small><p>'+esc(i.prevent||'沿用现有检查')+'</p></div>':'')+(i.reason?'<p class="hint">'+esc(i.reason)+'</p>':'')+(i.target?btn('target','查看需求草稿 ↗'):'')+'<div class="actions">'+(i.state===0?(i.flag?btn('confirm','核实为问题',true):i.f?btn('start','现在解决',true):'')+btn('defer','以后再说')+btn('convert','转为需求')+btn('drop','不处理'):i.state===1?btn('deliver','提交复验',true):i.state===2?btn('done','确认修好了',true)+btn('back','还有问题'):'')+'</div><div class="foot"><small>处理记录</small><ol class="history">'+i.history.map(h=>'<li>'+esc(h)+'</li>').join('')+'</ol></div>';
+}
+function field(title,name,kind='input',required=false){return '<label class="field">'+title+(kind==='select'?'<select name="'+name+'">'+opts(['待关联',...fs])+'</select>':kind==='area'?'<textarea name="'+name+'" '+(required?'required':'')+'></textarea>':'<input name="'+name+'" '+(kind==='file'?'type="file" accept="image/*"':'maxlength="180"')+' '+(required?'required':'')+'>')+'</label>'}
+function dialog(title,html,ok,fn){$('mt').textContent=title;$('fields').innerHTML=html;$('ok').textContent=ok;submit=fn;$('modal').showModal()}
+$('cancel').onclick=()=>$('modal').close();$('form').onsubmit=async e=>{e.preventDefault();const data=new FormData(e.target);for(const el of e.target.querySelectorAll('[required]'))if(!el.value.trim()){el.value='';el.reportValidity();return}await submit(data);$('modal').close();render()};
+$('add').onclick=()=>dialog('记个问题',field('哪里出了问题？','title','input',true)+field('发生了什么（选填）','desc','area')+field('关联功能点','f','select')+field('附截图（选填）','img','file'),'记下',async d=>{let i=issue(Math.max(...rows.map(x=>x.id))+1,d.get('title').trim(),d.get('f')==='待关联'?'':d.get('f'),0,'用户试用',d.get('desc'));const file=d.get('img');if(file.size&&file.type.startsWith('image/'))i.img=await new Promise(resolve=>{let r=new FileReader();r.onload=()=>resolve(r.result);r.readAsDataURL(file)});rows.unshift(i);active=i.id;$('scope').selectedIndex=0;$('filter').selectedIndex=0});
+function start(items){$('scope').value='1';session++;for(const i of items){i.state=1;i.run=session;i.history.push('开始修复 · 会话 '+session)}picked.clear();render()}
+$('batch').onclick=()=>start(rows.filter(i=>picked.has(i.id)));$('scope').onchange=$('filter').onchange=render;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-id],[data-pick],[data-act]');if(!t)return;if(t.dataset.id){active=+t.dataset.id;render();if(innerWidth<680){document.body.classList.add('reading');window.scrollTo(0,0)}return}if(t.dataset.pick){let n=+t.dataset.pick;t.checked?picked.add(n):picked.delete(n);render();return}
+const i=rows.find(x=>x.id===active),a=t.dataset.act;
+if(a==='reset'){$('scope').selectedIndex=2;$('filter').selectedIndex=0}
+if(a==='filter'){$('filter').value=i.f;document.body.classList.remove('reading')}
+if(a==='defer')i.history.push('暂缓 · 保留待处理');
+if(a==='assign')dialog('关联功能点','<label class="field">功能点<select name="f">'+opts(fs)+'</select></label>','保存',d=>i.f=d.get('f'));
+if(a==='confirm'){i.flag=false;i.history.push('用户已核实异常')}
+if(a==='start')start([i]);
+if(a==='deliver')dialog('提交复验',field('改了什么','fix','area',true)+field('用户怎样复验','verify','area',true)+field('如何防止再发生，或为何无需新增措施','prevent','area',true),'提交',d=>{for(const k of ['fix','verify','prevent'])i[k]=d.get(k);i.state=2;$('scope').value='2';i.history.push('已提交复验')});
+if(a==='back')dialog('还有问题',field('复验时看到了什么？','feedback','area',true),'回到原修复会话',d=>{i.state=1;$('scope').value='1';i.history.push('复验退回 · '+d.get('feedback'))});
+if(a==='done'){i.state=3;i.history.push('用户确认修好了');$('scope').value=String(i.state)}
+if(a==='drop')dialog('不处理',field('原因或重复问题编号','reason','input',true),'保存',d=>{i.reason=d.get('reason');i.state=4;i.history.push('不处理 · '+i.reason);$('scope').value=String(i.state)});
+if(a==='convert')dialog('转为需求','<p>创建立项草稿，沿用这条问题的描述和截图，并保留处理记录。原问题归入「不处理」。</p>','创建草稿',()=>{i.target='草稿 R-'+i.id;i.reason='已转为需求 · '+i.target;i.state=4;i.history.push(i.reason);$('scope').value=String(i.state)});
+if(a==='target')dialog(i.target,'<h3>'+esc(i.title)+'</h3><p>'+esc(i.desc)+'</p>'+(i.img?'<img class="photo" src="'+i.img+'" alt="原问题截图">':'')+'<p>来源 · 问题 '+label(i)+'</p><ol>'+i.history.map(h=>'<li>'+esc(h)+'</li>').join('')+'</ol>','返回问题',()=>{});
+render()});render();
+
+const drawOriginal=render;
+render=function(){
+ drawOriginal();
+ const detail=$('detail'),head=detail.querySelector('h2'),actions=detail.querySelector('.actions');
+ if(!head||!actions)return;
+ const area=document.createElement('div'),content=document.createElement('section'),context=document.createElement('section');
+ area.className='workarea';content.className='content-col';context.className='context';area.append(content,context);
+ const meta=head.nextElementSibling,feature=meta.nextElementSibling,featureAction=feature.nextElementSibling;
+ context.append(feature,featureAction);
+ const foot=detail.querySelector('.foot');
+ if(foot)context.append(foot);
+ while(meta.nextElementSibling&&meta.nextElementSibling!==actions)content.append(meta.nextElementSibling);
+ actions.before(area);
+};
+render();
+// This walkthrough uses local examples. Uploaded images stay in this tab.
+const cases = {
+  defect: {name:'已有功能异常', title:'切换模块后，旅程还是上一个模块的', why:'示例项目约定旅程随选中的模块切换。反馈描述了明确的操作和不一致的结果；尚待在修复会话复现。', next:'开始修复'},
+  request: {name:'建议作为新需求',title:'希望导出全部问题为 PDF',why:'示例项目提供问题列表和筛选。导出 PDF 会新增输出方式，还需要决定导出范围和版式。', next:'转为需求'},
+  usage: {name:'已有用法可以解决',title:'找不到已经解决的问题',why:'示例列表默认显示「未关闭」。在列表顶部把状态切换成「已解决」，就能看到已解决的问题。', next:'解决了'},
+  unsure: {name:'证据不足',title:'点了按钮没有反应',why:'目前还不能确定是哪个操作出了问题。你当时在哪个页面，点的是哪个按钮？', next:'补充信息'}
+};
+const classify=t=>/导出|PDF|新增|希望支持/.test(t)?'request':/找不到.*(已(?:经)?解决|历史)|历史记录在哪里/.test(t)?'usage':/旅程.*(上一个|不更新)|切换模块/.test(t)?'defect':'unsure';
+const seedKeys=['defect','request','usage','unsure'];
+rows=seedKeys.map((k,j)=>Object.assign(issue(21-j,cases[k].title,'',0,'用户试用', ''),{kind:k,shots:[],round:1}));
+const areas=['需求列表','问题列表','工作台','设计稿','项目大图','详情面板','修复会话','历史记录'];
+for(let n=0;n<80;n++){const k=seedKeys[n%4],area=areas[Math.floor(n/4)%areas.length],copies=['切换项目后','重新打开后','窄窗口中'];const prefix=copies[Math.floor(n/32)];
+ rows.push(Object.assign(issue(22+n,prefix+'，'+area+'：'+cases[k].title,'',0,'示例反馈','用于试用筛选和连续滚动。'),{kind:k,shots:[],round:1}));}
+active=21;
+$('filter').remove();$('batch').removeAttribute('id'); // retain a hidden placeholder for the original list renderer
+const batchNode=document.querySelector('.tools button');batchNode.id='batch';
+const filterNode=document.createElement('select');filterNode.id='filter';filterNode.hidden=true;filterNode.add(new Option('全部功能点'));document.querySelector('.tools').append(filterNode);
+const phase=i=>i.busy?'分析中':i.kind&&i.state===0?cases[i.kind].name:states[i.state];
+const button=(id,title,primary=false)=>'<button data-choice="'+id+'"'+(primary?' class="primary"':'')+'>'+title+'</button>';
+function noteBox(h,t){return '<h3>'+h+'</h3><p>'+esc(t)+'</p>'}
+function evidence(i){return (i.shots||[]).map(s=>'<a href="'+s.url+'" data-shot="'+s.id+'" aria-label="放大截图"><img class="thumb" alt="提报截图" src="'+s.url+'"></a>').join('')}
+const originalRender=render;
+render=function(){
+  originalRender();
+  document.querySelectorAll('[data-pick]').forEach(x=>x.remove());
+  document.querySelectorAll('.item[data-id]').forEach(b=>{const r=rows.find(x=>x.id===+b.dataset.id);b.querySelector('small').textContent=label(r)+'　·　'+phase(r)});
+  const i=rows.find(x=>x.id===active);if(!i)return;
+  if(i.state!==0){if(i.chat?.length)$('detail').insertAdjacentHTML('beforeend',transcript(i));const p=$('detail').querySelector('h2');if(p&&i.shots?.length)p.insertAdjacentHTML('afterend',evidence(i));return}
+  const c=cases[i.kind]||cases.unsure;
+  $('detail').innerHTML='<div class="bar"><span class="mono">问题 '+label(i)+'</span><span class="pill">'+(i.busy?'分析中':'待处理')+'</span></div><h2>'+esc(i.title)+'</h2><div class="workarea"><section class="content-col"><div class="triage"><small>AI 初判 · 模拟</small><h2>'+(i.busy?'正在分析反馈…':c.name)+'</h2><p>'+(i.busy?'已收到。你可以返回列表继续提报。':esc(i.followup||c.why))+'</p>'+(i.busy?'':'<div class="actions">'+(i.kind==='unsure'?'':button('next',c.next,true))+(i.kind==='request'?button('fixbug','按 Bug 直接修复'):'')+(i.followup?button('investigate','交给 AI 排查'):'')+(i.kind==='usage'?'':i.kind!=='unsure'?button('feedback','补充或纠正'):'')+'</div>')+'</div>'+noteBox('提报内容',i.desc||i.title)+evidence(i)+'</section><section class="context"><h3>处理记录</h3><ol class="history">'+i.history.map(h=>'<li>'+esc(h)+'</li>').join('')+'</ol></section></div>';
+ if(!i.busy&&['usage','unsure'].includes(i.kind))$('detail').querySelector('.triage').insertAdjacentHTML('afterend',chatBox(i));
+ else if(i.chat?.length)$('detail').querySelector('.triage')?.insertAdjacentHTML('afterend',transcript(i));
+};
+function openDetail(i){kind='all';active=i.id;$('scope').selectedIndex=0;if(innerWidth<680)document.body.classList.add('reading');render()}
+function analyze(i,extra=''){
+  i.busy=true;i.history.push('已提交，等待 AI 初判');openDetail(i);
+  setTimeout(()=>{const fresh=classify(extra||i.title+' '+i.desc);
+    i.kind=fresh;i.followup=extra&&fresh==='unsure'?'已记录你的补充。当前示例仍缺少足够证据，请补充复现步骤，或交给修复会话进一步排查。':'';
+    i.busy=false;i.round=(i.round||0)+1;i.history.push((extra?'已重新判断':'初判完成')+' · '+cases[i.kind].name);render();
+
+  },1000)
+}
+let draftShots=[],serial=0;
+function previews(){if(!$('previews'))return;$('previews').innerHTML=draftShots.map((s,j)=>'<div><img class="thumb" alt="截图 '+(j+1)+'" src="'+s.url+'"><button type="button" data-remove="'+s.id+'" aria-label="移除截图 '+(j+1)+'">×</button></div>').join('')}
+async function addPictures(files){
+ for(const f of files){if(!f.type.startsWith('image/'))continue;const url=URL.createObjectURL(f);draftShots.push({id:++serial,url})}previews()
+}
+$('add').onclick=()=>{
+  draftShots=[];
+  dialog('提交问题','<label class="field">哪里出了问题？<input name="title" required maxlength="180" placeholder="用一句话描述现象"></label><label class="field">补充说明（选填）<textarea name="desc" placeholder="你做了什么，实际看到了什么？"></textarea></label><div class="capture"><b>截图（选填）</b><p class="quiet">复制截图后，在输入框里粘贴。</p><div id="previews"></div><button type="button" id="pastepic">粘贴截图</button> <button type="button" id="choosepic">选择图片</button><input id="picfile" type="file" accept="image/*" multiple hidden><p id="picmsg" class="quiet" role="status"></p></div><details class="samples"><summary>试用示例反馈</summary>'+seedKeys.map(k=>'<button type="button" data-sample="'+k+'">'+esc(cases[k].title)+'</button>').join('')+'</details><p class="quiet">提交后自动初判，你决定下一步。</p>','提交问题',async d=>{
+    const i=issue(Math.max(...rows.map(x=>x.id))+1,d.get('title').trim(),'',0,'用户试用',d.get('desc').trim());i.shots=draftShots.slice();rows.unshift(i);analyze(i)
+  });
+  $('choosepic').onclick=()=>$('picfile').click();$('picfile').onchange=e=>{addPictures(e.target.files);e.target.value=''};
+  $('pastepic').onclick=async()=>{try{const clip=await navigator.clipboard.read();let files=[];for(const item of clip){const type=item.types.find(t=>t.startsWith('image/'));if(type)files.push(await item.getType(type))}if(!files.length)throw Error();await addPictures(files);$('picmsg').textContent='已添加截图。'}catch{$('picmsg').textContent='未读到截图。可长按输入框选「粘贴」，或点「选择图片」。'}};
+};
+$('modal').addEventListener('paste',e=>{if(!$('previews'))return;const files=[...e.clipboardData.items].filter(x=>x.kind==='file'&&x.type.startsWith('image/')).map(x=>x.getAsFile()).filter(Boolean);if(files.length){e.preventDefault();addPictures(files)}});
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-choice],[data-remove],[data-sample],[data-shot]');if(!b)return;
+ if(b.dataset.remove){draftShots=draftShots.filter(x=>x.id!==+b.dataset.remove);previews();return}
+ if(b.dataset.sample){$('form').elements.title.value=cases[b.dataset.sample].title;return}
+ const i=rows.find(x=>x.id===active);if(!i)return;
+ if(b.dataset.shot){e.preventDefault();dialog('提报截图','<img class="photo" src="'+b.href+'" alt="提报截图">','返回',()=>{});return}
+ const feedback=()=>dialog('补充或纠正初判',field('把你看到的情况告诉 AI','info','area',true),'重新分析',d=>{const msg=d.get('info').trim();i.desc=[i.desc,msg].filter(Boolean).join('\n');i.history.push('用户补充 · '+msg);analyze(i,msg)});
+ if(b.dataset.choice==='feedback'){feedback();return}
+ if(b.dataset.choice==='fixbug'){i.history.push('用户选择按 Bug 直接修复');start([i]);return}
+ if(b.dataset.choice==='investigate'||i.kind==='defect'){start([i]);return}
+ if(i.kind==='unsure'){feedback();return}
+ if(i.kind==='usage'){i.state=3;i.history.push('用户确认已有用法解决了问题');$('scope').value=String(i.state);render();return}
+ if(i.kind==='request')dialog('转为需求','<p>用当前反馈创建一个立项草稿。原问题保留描述、截图和初判记录。</p>','创建需求草稿',()=>{i.target='草稿 R-'+i.id;i.state=4;i.reason='已转为需求 · '+i.target;i.img=i.shots?.[0]?.url;i.history.push(i.reason);$('scope').value=String(i.state)});
+});
+function messages(i){return (i.chat||[]).map(m=>'<div class="bubble '+(m.me?'mine':'')+'"><small>'+(m.me?'你':'AI · 模拟')+'</small>'+esc(m.text)+'</div>').join('')}
+function transcript(i){return '<section class="thread"><h3>问题对话</h3>'+messages(i)+'</section>'}
+function chatBox(i){if(!i.chat)i.chat=[{text:i.kind==='usage'?'先切换到「已解决」看看。你也可以告诉我页面停在哪一步。':'你当时在哪个页面，点了哪个按钮？'}];return '<section class="thread"><h3>和 AI 继续聊</h3>'+messages(i)+'<form id="chat"><textarea required aria-label="发送问题或补充细节" placeholder="说说你看到的情况，或继续追问…">'+esc(i.draft||'')+'</textarea><button class="primary">发送</button></form></section>'}
+document.addEventListener('input',e=>{if(e.target.closest('#chat'))rows.find(i=>i.id===active).draft=e.target.value});
+document.addEventListener('submit',e=>{if(e.target.id!=='chat')return;e.preventDefault();const i=rows.find(i=>i.id===active),t=e.target.querySelector('textarea').value.trim();if(!t)return;i.draft='';i.chat.push({me:true,text:t});const inferred=classify(t);
+ if(inferred==='defect'||inferred==='request'){i.chat.push({text:'根据补充的信息，初判更新为「'+names[inferred]+'」。请查看判断依据，再决定下一步。'});i.kind=inferred;i.history.push('根据对话更新初判 · '+names[inferred]);if(kind!=='all')kind=inferred}
+ else if(i.kind==='usage'){i.chat.push({text:/仍|还是|没有|找不到/.test(t)?'请核对当前项目和问题标题。如果在对应项目的「已解决」中仍找不到，请告诉我当时是点了「确认修好了」还是「不处理」。':/不处理/.test(t)?'点过「不处理」的条目在同名状态下。切换到「不处理」，看看能否找到原问题。':'在问题列表顶部点状态选择器，再选「已解决」。若要同时看不同状态，选「全部状态」。'})}
+ else{i.chat.push({text:i.chat.filter(m=>m.me).length===1?'收到。你预期看到什么，实际发生了什么？例如点完后停在原页，或出现了提示。':'已记下这一步。这个现象每次都出现吗？如果你已确认可以复现，也可以直接交给修复会话排查。'});i.followup=i.chat.filter(m=>m.me).length>1?'复现细节已补充，可继续对话或交给 AI 排查。':''}
+ render();document.querySelector('#chat textarea')?.focus()});
+const pane=document.querySelector('main');
+function resetQueue(){limit=16;pane.scrollTop=0;render()}
+$('scope').onchange=resetQueue;
+$('kinds').onclick=e=>{const b=e.target.closest('[data-kind]');if(b){kind=b.dataset.kind;resetQueue()}};
+pane.addEventListener('scroll',()=>{if(pane.scrollHeight-pane.scrollTop-pane.clientHeight>160)return;const all=queueData();if(limit>=all.length)return;const before=limit;limit+=16;$('list').insertAdjacentHTML('beforeend',all.slice(before,limit).map(queueItem).join(''));if(limit>=all.length)$('tail').textContent='已显示全部 '+all.length+' 条'});
+render();
+</script></html>

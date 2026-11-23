@@ -1,0 +1,771 @@
+<title>RelayForge</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Two pages only: 现在 (active branches) and 大图 (facts anchored to main). */
+:root {
+  --bg: #F4F5F7; --surface: #FFFFFF; --band: #F8F9FB; --sunk: #EEF0F3; --line: #DDE1E8; --line-strong: #B9C0CC;
+  --fg: #15171C; --body: #3A4050; --muted: #5A6170; --accent: #1F4FD1; --accent-ink: #163A9C; --accent-soft: #E6EDFB;
+  --wait: #7A3606; --wait-soft: #FCEBDD; --wait-line: #E7B98F; --ok: #0B5D4F; --ok-soft: #E3F2EE;
+  --sans: Inter, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F1217; --surface: #171B23; --band: #1C212B; --sunk: #232936; --line: #2C3442; --line-strong: #465062;
+  --fg: #E8EBF1; --body: #C3CAD6; --muted: #98A2B3; --accent: #8FB0FF; --accent-ink: #B7CBFF; --accent-soft: #1D2A48;
+  --wait: #F2B87A; --wait-soft: #3A2A16; --wait-line: #6B4A22; --ok: #77D4BE; --ok-soft: #12352E; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0F1217; --surface: #171B23; --band: #1C212B; --sunk: #232936; --line: #2C3442; --line-strong: #465062;
+  --fg: #E8EBF1; --body: #C3CAD6; --muted: #98A2B3; --accent: #8FB0FF; --accent-ink: #B7CBFF; --accent-soft: #1D2A48;
+  --wait: #F2B87A; --wait-soft: #3A2A16; --wait-line: #6B4A22; --ok: #77D4BE; --ok-soft: #12352E; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.5 }
+button { font: inherit; color: inherit }
+button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }
+.bar { background: var(--surface); border-bottom: 1px solid var(--line) }
+.bar-in, .page { max-width: 1320px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.bar-in { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 28px }
+.brand { display: flex; align-items: center; gap: 10px; padding-block: 14px }
+.brand b { font-size: 16px }
+.muted, .brand span { color: var(--muted) }
+.tabs-top { display: flex; gap: 4px; flex: 1 1 auto }
+.tabs-top button { min-height: 44px; padding: 0 16px; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); cursor: pointer }
+.tabs-top button[aria-current="page"] { color: var(--fg); font-weight: 600; border-bottom-color: var(--accent) }
+.tabs-top small { margin-left: 6px; font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--muted) }
+.tag { padding: 3px 10px; border: 1px dashed var(--line-strong); border-radius: 4px; color: var(--muted); font-size: 12px }
+.page { padding-block: 24px 48px; display: flex; flex-direction: column; gap: 20px }
+h1 { margin: 0; font-size: 24px; font-weight: 700 }
+h2 { margin: 0; font-size: 16px; font-weight: 700 }
+h3 { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--muted) }
+h4 { margin: 0; font-size: 15px; font-weight: 600 }
+.sub { margin: 4px 0 0; color: var(--muted) }
+.row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start }
+.side { flex: 1 1 260px; max-width: 320px; min-width: 0 }
+.wide { flex: 999 1 480px; min-width: 0 }
+.narrow { flex: 1 1 340px; max-width: 440px; min-width: 0 }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden }
+.head { padding: 18px 22px; background: var(--band); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px }
+.head h2 { font-size: 22px; overflow-wrap: anywhere }
+.branch { font-family: var(--mono); font-size: 17px; font-weight: 600; overflow-wrap: anywhere }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 13px; color: var(--muted) }
+.body { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 22px }
+.pill { display: inline-block; padding: 1px 9px; border-radius: 10px; font-size: 12px; background: var(--sunk); color: var(--body); white-space: nowrap }
+.pill.current, .pill.done { background: var(--ok-soft); color: var(--ok) } .pill.draft, .pill.wait { background: var(--wait-soft); color: var(--wait) }
+.pill.decided { background: var(--accent-soft); color: var(--accent-ink) }
+.id, .hash { font-family: var(--mono); font-size: 12px; color: var(--muted) }
+.lead { margin: 0; font-size: 18px; line-height: 1.5 }
+.lead .pill { vertical-align: 3px; margin-left: 8px }
+.card { padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; display: flex; flex-direction: column; gap: 8px; min-width: 0 }
+.card.old { background: var(--sunk); color: var(--muted) }
+.stack { display: flex; flex-direction: column; gap: 12px }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px }
+ul.items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px }
+ul.items li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px }
+ul.items li.none { color: var(--muted) }
+ul.items li.waiting { background: var(--wait-soft); border-radius: 6px; padding: 6px 10px }
+.txt { flex: 1 1 220px; min-width: 0; overflow-wrap: anywhere }
+.src { font-family: var(--mono); font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; white-space: nowrap }
+.trunk { color: var(--accent); margin-right: 4px }
+.link { color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; text-decoration: underline; text-underline-offset: 2px }
+details { border: 1px solid var(--line); border-radius: 8px }
+details > summary { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; min-height: 44px; padding: 6px 14px; cursor: pointer; list-style: none }
+details > summary::-webkit-details-marker { display: none }
+details > summary::before { content: ""; flex: none; width: 7px; height: 7px; border-right: 1.6px solid var(--muted); border-bottom: 1.6px solid var(--muted); transform: rotate(-45deg); margin-right: 2px }
+details[open] > summary::before { transform: rotate(45deg) }
+details > summary b { flex: 1 1 auto }
+details > div { padding: 4px 14px 14px; display: flex; flex-direction: column; gap: 10px }
+.point { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px }
+.strip { padding: 12px 14px; border: 1px solid var(--line); background: var(--band); border-radius: 8px; color: var(--body) }
+.strip.wait { border-color: var(--wait-line); background: var(--wait-soft) }
+.tree { padding: 8px 10px 10px; display: flex; flex-direction: column; gap: 2px }
+.tree button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 40px; padding: 4px 8px; text-align: left; background: none; border: 0; border-radius: 6px; cursor: pointer }
+.tree button:hover { background: var(--sunk) }
+.tree button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-ink) }
+.tree .mod { font-weight: 600 }
+.tree .kids { display: flex; flex-direction: column; gap: 2px; margin: 0 0 4px 13px; padding-left: 10px; border-left: 1px solid var(--line) }
+.tree .name { flex: 1 1 auto; min-width: 0 }
+.tree .aside { flex: none; font-size: 12px; font-weight: 400; color: var(--muted) }
+.dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--accent) } .dot.draft { background: var(--wait-line) }
+.group { padding: 12px 18px 2px; font-size: 12px; font-weight: 600; color: var(--muted); border-top: 1px solid var(--line) }
+.group:first-child { border-top: 0 }
+.subtabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 10px 22px 0; border-bottom: 1px solid var(--line) }
+.subtabs button { min-height: 40px; padding: 0 14px; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--body); cursor: pointer }
+.subtabs button[aria-selected="true"] { color: var(--accent-ink); font-weight: 600; border-bottom-color: var(--accent) }
+.chips { display: flex; flex-wrap: wrap; gap: 6px }
+.chips button { min-height: 28px; padding: 0 12px; font-size: 13px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; cursor: pointer }
+.chips button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); font-weight: 600 }
+.tile { text-align: left; background: var(--surface); cursor: pointer; font: inherit; color: inherit }
+.tile:hover { border-color: var(--accent) }
+.paths { display: flex; flex-wrap: wrap; gap: 4px }
+.note { margin: 0; padding: 10px 12px; background: var(--sunk); border-radius: 6px; color: var(--body) }
+.empty { margin: 0; padding: 22px 18px; text-align: center; color: var(--muted); border: 1px dashed var(--line-strong); border-radius: 8px }
+.path { font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere }
+@media (max-width: 720px) { .side, .narrow { max-width: none } .head, .body { padding-inline: 16px } .subtabs { padding-inline: 16px } }
+
+.status { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px }
+.strip-bars { display: flex; align-items: flex-end; gap: 3px; height: 34px }
+.strip-bars i { flex: 1 1 0; min-width: 3px; background: var(--sunk); border-radius: 2px; height: 3px }
+.strip-bars i.has { background: var(--accent) }
+.strip-ends { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 4px }
+.tile { flex: 1 1 0; max-width: 200px; min-width: 0; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; text-align: left; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px; cursor: pointer; font: inherit; color: inherit }
+.tile:hover { border-color: var(--accent) }
+.tile b { font-size: 15px }
+.tile .cnt { font-size: 12px; color: var(--body) }
+.tile.mini { max-width: 150px; padding: 8px 12px; background: var(--band); border-color: var(--line); color: var(--muted) }
+.tile.mini b { font-size: 13px; font-weight: 500 }
+.tile.mini.lit { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink) }
+.tile.mini.lit b { font-weight: 700 }
+.tile.mini.lit .cnt { color: var(--accent-ink) }
+/* 大图：按层分标签页，每页一棵「模块 → 功能点」的树；右边是模块的用户旅程 */
+.ltabs { display: flex; flex-wrap: wrap; gap: 2px; padding: 8px 16px 0; border-bottom: 1px solid var(--line); background: var(--band) }
+.ltabs button { min-height: 44px; padding: 0 14px; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; line-height: 1.3; font: inherit }
+.ltabs button b { font-size: 14px; font-weight: 600; color: var(--body) }
+.ltabs button small { font-size: 11.5px; color: var(--muted) }
+.ltabs button[aria-selected="true"] { border-bottom-color: var(--accent) }
+.ltabs button[aria-selected="true"] b { color: var(--fg) }
+.ltabs .wmark { font-size: 11px; font-weight: 400; color: var(--wait) }
+.hitdot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-left: 6px; vertical-align: 2px }
+.maptools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 20px; border-bottom: 1px solid var(--line) }
+.maptools .about { font-size: 13px; color: var(--muted); flex: 1 1 200px }
+.tbtn { min-height: 28px; padding: 0 10px; font: inherit; font-size: 12.5px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; color: var(--body) }
+.tbtn[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg) }
+.editbtn { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 14px; border-radius: 6px; border: 1px solid var(--accent); background: var(--accent); color: var(--surface); font: inherit; font-weight: 600; cursor: pointer }
+.editbtn:hover { background: var(--accent-ink); border-color: var(--accent-ink) }
+.editbtn[aria-pressed="true"] { background: var(--surface); color: var(--accent-ink) }
+.mtree { list-style: none; margin: 0; padding: 10px 12px 12px }
+.mnode { border-bottom: 1px solid var(--sunk) }
+.mnode:last-child { border-bottom: 0 }
+.mnode.dim { opacity: .4 } .mnode.shelved { opacity: .55 }
+.mrow { display: grid; grid-template-columns: 22px 1fr auto; column-gap: 8px; align-items: start; padding: 10px 8px; border-radius: 8px; cursor: pointer }
+.mrow:hover { background: var(--band) }
+.mrow:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px }
+.mnode.sel > .mrow { background: var(--accent-soft) }
+.caret { width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: var(--muted) }
+.caret:hover { background: var(--sunk) }
+.caret svg { transition: transform .15s }
+.mnode.open .caret svg { transform: rotate(90deg) }
+.mrow .t { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px }
+.mrow .t b { font-size: 15px }
+.mrow.draft .t b { text-decoration: underline dashed var(--wait-line); text-underline-offset: 4px }
+.mrow .duty { display: block; margin-top: 2px; font-size: 12.5px; color: var(--body); line-height: 1.5 }
+.mrow .duty i { font-style: normal; color: var(--wait); font-size: 11px; margin-right: 4px }
+.mrow .cnt { font-size: 12px; color: var(--muted); white-space: nowrap; padding-top: 2px; text-align: right }
+.mrow .cnt .live { color: var(--accent-ink) } .mrow .cnt .hot { color: var(--wait); font-weight: 600 }
+.flist { list-style: none; margin: 0 0 8px 19px; padding: 0 0 0 18px; border-left: 1.4px solid var(--line); display: none }
+.mnode.open .flist { display: block }
+.flist li { position: relative }
+.flist li::before { content: ""; position: absolute; left: -18px; top: 16px; width: 14px; border-top: 1.4px solid var(--line) }
+.flist li:last-child::after { content: ""; position: absolute; left: -20px; top: 17px; bottom: 0; width: 4px; background: var(--surface) }
+.frow { width: 100%; display: grid; grid-template-columns: 10px 1fr; column-gap: 8px; align-items: baseline; padding: 6px 8px; background: none; border: 0; border-radius: 6px; cursor: pointer; text-align: left; font: inherit; color: inherit }
+.frow:hover { background: var(--sunk) }
+.frow.sel { background: var(--accent-soft); color: var(--accent-ink) }
+.frow.hit { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600 }
+.frow .fd { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); align-self: center }
+.frow .fd.draft { background: none; border: 1.4px solid var(--wait-line) }
+.frow .fn { font-size: 13.5px }
+.frow .fl { grid-column: 2; font-size: 12px; color: var(--muted); line-height: 1.45; font-weight: 400 }
+.terse .frow .fl, .terse .mrow .duty { display: none }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 0 20px 14px; font-size: 12px; color: var(--muted) }
+.legend span { display: inline-flex; align-items: center; gap: 6px }
+.legend i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent) } .legend i.d { background: none; border: 1.4px solid var(--wait-line) }
+.journey { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; counter-reset: s }
+.journey li { position: relative; padding: 0 0 14px 34px }
+.journey li::before { counter-increment: s; content: counter(s); position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--sunk); color: var(--body); font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center }
+.journey li::after { content: ""; position: absolute; left: 10.5px; top: 24px; bottom: 2px; width: 1.4px; background: var(--line) }
+.journey li:last-child::after { display: none }
+.journey li.on::before { background: var(--accent); color: var(--surface) }
+.jstep { width: 100%; text-align: left; background: none; border: 1px solid transparent; border-radius: 8px; padding: 2px 8px 6px; margin: -3px 0 0 -8px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; font: inherit; color: inherit }
+.jstep:hover { border-color: var(--line) }
+.jstep.waiting { border-style: dashed; border-color: var(--wait-line) }
+.journey li.on .jstep { border-color: var(--accent); background: var(--accent-soft) }
+.jstep .what { font-size: 13.5px; font-weight: 600; line-height: 1.45 }
+.jstep .see { font-size: 12.5px; color: var(--muted) }
+.jstep .tags { display: flex; flex-wrap: wrap; gap: 4px }
+.jstep .tags span { font-size: 11px; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); white-space: nowrap }
+.jstep .tags span.f { color: var(--accent-ink); border-color: var(--accent) }
+.jstep .tags span.u { border-style: dashed }
+.relrow { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; align-items: baseline }
+.kind { font-size: 11px; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap }
+.editing .mapcol { box-shadow: 0 0 0 2px var(--accent-soft); border-color: var(--accent) }
+.ah { fill: var(--line-strong) } .ah2 { fill: var(--accent) }
+.mapcol { flex: 999 1 600px; min-width: 0 }
+.sidecol { flex: 1 1 320px; max-width: 440px; min-width: 0; position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto }
+.pbody { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 16px }
+.pbody h2 { font-size: 20px }
+.plan { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column }
+.plan li { display: grid; grid-template-columns: 22px 1fr auto; gap: 2px 10px; padding: 9px 0; border-top: 1px solid var(--sunk); align-items: baseline }
+.plan li:first-child { border-top: 0 }
+.plan .mark { width: 16px; height: 16px; border-radius: 50%; border: 1.6px solid var(--line-strong); align-self: center; position: relative }
+.plan .done .mark { background: var(--ok); border-color: var(--ok) }
+.plan .done .mark::after { content: ""; position: absolute; left: 4.5px; top: 1.5px; width: 4px; height: 8px; border: solid var(--surface); border-width: 0 1.8px 1.8px 0; transform: rotate(45deg) }
+.plan .doing .mark { border-color: var(--accent); box-shadow: inset 0 0 0 3px var(--surface), inset 0 0 0 8px var(--accent) }
+.plan .dropped .mark { border-style: dashed }
+.plan .title { font-weight: 600; overflow-wrap: anywhere }
+.plan .done .title { font-weight: 400 }
+.plan .dropped .title { text-decoration: line-through; color: var(--muted); font-weight: 400 }
+.plan .note { grid-column: 2 / 4; font-size: 13px; color: var(--muted); overflow-wrap: anywhere }
+.plan .doing, .plan .todo { background: var(--band); margin-inline: -10px; padding-inline: 10px; border-radius: 6px }
+.progress { height: 6px; border-radius: 3px; background: var(--sunk); overflow: hidden }
+.progress i { display: block; height: 100%; background: var(--ok) }
+.nowbox { padding: 12px 14px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent-ink); border-radius: 8px }
+.more { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 6px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; text-align: left }
+.more:hover { border-color: var(--accent) }
+.more b { flex: 1 1 auto }
+.more::after { content: ""; flex: none; width: 7px; height: 7px; border-right: 1.6px solid var(--muted); border-top: 1.6px solid var(--muted); transform: rotate(45deg) }
+dialog { width: min(720px, calc(100vw - 32px)); max-height: min(80vh, 760px); padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--fg); box-shadow: 0 20px 60px rgba(0, 0, 0, .25); overflow: hidden }
+dialog[open] { display: flex; flex-direction: column }
+dialog::backdrop { background: rgba(10, 14, 22, .45) }
+.dlg-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--line); background: var(--band) }
+.dlg-close { width: 36px; height: 36px; border: 0; border-radius: 6px; background: none; font-size: 22px; line-height: 1; color: var(--muted); cursor: pointer }
+.dlg-close:hover { background: var(--sunk) }
+.dlg-body { padding: 14px 20px 20px; overflow: auto }
+.tl-axis { position: relative; height: 52px; margin: 6px 6px 12px; border-bottom: 2px solid var(--line-strong) }
+.tl-tick { position: absolute; top: 0; bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; gap: 0; padding: 4px 8px; background: none; border: 0; border-left: 1px solid var(--line); border-radius: 0 6px 0 0; font-size: 13px; color: var(--fg); white-space: nowrap; overflow: hidden; cursor: pointer; text-align: left }
+.tl-tick small { font-size: 11px; color: var(--muted) }
+.tl-tick:hover { background: var(--sunk) }
+.tl-tick[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600 }
+.tl-tick:disabled { color: var(--muted); cursor: default; background: none }
+.tl-axis i { position: absolute; bottom: -7px; width: 12px; height: 12px; margin-left: -6px; box-sizing: border-box; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); pointer-events: none }
+.tl-axis i.latest { background: var(--accent) }
+.tl-axis i.dim { opacity: .25 }
+.tl-day { margin: 18px 0 8px }
+.tl { list-style: none; margin: 0; padding: 0 }
+.tl li { position: relative; display: grid; grid-template-columns: 44px 14px 1fr; gap: 0 10px; padding-bottom: 14px; align-items: start }
+.tl li::before { content: ""; position: absolute; left: 60.5px; top: 14px; bottom: -4px; width: 1px; background: var(--line-strong) }
+.tl li:last-child::before { display: none }
+.tl li:last-child { padding-bottom: 0 }
+.tl time { font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: right; padding-top: 3px }
+.tl .knot { width: 12px; height: 12px; margin: 5px 1px 0; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--accent); background: var(--surface); position: relative; z-index: 1 }
+.tl .latest .knot { background: var(--accent) }
+.tl .latest .what { font-weight: 600 }
+.tl .what { overflow-wrap: anywhere }
+.delta { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px }
+.delta .tile.mini { max-width: none; gap: 2px }
+.scard-warn { align-self: flex-start; padding: 1px 8px; border-radius: 10px; font-size: 12px; background: var(--wait-soft); color: var(--wait) }
+.clash { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: 0 }
+.clash b.soft { border-color: var(--line-strong); color: var(--body) }
+.clash b { flex: none; padding: 1px 10px; border-radius: 10px; background: var(--surface); border: 1px solid var(--wait-line); color: var(--wait); font-size: 13px }
+.chip { display: inline-flex; flex-direction: column; align-items: flex-start; padding: 4px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-size: 13px; text-align: left }
+.chip:hover { border-color: var(--accent) }
+.chip.warn { background: var(--wait-soft); border-color: var(--wait-line); color: var(--wait) }
+.chip small { font-size: 11px }
+.chip b { font-weight: 600 }
+.tile .cnt.hot { color: var(--wait); font-weight: 600 }
+.switch { padding: 4px 10px; background: none; border: 1px solid var(--line); border-radius: 6px; color: var(--body); cursor: pointer }
+.switch::after { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 2px 3px 8px; border-right: 1.6px solid var(--muted); border-bottom: 1.6px solid var(--muted); transform: rotate(45deg) }
+.switch:hover { border-color: var(--accent) }
+a.scard { text-decoration: none; color: inherit }
+a.scard[aria-current="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft) }
+.sstrip { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px }
+.scard { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 12px 14px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; cursor: pointer }
+.scard:hover { border-color: var(--accent) }
+.scard[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft) }
+.scard.stale { background: var(--band) }
+.scard.stale b, .scard.stale .scard-doing { color: var(--muted) }
+.scard-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px }
+.scard-top b { font-size: 15px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.scard-doing { font-size: 13px; color: var(--body); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.9em }
+.scard-foot { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted) }
+.scard-branch { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono) }
+.scard-foot span:last-child { flex: none }
+.scard.more-old { justify-content: center; align-items: center; border-style: dashed; gap: 2px }
+.pill.sub { background: var(--sunk); color: var(--body) }
+.back { align-self: flex-start }
+@media (max-width: 720px) { .sidecol { max-width: none } .tile, .tile.mini { flex: 1 1 130px; max-width: none } }
+.embed .bar { display: none }
+.dprev { position: relative; display: block; width: 100%; height: 230px; padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: #fff; cursor: zoom-in }
+.dprev iframe { position: absolute; top: 0; left: 0; width: 300%; height: 300%; border: 0; transform: scale(.3333); transform-origin: 0 0; pointer-events: none; background: #fff }
+.dmeta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-top: 6px; font-size: 13px }
+dialog.wide { width: calc(100vw - 48px); max-width: none; height: calc(100vh - 48px); max-height: none } dialog.wide .dlg-body { flex: 1; padding: 0; overflow: hidden }
+dialog.wide iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff }
+</style>
+
+<header class="bar"><div class="bar-in">
+  <div class="brand"><b>RelayForge</b><span id="project"></span></div>
+  <nav class="tabs-top" id="tabs" aria-label="主导航"></nav>
+  <span class="tag" id="read-only">只读</span>
+</div></header>
+<div class="page" id="page"></div>
+<dialog id="dlg" aria-label="详情"></dialog>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+(function () {
+  var english = new URLSearchParams(location.search).get('language') === 'en';
+  function uiText(zh, en) { return english ? en : zh; }
+  if (english) {
+    document.documentElement.lang = 'en';
+    document.getElementById('tabs').setAttribute('aria-label', 'Main navigation');
+    document.getElementById('dlg').setAttribute('aria-label', 'Details');
+    document.getElementById('read-only').textContent = 'Read-only';
+  }
+
+  var D = JSON.parse(document.getElementById('data').textContent), N = D.now;
+  var STATUS = { current: uiText('现行', "Current"), draft: uiText('待确认', "Awaiting confirmation"), superseded: uiText('已被替代', "Superseded"), reference: uiText('参考', "Reference") };
+  var HEADS = {
+    在模块中的角色: 'Role in the module', 用户旅程: 'User journeys', 规则与边界: 'Rules and boundaries',
+    还没定的事: 'Open questions', 调整时要注意: 'Considerations when changing this feature'
+  };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var byId = {};
+  ['modules', 'features', 'decisions', 'history'].forEach(function (k) { D[k].forEach(function (o) { byId[o.id] = o; }); });
+  function parse(line) {
+    var t = line.replace(/^-\s*/, ''), src = [], waiting = t.indexOf('〔待确认〕') === 0, replaced = t.indexOf('〔已替代〕') === 0, rejected = replaced || t.indexOf('〔已否决〕') === 0;
+    if (waiting || rejected) t = t.slice(5);
+    t = t.replace(/〔([^〕]*#[^〕]*)〕/g, function (m, s) { src.push(s); return ''; }).trim();
+    return { t: t, waiting: waiting, rejected: rejected, replaced: replaced, src: src, none: t === '尚未讨论。' };
+  }
+  var real = function (lines) { return (lines || []).filter(function (l) { return !parse(l).none; }); };
+  function items(lines, emptyText) {
+    if (!real(lines).length) return '<ul class="items"><li class="none">' + esc(emptyText || uiText('尚未讨论。', "No discussion yet.")) + '</li></ul>';
+    return '<ul class="items">' + real(lines).map(function (l) {
+      var p = parse(l);
+      return '<li' + (p.waiting ? ' class="waiting"' : p.rejected ? ' class="none"' : '') + '>' + (p.waiting ? uiText('<span class="pill wait">待确认</span>', "<span class=\"pill wait\">Awaiting confirmation</span>") : p.rejected ? '<span class="pill">' + (p.replaced ? uiText('已替代', "Superseded") : uiText('已否决', "Rejected")) + '</span>' : '') + '<span class="txt">' + esc(p.t) + '</span>' +
+        p.src.map(function (s) { return uiText('<span class="src" title="出处：会话编号#消息序号">', "<span class=\"src\" title=\"Source: session ID and message number\">") + esc(s) + '</span>'; }).join('') + '</li>';
+    }).join('') + '</ul>';
+  }
+  var pill = function (st) { return '<span class="pill ' + esc(st) + '">' + esc(STATUS[st] || st || '') + '</span>'; };
+  // 进行中的需求带来的（文件头 in_progress，或行首〔进行中 R-…〕）：还不是现行，确认完成后才算
+  var going = function (o) { return o && o.inProgress && o.inProgress.length ? uiText('<span class="pill wait" title="进行中的需求带来的，尚未完成，确认完成后才算现行">进行中 · ', "<span class=\"pill wait\" title=\"Changes from an active requirement take effect after completion\">In development · ") + esc(o.inProgress.join('、')) + '</span>' : ''; };
+  var link = function (id, text) { return byId[id] ? '<button type="button" class="link" data-open="' + esc(id) + '">' + esc(text || (id + ' ' + byId[id].title)) + '</button>' : esc(text || id); };
+  var EMBED = /[?&]embed=map/.test(location.search);  // shown inside the app: only the big picture, dark like the app
+  if (EMBED) { document.documentElement.setAttribute('data-theme', 'dark'); document.documentElement.classList.add('embed'); }
+  var S = { page: EMBED ? 'map' : 'now', sel: null, win: 3, layer: null, open: {}, terse: false, j: 0, step: null, editing: false, fresh: {} };
+  try { var kept = JSON.parse(sessionStorage.getItem('rf-map') || '{}'); ['layer', 'open', 'terse', 'j', 'step'].forEach(function (k) { if (k in kept) S[k] = kept[k]; }); } catch (e) {}
+  var keep = function () { try { sessionStorage.setItem('rf-map', JSON.stringify({ layer: S.layer, open: S.open, terse: S.terse, j: S.j, step: S.step })); } catch (e) {} };
+  var live = D.decisions.filter(function (d) { return d.status !== 'reference'; });
+  var rulesOf = function (id) { return live.filter(function (d) { return (d.applies_to || []).indexOf(id) >= 0; }); };
+  var kidsOf = function (id) { return D.features.filter(function (f) { return f.module === id; }); };
+
+  // The map: one tab per layer, each a tree of modules with their features under them; a module opens into its user journeys.
+  var R = D.relations || [], JOURNEYS = D.journeys || [], LAYERS = D.layers || [], LAYER_OF = D.moduleLayer || {};
+  var EDGE_KIND = { call: uiText('调用', "Calls"), data: uiText('读写数据', "Reads and writes"), rule: uiText('套用规则', "Applies rule") }, PASSIVE = { call: uiText('被调用', "Called by"), data: uiText('被读写数据', "Read or written by"), rule: uiText('被套用规则', "Rule applied by") };
+  var hardAt = function (id) { return clashes().some(function (c) { return c.id === id && c.hard; }); };
+  var workers = function (id) { return D.sessions.filter(function (x) { return isActive(x) && (x.modules || []).indexOf(id) >= 0; }); };
+  var oneLine = function (f) { var l = real(f.sections['一句话定位'])[0]; return l ? parse(l).t : ''; };
+  var nameOf = function (id) { return byId[id] ? byId[id].title : id; };
+  var journeysOf = function (id) { return JOURNEYS.filter(function (j) { return j.module === id; }); };
+  var selModule = function () { var o = byId[S.sel]; return !o ? null : o.type === 'feature' ? o.module : o.type === 'module' ? o.id : null; };
+  var journeyOf = function () { var m = selModule(), js = m ? journeysOf(m) : []; return js[S.j] || js[0] || null; };
+  var stepOf = function () { var j = journeyOf(); return j && S.step != null ? j.steps[S.step] || null : null; };
+  var layerNow = function () { var names = LAYERS.map(function (l) { return l.name; }); return names.indexOf(S.layer) >= 0 ? S.layer : names[0]; };
+  // Modules a journey step touches: whoever does it, and the modules its features belong to
+  var stepModules = function (s) { return s ? s.modules.concat(s.features.map(function (f) { return byId[f] ? byId[f].module : null; })).filter(Boolean) : []; };
+  // Choosing something on the map also shows its layer and opens its module
+  function choose(id) {
+    var o = byId[id], mid = o ? (o.type === 'feature' ? o.module : o.id) : null;
+    if (selModule() !== mid) { S.j = 0; S.step = null; }
+    S.sel = id;
+    if (mid) { S.open[mid] = 1; if (LAYER_OF[mid]) S.layer = LAYER_OF[mid]; }
+  }
+  function treeHtml() {
+    var layer = layerNow(), step = stepOf(), lit = stepModules(step), sm = selModule();
+    var tabs = '<div class="ltabs" role="tablist">' + LAYERS.map(function (l) {
+      var mods = D.modules.filter(function (m) { return LAYER_OF[m.id] === l.name; }), fs = D.features.filter(function (f) { return LAYER_OF[f.module] === l.name; }).length;
+      var hit = step && lit.some(function (id) { return LAYER_OF[id] === l.name; });
+      return '<button type="button" role="tab" data-layer="' + esc(l.name) + '" aria-selected="' + (l.name === layer) + '"><b>' + esc(l.name) + (l.waiting ? uiText(' <span class="wmark">待确认</span>', " <span class=\"wmark\">Awaiting confirmation</span>") : '') + (hit ? uiText('<i class="hitdot" title="这一步用到这一页的功能点"></i>', "<i class=\"hitdot\" title=\"This step uses features on this tab\"></i>") : '') + '</b><small>' + mods.length + uiText(' 个模块 · ', " modules · ") + fs + uiText(' 个功能点</small></button>', " features</small></button>");
+    }).join('') + '</div>';
+    var about = (LAYERS.filter(function (l) { return l.name === layer; })[0] || {}).about;
+    var tools = '<div class="maptools"><span class="about">' + esc(about || '') + uiText('</span><button type="button" class="tbtn" data-expand>全部展开</button><button type="button" class="tbtn" data-collapse>全部收起</button>', "</span><button type=\"button\" class=\"tbtn\" data-expand>Expand all</button><button type=\"button\" class=\"tbtn\" data-collapse>Collapse all</button>") +
+      '<button type="button" class="tbtn" data-terse aria-pressed="' + S.terse + uiText('">只看名称</button>', "\">Names only</button>") +
+      (EMBED ? '<button type="button" class="editbtn" data-edit aria-pressed="' + S.editing + '"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>' + (S.editing ? uiText('收起编辑', "Close editor") : uiText('编辑', "Edit")) + '</button>' : '') + '</div>';
+    var mods = D.modules.filter(function (m) { return LAYER_OF[m.id] === layer; });
+    var tree = '<ul class="mtree' + (S.terse ? ' terse' : '') + '">' + mods.map(function (m) {
+      var kids = kidsOf(m.id), js = journeysOf(m.id), waiting = kids.filter(function (f) { return f.status === 'draft'; }).length, busy = workers(m.id).length;
+      var opened = S.open[m.id] || lit.indexOf(m.id) >= 0, dim = step && lit.indexOf(m.id) < 0;
+      var duty = real(m.sections['负责什么']).map(function (l) { var p = parse(l); return (p.waiting ? uiText('<i>待确认</i>', "<i>Awaiting confirmation</i>") : '') + esc(p.t); }).join('<br>');
+      return '<li class="mnode' + (opened ? ' open' : '') + (sm === m.id ? ' sel' : '') + (dim ? ' dim' : '') + (m.status === 'reference' ? ' shelved' : '') + '" id="t-' + esc(m.id) + '">' +
+        '<div class="mrow' + (m.status === 'draft' ? ' draft' : '') + '" role="button" tabindex="0" data-sel="' + esc(m.id) + '"><span class="caret" data-toggle="' + esc(m.id) + uiText('" title="展开或收起"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M3 1.5 7 5l-4 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span>', "\" title=\"Expand or collapse\"><svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\"><path d=\"M3 1.5 7 5l-4 3.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/></svg></span>") +
+        '<span><span class="t"><b>' + esc(m.title) + '</b><span class="id">' + esc(m.id) + '</span>' + (m.status === 'draft' ? pill('draft') : m.status === 'reference' ? uiText('<span class="pill">已搁置</span>', "<span class=\"pill\">Shelved</span>") : '') + going(m) + '</span>' + (duty ? '<span class="duty">' + duty + '</span>' : '') + '</span>' +
+        '<span class="cnt">' + kids.length + uiText(' 个功能点', " features") + (waiting ? '（' + waiting + uiText(' 待确认）', " awaiting confirmation)") : '') + (js.length ? ' · ' + js.length + uiText(' 条旅程', " journeys") : '') + (busy ? '<br><span class="' + (hardAt(m.id) ? 'hot' : 'live') + '">' + busy + uiText(' 个会话在动', " active sessions") + (hardAt(m.id) ? uiText(' · 撞车', " · Overlap") : '') + '</span>' : '') + '</span></div>' +
+        '<ul class="flist">' + (kids.length ? kids.map(function (f) {
+          var hit = step && step.features.indexOf(f.id) >= 0, line = oneLine(f);
+          return '<li><button type="button" class="frow' + (S.sel === f.id ? ' sel' : hit ? ' hit' : '') + '" data-sel="' + esc(f.id) + '"><i class="fd' + (f.status === 'draft' ? ' draft' : '') + '"></i><span class="fn">' + esc(f.title) + ' <span class="id">' + esc(f.id) + '</span>' + going(f) + '</span>' + (line ? '<span class="fl">' + esc(line) + '</span>' : '') + '</button></li>';
+        }).join('') : uiText('<li><span class="frow muted">还没有功能点。</span></li>', "<li><span class=\"frow muted\">No features yet.</span></li>")) + '</ul></li>';
+    }).join('') + '</ul>';
+    var legend = uiText('<div class="legend"><span><i></i>现行功能点</span><span><i class="d"></i>AI 整理的，待确认</span><span>模块名下有虚线：模块待确认</span></div>', "<div class=\"legend\"><span><i></i>Current features</span><span><i class=\"d\"></i>AI drafts awaiting confirmation</span><span>Dashed underline: module awaiting confirmation</span></div>");
+    return tabs + tools + (mods.length ? tree : uiText('<p class="empty" style="margin:16px 20px">这一层还没有模块。</p>', "<p class=\"empty\" style=\"margin:16px 20px\">This layer has no modules yet.</p>")) + legend;
+  }
+  function journeyHtml(m) {
+    var js = journeysOf(m.id);
+    if (!js.length) return uiText('<div><h3>用户旅程</h3><p class="note">还没有写这个模块的用户旅程。', "<div><h3>User journeys</h3><p class=\"note\">This module has no user journeys yet. ") + (EMBED ? uiText('点「编辑」，让 AI 按使用顺序把它的功能点串起来。', "Select Edit and ask AI to arrange the features in the order someone uses them.") : uiText('在应用的大图里点「编辑」，让 AI 按使用顺序把它的功能点串起来。', "Open the project map in RelayForge and use Edit to ask AI to arrange the features in usage order.")) + '</p></div>';
+    var j = js[S.j] || js[0], about = real(j.sections['一句话说明'])[0];
+    return uiText('<div><h3>用户旅程</h3>', "<div><h3>User journeys</h3>") + (js.length > 1 ? '<div class="chips" style="margin-bottom:10px">' + js.map(function (x, i) { return '<button type="button" data-j="' + i + '" aria-pressed="' + (x === j) + '">' + esc(x.title) + '</button>'; }).join('') + '</div>' : '<p style="margin:0 0 10px;font-weight:600">' + esc(j.title) + '</p>') +
+      // 主干：合并前必跑这条旅程用到的功能点的测试集（合并闸门）。只在应用里能改
+      '<p class="muted" style="margin:0 0 10px;font-size:12px">' + (j.trunk ? uiText('<b class="trunk">主干</b> 合并前必跑这条旅程用到的功能点的测试集。', "<b class=\"trunk\">Trunk</b> Test sets of the features on this journey run before every merge.") : uiText('不是主干。', "Not a trunk journey. "))
+        + (EMBED ? ' <button type="button" class="link" data-trunk="' + esc(j.id) + '" data-on="' + (j.trunk ? '0' : '1') + '">' + (j.trunk ? uiText('不再作为主干', "Remove from trunk") : uiText('设为主干', "Mark as trunk")) + '</button>' : '') + '</p>' +
+      (j.status === 'draft' || about ? '<p class="muted" style="margin:0 0 10px;font-size:13px">' + (about ? esc(parse(about).t) + ' ' : '') + (j.status === 'draft' ? pill('draft') : '') + '</p>' : '') +
+      '<ol class="journey">' + j.steps.map(function (s, i) {
+        var tags = (s.user ? [uiText('<span class="u">用户</span>', "<span class=\"u\">User</span>")] : []).concat(s.modules.filter(function (id) { return id !== m.id; }).map(function (id) { return '<span>' + esc(nameOf(id)) + '</span>'; }))
+          .concat(s.features.filter(function (f) { return byId[f]; }).map(function (f) {
+            var o = byId[f], home = o.module !== m.id ? ' · ' + (LAYER_OF[o.module] !== LAYER_OF[m.id] ? esc(LAYER_OF[o.module]) + ' · ' : '') + esc(nameOf(o.module)) : '';
+            return '<span class="f">' + esc(o.title) + home + '</span>';
+          }));
+        return '<li class="' + (S.step === i ? 'on' : '') + '"><button type="button" class="jstep' + (s.waiting && j.status !== 'draft' ? ' waiting' : '') + '" data-step="' + i + '"><span class="what">' + esc(s.what) + '</span>' + (s.see ? uiText('<span class="see">看到：', "<span class=\"see\">Sees: ") + esc(s.see) + '</span>' : '') + (tags.length ? '<span class="tags">' + tags.join('') + '</span>' : '') + '</button></li>';
+      }).join('') + uiText('</ol><p class="muted" style="margin:0;font-size:12px">点一步，左边展开并点亮这一步用到的功能点；用到别的页的，那一页的标签上会出现一个小圆点。</p></div>', "</ol><p class=\"muted\" style=\"margin:0;font-size:12px\">Select a step to highlight its features. A dot marks tabs with highlighted features.</p></div>");
+  }
+  function relRows(id) {
+    var rows = R.filter(function (e) { return e.from === id || e.to === id; }).map(function (e) {
+      var mine = e.from === id, other = mine ? e.to : e.from;
+      return '<li class="relrow"><span class="kind">' + (mine ? EDGE_KIND : PASSIVE)[e.kind] + '</span><span>' + link(other, nameOf(other)) + '：' + esc(e.text) + (e.via.length ? ' <span class="id">' + esc(e.via.join('、')) + '</span>' : '') + (e.waiting ? ' ' + pill('draft') : '') + '</span></li>';
+    });
+    return rows.length ? '<ul class="items">' + rows.join('') + '</ul>' : items([], uiText('还没有写下它和其他模块的关系。', "No relationships to other modules have been recorded."));
+  }
+  function inJourneys(fid) {
+    var hits = [];
+    JOURNEYS.forEach(function (j) { j.steps.forEach(function (s, i) { if (s.features.indexOf(fid) >= 0) hits.push('<li><button type="button" class="link" data-gostep="' + esc(j.id) + '|' + i + '">' + esc(nameOf(j.module)) + ' · ' + esc(j.title) + uiText(' · 第 ', " · Step ") + (i + 1) + uiText(' 步</button><span class="txt muted">', "</button><span class=\"txt muted\">") + esc(s.what) + '</span></li>'); }); });
+    return hits.length ? '<ul class="items">' + hits.join('') + '</ul>' : items([], uiText('还没有出现在用户旅程里。', "This feature does not appear in any user journeys yet."));
+  }
+  function decisionCard(d) {
+    var rel = [];
+    if ((d.applies_to || []).length) rel.push(uiText('<span>适用于 ', "<span>Applies to ") + d.applies_to.map(function (x) { return link(x, byId[x] ? byId[x].title : x); }).join('、') + '</span>');
+    if ((d.supersedes || []).length) rel.push(uiText('<span>替代了 ', "<span>Supersedes ") + d.supersedes.map(function (x) { return link(x, x); }).join('、') + '</span>');
+    if (d.superseded_by) rel.push(uiText('<span>被 ', "<span>Superseded by ") + link(d.superseded_by) + uiText(' 替代</span>', "</span>"));
+    return '<div class="card' + (d.status === 'superseded' ? ' old' : '') + '" id="c-' + esc(d.id) + '"><div class="meta"><span class="id">' + esc(d.id) + '</span>' + pill(d.status) + rel.join('') + '</div><h4>' + esc(d.title) + '</h4>' +
+      (d.type === 'decision' ? items(d.sections['决定']) + (real(d.sections['理由']).length ? uiText('<div><h3>理由</h3>', "<div><h3>Reason</h3>") + items(d.sections['理由']) + '</div>' : '') : '') + '</div>';
+  }
+  function history(o) {
+    var log = (D.gitlog || {})[o.id] || [];
+    return uiText('<details><summary><b>历史</b><span class="muted">', "<details><summary><b>History</b><span class=\"muted\">") + log.length + uiText(' 次提交</span></summary><div><h3>文件里的变更记录</h3>', " commits</span></summary><div><h3>Recorded changes</h3>") + items(o.sections['变更记录']) + uiText('<h3>Git 提交</h3>', "<h3>Git commits</h3>") +
+      (log.length ? '<ul class="items">' + log.map(function (c) { return '<li><span class="hash">' + esc(c.h) + '</span><span class="muted">' + esc(c.d) + '</span><span class="txt">' + esc(c.s) + '</span></li>'; }).join('') + '</ul>' : items([], uiText('没有提交记录。', "No commits recorded."))) + '</div></details>';
+  }
+  var ruleList = function (rules) { return '<ul class="items">' + rules.map(function (d) { return '<li>' + link(d.id) + (d.status === 'draft' ? pill('draft') : '') + going(d) + '</li>'; }).join('') + '</ul>'; };
+  // 这个功能点可能过时了（上次核对以后，有不是为了改它的提交改了它对应的代码），以及核对会话交回的建议
+  var staleMark = function (id) { var f = (S.fresh || {})[id]; return f && (f.stale || f.pending) ? uiText(' <span class="pill wait">可能过时</span>', ' <span class="pill wait">May be stale</span>') : ''; };
+  function freshBlock(o) {
+    var f = (S.fresh || {})[o.id];
+    if (!EMBED || !f) return '';
+    var btn = function (kind, text) { return ' <button type="button" class="link" data-fresh="' + kind + '" data-id="' + esc(o.id) + '">' + text + '</button>'; };
+    var h = uiText('<div><h3>和代码对得上吗</h3>', '<div><h3>Still matches the code?</h3>');
+    if (f.checking) h += uiText('<p class="muted">正在后台核对…</p>', '<p class="muted">Checking in the background…</p>');
+    if (f.proposed) h += '<p>' + (f.pending ? uiText('核对会话交回了 ', 'The check returned ') + f.pending + uiText(' 条建议，等你处理。', ' suggestions for you to review.') : f.verdict === 'unchanged' ? uiText('核对会话说描述没有变化。', 'The check found no change.') : uiText('建议都处理完了。', 'All suggestions handled.')) + btn('open', uiText('查看', 'View')) + '</p>';
+    if (f.stale) {
+      h += '<p>' + uiText('上次核对以后，这些提交改了它对应的代码，但不是为了改它：', 'Since the last check, these commits changed its code without being about it:') + '</p><ul class="items">'
+        + f.commits.map(function (c) { return '<li><span class="hash">' + esc(c.short) + '</span><span class="txt">' + esc(c.subject) + (c.owner ? ' <span class="muted">' + esc(c.owner) + '</span>' : '') + '</span></li>'; }).join('')
+        + (f.more ? '<li class="muted">' + uiText('还有 ', '') + f.more + uiText(' 个', ' more') + '</li>' : '') + '</ul>';
+    } else if (f.unmapped) h += uiText('<p class="muted">还对应不上代码：没有已完成的需求或修复改过它。</p>', '<p class="muted">Not linked to code yet: no finished work changed it.</p>');
+    else if (!f.proposed) h += uiText('<p class="muted">上次核对以后，没有别的提交改过它的代码。</p>', '<p class="muted">No other commits changed its code since the last check.</p>');
+    if (!f.checking && !f.pending) h += '<p>' + btn('check', uiText('核对', 'Check')) + uiText(' <span class="muted">开一个只读的会话读代码，给出建议，由你采纳</span>', ' <span class="muted">Opens a read-only session that reads the code and suggests edits for you to accept</span>') + '</p>';
+    return h + '</div>';
+  }
+  function panel() {
+    var o = byId[S.sel];
+    if (!o) {
+      return uiText('<div class="pbody"><div><h3>产品介绍</h3>', "<div class=\"pbody\"><div><h3>Product overview</h3>") + items(D.overview ? D.overview['产品介绍'] : []) + uiText('</div><p class="muted" style="margin:0">左边按层分页，每页是一棵「模块 → 功能点」的树。点模块名展开它的功能点，同时在这里看它的用户旅程。</p>', "</div><p class=\"muted\" style=\"margin:0\">Each tab shows the modules and features in one layer. Select a module to expand its features and view its user journeys here.</p>") +
+        uiText('<div><h3>图例</h3><ul class="items"><li><span class="txt">实心点：现行的功能点；空心点：AI 整理的，等你确认</span></li><li><span class="txt">模块名下有虚线、带「待确认」：模块是 AI 划分的，等你确认</span></li>', "<div><h3>Legend</h3><ul class=\"items\"><li><span class=\"txt\">Solid dot: current feature. Hollow dot: AI draft awaiting confirmation.</span></li><li><span class=\"txt\">Dashed underline: AI-drafted module awaiting confirmation.</span></li>") +
+        uiText('<li><span class="txt">变淡：已搁置，当前不按它做</span></li></ul></div></div>', "<li><span class=\"txt\">Dimmed: shelved.</span></li></ul></div></div>");
+    }
+    if (o.type === 'module') {
+      var kids = kidsOf(o.id), rules = rulesOf(o.id);
+      return '<div class="pbody"><div><div class="meta"><span>' + esc(LAYER_OF[o.id] || '') + uiText(' · 模块</span><span class="id">', " · Module</span><span class=\"id\">") + esc(o.id) + '</span>' + pill(o.status) + '</div><h2>' + esc(o.title) + '</h2></div>' +
+        uiText('<div><h3>负责什么</h3>', "<div><h3>Responsibilities</h3>") + items(o.sections['负责什么']) + '</div>' + journeyHtml(o) +
+        (workers(o.id).length ? uiText('<div><h3>在动它的会话', "<div><h3>Sessions working here") + (hardAt(o.id) ? uiText(' · 撞车', " · Overlap") : '') + '</h3><ul class="items">' + workers(o.id).map(function (x) { var fs = featsIn(x, o.id); return '<li>' + pickLink(x) + '<span class="muted">' + (fs.length ? uiText('改「', "Editing “") + fs.map(function (f) { return esc(byId[f].title); }).join('、') + '」' : uiText('没说清是哪个功能点', "Feature unspecified")) + '</span></li>'; }).join('') + '</ul></div>' : '') +
+        uiText('<div><h3>功能点</h3>', "<div><h3>Features</h3>") + (kids.length ? '<ul class="items">' + kids.map(function (f) { return '<li><button type="button" class="link" data-sel="' + esc(f.id) + '">' + esc(f.title) + '</button>' + (f.status === 'draft' ? pill('draft') : '') + staleMark(f.id) + going(f) + '</li>'; }).join('') + '</ul>' : items([], uiText('还没有功能点。', "No features yet."))) + '</div>' +
+        uiText('<div><h3>和其他模块的关系</h3>', "<div><h3>Relationships to other modules</h3>") + relRows(o.id) + '</div>' +
+        uiText('<div><h3>代码</h3><div class="paths">', "<div><h3>Code</h3><div class=\"paths\">") + (o.paths || []).map(function (x) { return '<span class="src">' + esc(x) + '</span>'; }).join('') + '</div></div>' +
+        (rules.length ? uiText('<details><summary><b>裁定</b><span class="pill">', "<details><summary><b>Decisions</b><span class=\"pill\">") + rules.length + '</span></summary><div>' + ruleList(rules) + '</div></details>' : uiText('<div><h3>裁定</h3>', "<div><h3>Decisions</h3>") + items([], uiText('还没有裁定挂在这个模块上。', "No decisions are linked to this module yet.")) + '</div>') + history(o) + '</div>';
+    }
+    var m = byId[o.module], fr = rulesOf(o.id);
+    return '<div class="pbody">' + (m ? '<button type="button" class="link back" data-sel="' + esc(m.id) + '">← ' + esc(m.title) + '</button>' : '') +
+      uiText('<div><div class="meta"><span>功能点</span><span class="id">', "<div><div class=\"meta\"><span>Feature</span><span class=\"id\">") + esc(o.id) + '</span>' + pill(o.status) + '</div><h2>' + esc(o.title) + '</h2></div>' +
+      uiText('<div><h3>一句话定位</h3>', "<div><h3>Overview</h3>") + items(o.sections['一句话定位']) + '</div>' + freshBlock(o) + designBlock(o) +
+      uiText('<div><h3>出现在这些用户旅程里</h3>', "<div><h3>Appears in these user journeys</h3>") + inJourneys(o.id) + '</div>' +
+      (function () {
+        var r = R.filter(function (e) { return e.via.indexOf(o.id) >= 0; });
+        return r.length ? uiText('<div><h3>经过它的模块关系</h3><ul class="items">', "<div><h3>Module relationships involving this feature</h3><ul class=\"items\">") + r.map(function (e) { return '<li class="relrow"><span class="kind">' + EDGE_KIND[e.kind] + '</span><span>' + esc(nameOf(e.from)) + ' → ' + esc(nameOf(e.to)) + '：' + esc(e.text) + (e.waiting ? ' ' + pill('draft') : '') + '</span></li>'; }).join('') + '</ul></div>' : '';
+      })() +
+      Object.keys(HEADS).filter(function (h) { return real(o.sections[h]).length; }).map(function (h) { return '<div><h3>' + uiText(h, HEADS[h]) + '</h3>' + items(o.sections[h]) + '</div>'; }).join('') +
+      (fr.length ? uiText('<div><h3>适用的裁定</h3>', "<div><h3>Applicable decisions</h3>") + ruleList(fr) + '</div>' : '') + history(o) + '<span class="path muted">' + esc(o.file) + '</span></div>';
+  }
+  // A feature's current design draft: an AI-made page, so it runs sandboxed (scripts yes, same origin no), scaled down here
+  var designById = {}; (D.designs || []).forEach(function (d) { designById[d.id] = d; });
+  var designSrc = function (d) { return D.designBase + d.html.split('/').map(encodeURIComponent).join('/'); };
+  function designBlock(o) {
+    var d = designById[(D.featureDesigns || {})[o.id]];
+    if (!d) return '';
+    return uiText('<div><h3>现在的样子</h3><button type="button" class="dprev" data-design="', "<div><h3>Current design</h3><button type=\"button\" class=\"dprev\" data-design=\"") + esc(d.id) + uiText('" title="放大看"><iframe sandbox="allow-scripts" referrerpolicy="no-referrer" loading="lazy" tabindex="-1" src="', "\" title=\"Enlarge design\"><iframe sandbox=\"allow-scripts\" referrerpolicy=\"no-referrer\" loading=\"lazy\" tabindex=\"-1\" src=\"") + esc(designSrc(d)) + uiText('" title="设计稿 ', "\" title=\"Design ") + esc(d.title) + '"></iframe></button>' +
+      uiText('<div class="dmeta"><span>设计稿 <span class="id">', "<div class=\"dmeta\"><span>Design <span class=\"id\">") + esc(d.id) + '</span> ' + esc(d.title) + '</span>' + (d.requirement ? uiText('<span class="muted">来自需求 ', "<span class=\"muted\">From requirement ") + esc(d.requirement) + (d.adopted ? '，' + esc(d.adopted.slice(0, 10)) + uiText(' 完成', " completed") : '') + '</span>' : '') +
+      '<button type="button" class="link" data-design="' + esc(d.id) + uiText('">放大看</button><a class="link" href="', "\">Enlarge</button><a class=\"link\" href=\"") + esc(designSrc(d)) + uiText('" target="_blank" rel="noopener">单独打开</a></div></div>', "\" target=\"_blank\" rel=\"noopener\">Open separately</a></div></div>");
+  }
+  function openDesign(id) {
+    var d = designById[id], dlg = document.getElementById('dlg');
+    if (!d) return;
+    dlg.classList.add('wide');
+    dlg.innerHTML = uiText('<div class="dlg-head"><h2>设计稿 · ', "<div class=\"dlg-head\"><h2>Design · ") + esc(d.title) + ' <span class="muted" style="font-weight:400">' + esc(d.id) + uiText('</span></h2><button type="button" class="dlg-close" data-close aria-label="关闭">×</button></div><div class="dlg-body"><iframe sandbox="allow-scripts" referrerpolicy="no-referrer" src="', "</span></h2><button type=\"button\" class=\"dlg-close\" data-close aria-label=\"Close\">×</button></div><div class=\"dlg-body\"><iframe sandbox=\"allow-scripts\" referrerpolicy=\"no-referrer\" src=\"") + esc(designSrc(d)) + uiText('" title="设计稿 ', "\" title=\"Design ") + esc(d.title) + '"></iframe></div>';
+    if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+  }
+  document.getElementById('dlg').addEventListener('close', function () { this.classList.remove('wide'); });
+  function openDecision(id) {
+    var d = byId[id], dlg = document.getElementById('dlg');
+    if (!d) return;
+    dlg.innerHTML = uiText('<div class="dlg-head"><h2>裁定 · ', "<div class=\"dlg-head\"><h2>Decision · ") + esc(d.title) + uiText('</h2><button type="button" class="dlg-close" data-close aria-label="关闭">×</button></div><div class="dlg-body">', "</h2><button type=\"button\" class=\"dlg-close\" data-close aria-label=\"Close\">×</button></div><div class=\"dlg-body\">") + decisionCard(d) + history(d) + '</div>';
+    if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+  }
+  var PLAN_STATUS = { done: uiText('做完', "Complete"), doing: uiText('正在做', "In progress"), todo: uiText('还没做', "To do"), dropped: uiText('不做了', "Dropped") };
+  function planStep(p) { return '<li class="' + esc(p.status) + '"><span class="mark" title="' + PLAN_STATUS[p.status] + '"></span><span class="title">' + esc(p.title) + uiText('</span><span class="src" title="最近一次提到它的时间，第 ', "</span><span class=\"src\" title=\"Last mentioned in message ") + esc(p.at) + uiText(' 条消息">', "\">") + esc(p.when ? p.when.slice(5) : '#' + p.at) + '</span>' + (p.note ? '<span class="note">' + esc(p.note) + '</span>' : '') + '</li>'; }
+  var modal = { kind: null, sid: null, day: null };
+  function openModal(kind, sid, day) {
+    if (kind === 'pending') {
+      var g = (D.pendingGroups || [])[+sid], gd = document.getElementById('dlg'), KINDS = { module: uiText('模块', "Module"), feature: uiText('功能点', "Feature"), decision: uiText('裁定', "Decision"), doc: uiText('说明', "Document") };
+      if (!g) return;
+      gd.innerHTML = uiText('<div class="dlg-head"><h2>等你确认 · ', "<div class=\"dlg-head\"><h2>Awaiting confirmation · ") + esc(g.title) + ' · ' + g.items.length + uiText(' 个</h2><button type="button" class="dlg-close" data-close aria-label="关闭">×</button></div><div class="dlg-body"><p class="note" style="margin:0 0 12px">在对话里说「确认', " items</h2><button type=\"button\" class=\"dlg-close\" data-close aria-label=\"Close\">×</button></div><div class=\"dlg-body\"><p class=\"note\" style=\"margin:0 0 12px\">In the session, ask to confirm all items for ") + esc(g.title) + uiText('的全部」，或者运行 /rf-confirm 逐个看。页面上不能操作。</p><div class="stack">', ", or run /rf-confirm to review them individually.</p><div class=\"stack\">") +
+        g.items.map(function (it) { return '<div class="card"><div class="meta"><span>' + (KINDS[it.type] || '') + '</span><span class="id">' + esc(it.id) + '</span>' + (it.status === 'draft' ? uiText('<span class="pill wait">整个对象待确认</span>', "<span class=\"pill wait\">Awaiting confirmation</span>") : '') + '</div><h4>' + (byId[it.id] ? link(it.id, it.title) : esc(it.title)) + '</h4>' + (it.lines.length ? items(it.lines) : '') + '</div>'; }).join('') + '</div></div>';
+      if (!gd.open) { if (gd.showModal) gd.showModal(); else gd.setAttribute('open', ''); }
+      return;
+    }
+    if (kind === 'projects') {
+      var pd = document.getElementById('dlg');
+      pd.innerHTML = uiText('<div class="dlg-head"><h2>本机的项目 · ', "<div class=\"dlg-head\"><h2>Local projects · ") + D.projects.length + ' 个</h2><button type="button" class="dlg-close" data-close aria-label="关闭">×</button></div><div class="dlg-body"><div class="sstrip">' + D.projects.map(function (q) {
+        return '<a class="scard" href="/p/' + encodeURIComponent(q.name) + '/"' + (q.current ? ' aria-current="true"' : '') + '><span class="scard-top"><b>' + esc(q.name) + '</b>' + (q.current ? uiText('<span class="pill decided">正在看</span>', "<span class=\"pill decided\">Current</span>") : '') + '</span>' +
+          '<span class="scard-doing" style="min-height:0">' + (q.active ? q.active + uiText(' 个会话正在进行', " active sessions") : q.sessions ? uiText('没有正在进行的会话', "No active sessions") : uiText('还没有同步过会话', "No synchronized sessions")) + '</span>' +
+          '<span class="scard-foot"><span class="scard-branch">' + esc(q.root) + '</span><span>' + (q.last ? uiText('最近同步 ', "Last sync ") + esc(q.last.slice(5)) : '') + '</span></span></a>';
+      }).join('') + '</div></div>';
+      if (!pd.open) { if (pd.showModal) pd.showModal(); else pd.setAttribute('open', ''); }
+      return;
+    }
+    if (kind === 'older') {
+      var box = document.getElementById('dlg'), rest = D.sessions.filter(function (x) { return !isActive(x); });
+      box.innerHTML = uiText('<div class="dlg-head"><h2>更早的会话 · ', "<div class=\"dlg-head\"><h2>Earlier sessions · ") + rest.length + uiText(' 个</h2><button type="button" class="dlg-close" data-close aria-label="关闭">×</button></div><div class="dlg-body"><p class="muted" style="margin:0 0 10px;font-size:13px">超过 7 天没有同步，或者已经标记结束的会话。</p><div class="sstrip">', "</h2><button type=\"button\" class=\"dlg-close\" data-close aria-label=\"Close\">×</button></div><div class=\"dlg-body\"><p class=\"muted\" style=\"margin:0 0 10px;font-size:13px\">Ended sessions and sessions last synchronized more than seven days ago.</p><div class=\"sstrip\">") + rest.map(function (x) { return sessionTile(x, picked()); }).join('') + '</div></div>';
+      if (!box.open) { if (box.showModal) box.showModal(); else box.setAttribute('open', ''); }
+      return;
+    }
+    var x = D.sessions.filter(function (s) { return s.id === sid; })[0], dlg = document.getElementById('dlg');
+    if (!x || !dlg) return;
+    modal = { kind: kind, sid: sid, day: day || null };
+    var done = x.plan.filter(function (p) { return p.status === 'done'; }).reverse();
+    var title = kind === 'done' ? uiText('已经做完的 · ', "Completed · ") + done.length + uiText(' 步', " steps") : uiText('方向怎么变过来的 · ', "Changes in direction · ") + x.changes.length + uiText(' 次', " changes");
+    var body;
+    if (kind === 'done') body = '<ul class="plan">' + done.map(planStep).join('') + '</ul>';
+    else {
+      var WEEK = [uiText('日', "Sun"), uiText('一', "Mon"), uiText('二', "Tue"), uiText('三', "Wed"), uiText('四', "Thu"), uiText('五', "Fri"), uiText('六', "Sat")];
+      var time = function (c) { return c.when ? new Date(c.when.replace(' ', 'T')).getTime() : NaN; };
+      var key = function (d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); };
+      var dated = x.changes.filter(function (c) { return !isNaN(time(c)); });
+      var axis = '', last = x.changes[x.changes.length - 1];
+      if (dated.length > 1) {
+        var lo = new Date(time(dated[0])); lo.setHours(0, 0, 0, 0);
+        var hi = new Date(time(dated[dated.length - 1])); hi.setHours(24, 0, 0, 0);
+        var span = hi - lo, days = Math.round(span / 864e5), ticks = '';
+        for (var i = 0; i < days; i++) {
+          var d = new Date(lo.getTime() + i * 864e5), k = key(d), n = dated.filter(function (c) { return c.when.slice(0, 10) === k; }).length;
+          ticks += '<button type="button" class="tl-tick" style="left:' + (100 * i / days) + '%;width:' + (100 / days) + '%" data-day="' + k + '" aria-pressed="' + (modal.day === k) + '"' + (n ? '' : ' disabled') + '>' + (d.getMonth() + 1) + uiText('月', "/") + d.getDate() + uiText('日', "") + (n ? '<small>' + n + uiText(' 次</small>', " changes</small>") : '') + '</button>';
+        }
+        axis = '<div class="tl-axis">' + ticks + dated.map(function (c) { return '<i class="' + (c === last ? 'latest' : '') + (modal.day && c.when.slice(0, 10) !== modal.day ? ' dim' : '') + '" style="left:' + (100 * (time(c) - lo) / span) + '%" title="' + esc(c.when) + '"></i>'; }).join('') + '</div>' +
+          '<p class="muted" style="margin:0 0 4px;font-size:12px">' + (modal.day ? uiText('只显示这一天。再点一次日期取消。', "Showing one day. Select the date again to clear the filter.") : uiText('点某一天只看那天的调整。', "Select a date to view its changes.")) + '</p>';
+      }
+      var day = null, list = '';
+      x.changes.forEach(function (c) {
+        var ck = c.when ? c.when.slice(0, 10) : '';
+        if (modal.day && ck !== modal.day) return;
+        if (ck !== day) {
+          if (day !== null) list += '</ol>';
+          var dd = ck ? new Date(ck + 'T00:00') : null;
+          list += '<h3 class="tl-day">' + (dd ? (dd.getMonth() + 1) + uiText('月', "/") + dd.getDate() + uiText('日 周', " · ") + WEEK[dd.getDay()] : uiText('时间未知', "Unknown time")) + '</h3><ol class="tl">';
+          day = ck;
+        }
+        list += '<li' + (c === last ? ' class="latest"' : '') + '><time>' + esc(c.when ? c.when.slice(11) : '#' + c.at) + '</time><span class="knot"></span><span class="what">' + esc(c.text) + (c === last ? uiText('<span class="pill decided" style="margin-left:8px">现在的方向</span>', "<span class=\"pill decided\" style=\"margin-left:8px\">Current direction</span>") : '') + '</span></li>';
+      });
+      body = axis + list + (day !== null ? '</ol>' : uiText('<p class="empty">还没有记录到方向调整。</p>', "<p class=\"empty\">No changes in direction recorded yet.</p>"));
+    }
+    dlg.innerHTML = '<div class="dlg-head"><h2>' + esc(title) + uiText('</h2><button type="button" class="dlg-close" data-close aria-label="关闭">×</button></div><div class="dlg-body">', "</h2><button type=\"button\" class=\"dlg-close\" data-close aria-label=\"Close\">×</button></div><div class=\"dlg-body\">") + body + '</div>';
+    if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+  }
+  var REF = new Date((D.generatedAt || '').replace(' ', 'T')).getTime();
+  var age = function (x) { var t = new Date(String(x.updated || '').replace(' ', 'T')).getTime(); return isNaN(t) || isNaN(REF) ? 0 : REF - t; };
+  var ago = function (x) { var m = Math.round(age(x) / 6e4); return m < 1 ? uiText('刚刚同步', "Synced just now") : m < 60 ? m + uiText(' 分钟前同步', " min since sync") : m < 1440 ? Math.round(m / 60) + uiText(' 小时前同步', " h since sync") : Math.round(m / 1440) + uiText(' 天前同步', " days since sync"); };
+  var isActive = function (x) { return !x.ended && age(x) < 7 * 864e5; };
+  function picked() {
+    var active = D.sessions.filter(isActive);
+    return D.sessions.filter(function (x) { return x.id === S.sid; })[0] || active[0] || D.sessions[0] || null;
+  }
+  // Sessions sharing a module: "hard" when they share a feature, or when one of them does not say which
+  // feature it works on; "soft" when every one names features and none is shared.
+  var featsIn = function (x, mid) { return (x.features || []).filter(function (f) { return byId[f] && byId[f].module === mid; }); };
+  function clashes() {
+    var by = {};
+    D.sessions.filter(isActive).forEach(function (x) { (x.modules || []).forEach(function (id) { if (byId[id]) (by[id] = by[id] || []).push(x); }); });
+    return Object.keys(by).filter(function (id) { return by[id].length > 1; }).map(function (id) {
+      var list = by[id], seen = {}, shared = [];
+      list.forEach(function (x) { featsIn(x, id).forEach(function (f) { seen[f] = (seen[f] || 0) + 1; if (seen[f] === 2) shared.push(f); }); });
+      if (shared.length) return { id: id, hard: true, features: shared, sessions: list.filter(function (x) { return featsIn(x, id).some(function (f) { return shared.indexOf(f) >= 0; }); }) };
+      return { id: id, hard: !list.every(function (x) { return featsIn(x, id).length; }), features: [], sessions: list };
+    });
+  }
+  var clashOf = function (x, hardOnly) { return clashes().filter(function (c) { return c.sessions.indexOf(x) >= 0 && (!hardOnly || c.hard); }); };
+  var pickLink = function (x) { return '<button type="button" class="link" data-pick="' + esc(x.id) + '">' + esc(x.title || x.id) + '</button>'; };
+  function sessionTile(x, sel) {
+    var done = x.plan.filter(function (p) { return p.status === 'done'; }).length, alive = x.plan.filter(function (p) { return p.status !== 'dropped'; }).length;
+    var stale = age(x) > 864e5;
+    return '<button type="button" class="scard' + (stale || x.ended ? ' stale' : '') + '" data-pick="' + esc(x.id) + '" aria-pressed="' + (sel && sel.id === x.id) + '"><span class="scard-top"><b>' + esc(x.title || x.id) + '</b><span class="muted">' + done + '/' + alive + '</span></span>' +
+      '<span class="progress"><i style="width:' + Math.round(100 * done / (alive || 1)) + '%"></i></span><span class="scard-doing">' + esc(x.doing) + '</span>' +
+      (isActive(x) && clashOf(x, true).length ? uiText('<span class="scard-warn">撞车：', "<span class=\"scard-warn\">Overlap: ") + clashOf(x, true).map(function (c) { return esc(c.features.length ? c.features.map(function (f) { return byId[f].title; }).join('、') : byId[c.id].title); }).join('、') + '</span>' : '') + '<span class="scard-foot"><span class="scard-branch">' + esc(x.worktree || x.branch || '') + '</span><span>' + (x.ended ? uiText('已结束', "Ended") : ago(x) + (stale ? uiText(' · 可能过时', " · May be out of date") : '')) + '</span></span></button>';
+  }
+  function touching(x) {
+    var mods = (x.modules || []).filter(function (id) { return byId[id]; });
+    if (!mods.length) return '';
+    var mine = isActive(x) ? clashOf(x) : [];
+    return uiText('<div><h3>在动的模块和功能点</h3><div class="paths">', "<div><h3>Modules and features in progress</h3><div class=\"paths\">") + mods.map(function (id) {
+      var c = mine.filter(function (k) { return k.id === id; })[0], feats = featsIn(x, id);
+      var others = c ? c.sessions.filter(function (o) { return o !== x; }).map(function (o) { return esc(o.title || o.id); }).join('、') : '';
+      return '<button type="button" class="chip' + (c && c.hard ? ' warn' : '') + '" data-open="' + esc(id) + '"><span><b>' + esc(byId[id].title) + '</b>' + (feats.length ? ' · ' + feats.map(function (f) { return esc(byId[f].title); }).join('、') : '') + '</span>' +
+        (c ? '<small>' + (c.hard ? (c.features.length ? '「' + c.features.map(function (f) { return esc(byId[f].title); }).join('、') + '」' : '') + others + uiText(' 也在动', " also working here") : others + uiText(' 在动这个模块的其他功能点', " working on other features in this module")) + '</small>' : '') + '</button>';
+    }).join('') + '</div></div>';
+  }
+  function sessionCard(x) {
+    if (!x) return '';
+    var ST = { done: uiText('做完', "Complete"), doing: uiText('正在做', "In progress"), todo: uiText('还没做', "To do"), dropped: uiText('不做了', "Dropped") };
+    var count = function (st) { return x.plan.filter(function (p) { return p.status === st; }).length; };
+    var alive = x.plan.length - count('dropped'), rest = x.plan.filter(function (p) { return p.status !== 'done'; }), done = x.plan.filter(function (p) { return p.status === 'done'; });
+    var step = planStep;
+    return '<section class="panel"><div class="head"><div class="status"><h2 style="font-size:18px">' + esc(x.title || uiText('没有名字的会话', "Untitled session")) + '</h2>' + (x.ended ? uiText('<span class="pill">已结束</span>', "<span class=\"pill\">Ended</span>") : '') + uiText('<span class="muted">会话 ', "<span class=\"muted\">Session ") + esc(x.id) + (x.branch ? ' · ' + esc(x.branch) : '') + (x.worktree ? uiText(' · 工作树 ', " · Worktree ") + esc(x.worktree) : '') + uiText(' · 读到第 ', " · Read through message ") + x.upto + uiText(' 条消息 · 更新于 ', " · Updated ") + esc(x.updated) + '</span></div></div>' +
+      uiText('<div class="body"><div class="row"><div class="wide stack"><div><h3>任务目标</h3><p class="lead" style="font-size:16px">', "<div class=\"body\"><div class=\"row\"><div class=\"wide stack\"><div><h3>Goal</h3><p class=\"lead\" style=\"font-size:16px\">") + esc(x.goal) + uiText('</p></div><div><h3>正在处理</h3><p class="nowbox" style="margin:0">', "</p></div><div><h3>Current work</h3><p class=\"nowbox\" style=\"margin:0\">") + esc(x.doing) + '</p></div>' + touching(x) +
+      '<button type="button" class="more" data-modal="changes" data-sid="' + esc(x.id) + uiText('"><b>方向怎么变过来的</b><span class="pill">', "\"><b>Changes in direction</b><span class=\"pill\">") + x.changes.length + '</span></button></div>' +
+      uiText('<div class="wide"><h3>计划 · 做完 ', "<div class=\"wide\"><h3>Plan · Complete ") + count('done') + ' / ' + alive + '</h3><div class="progress"><i style="width:' + Math.round(100 * count('done') / (alive || 1)) + '%"></i></div>' +
+      '<ul class="plan" style="margin-top:10px">' + rest.map(step).join('') + '</ul>' +
+      '<button type="button" class="more" style="margin-top:10px" data-modal="done" data-sid="' + esc(x.id) + uiText('"><b>已经做完的</b><span class="pill done">', "\"><b>Completed steps</b><span class=\"pill done\">") + done.length + '</span></button></div></div></div></section>';
+  }
+  function deltaOf(b) {
+    if (!S.win) return b.delta;
+    var logs = b.gitlog || D.gitlog || {};
+    var from = new Date(D.generated + 'T00:00'); from.setDate(from.getDate() - (S.win - 1));
+    var since = from.getFullYear() + '-' + ('0' + (from.getMonth() + 1)).slice(-2) + '-' + ('0' + from.getDate()).slice(-2);
+    var state = function (id) { var log = logs[id] || []; return !log.length ? null : log[log.length - 1].d >= since ? 'new' : log[0].d >= since ? 'changed' : null; };
+    var out = {};
+    D.modules.forEach(function (m) {
+      var feats = kidsOf(m.id).map(function (f) { return { title: f.title, state: state(f.id) }; }).filter(function (f) { return f.state; });
+      var rules = rulesOf(m.id).map(function (d) { return state(d.id); });
+      var count = function (st) { return rules.filter(function (x) { return x === st; }).length; };
+      if (state(m.id) || feats.length || count('new') || count('changed')) out[m.id] = { state: state(m.id), features: feats, newRules: count('new'), changedRules: count('changed') };
+    });
+    return out;
+  }
+  function deltaHtml(b) {
+    var WORD = { 'new': uiText('新增', "New"), changed: uiText('有改动', "Updated") }, delta = deltaOf(b);
+    var chips = '<div class="chips">' + [[1, uiText('今天', "Today")], [3, uiText('近 3 天', "Last 3 days")], [7, uiText('近 7 天', "Last 7 days")], [0, uiText('相对 ', "Compared with ") + b.base]].map(function (c) { return '<button type="button" data-win="' + c[0] + '" aria-pressed="' + (S.win === c[0]) + '">' + esc(c[1]) + '</button>'; }).join('') + '</div>';
+    return chips + groups.map(function (g) {
+      return '<div><h3 style="font-weight:500">' + esc(g) + '</h3><div class="delta">' + inGroup[g].map(function (m) {
+        var d = delta[m.id];
+        if (!d) return '<button type="button" class="tile mini" data-open="' + esc(m.id) + '"><b>' + esc(m.title) + uiText('</b><span class="cnt">没有变化</span></button>', "</b><span class=\"cnt\">No changes</span></button>");
+        var rules = [d.newRules ? uiText('新增 ', "Added ") + d.newRules : '', d.changedRules ? uiText('改动 ', "Updated ") + d.changedRules : ''].filter(Boolean).join('，');
+        return '<button type="button" class="tile mini lit" data-open="' + esc(m.id) + '"><span class="meta" style="color:inherit"><b>' + esc(m.title) + '</b>' + (d.state ? '<span class="pill decided">' + WORD[d.state] + '</span>' : '') + '</span>' +
+          d.features.map(function (f) { return uiText('<span class="cnt">功能点 · ', "<span class=\"cnt\">Feature · ") + WORD[f.state] + '：' + esc(f.title) + '</span>'; }).join('') +
+          (rules ? uiText('<span class="cnt">裁定 · ', "<span class=\"cnt\">Decisions · ") + rules + uiText(' 条</span>', "</span>") : '') + '</button>';
+      }).join('') + '</div></div>';
+    }).join('');
+  }
+  var KIND = { '定了': 'decided', '做了': 'done', '子代理': 'sub' };
+  var render = {
+    now: function () {
+      var sel = picked(), active = D.sessions.filter(isActive), older = D.sessions.length - active.length;
+      var mine = N.branches.filter(function (b) { return !sel || b.name === sel.branch; });
+      var cards = mine.map(function (b) {
+        var max = Math.max.apply(null, b.activity.bins.concat([1]));
+        var bars = b.activity.bins.map(function (n) { return '<i' + (n ? ' class="has" style="height:' + Math.round(6 + 28 * n / max) + 'px" title="' + n + uiText(' 次提交"', " commits\"") : '') + '></i>'; }).join('');
+        var groupsP = D.pendingGroups || [];
+        var todo = groupsP.map(function (g, i) { return '<button type="button" class="more" data-modal="pending" data-sid="' + i + '"><b>' + esc(g.title) + '</b><span class="pill wait">' + g.items.length + '</span></button>'; }).join('') +
+          (groupsP.length ? uiText('<p class="muted" style="margin:0;font-size:13px">在对话里运行 /rf-confirm，按模块确认或否决。</p>', "<p class=\"muted\" style=\"margin:0;font-size:13px\">Run /rf-confirm in chat to review each module.</p>") : uiText('<p class="empty">没有等你确认的条目。</p>', "<p class=\"empty\">Nothing awaits confirmation.</p>")) +
+          uiText('<details><summary><b>问题没定</b><span class="pill">', "<details><summary><b>Open questions</b><span class=\"pill\">") + D.open.length + '</span></summary><div>' + items(D.open) + '</div></details>';
+        var pushes = b.groups.map(function (g, i) {
+          return '<details' + (i === 0 ? ' open' : '') + '><summary><b>' + esc(g.date) + '</b><span class="muted">' + g.commits.length + uiText(' 次提交</span></summary><div>', " commits</span></summary><div>") +
+            g.commits.map(function (c) { return '<div class="point"><span class="hash">' + esc(c.h) + '</span><span class="muted" style="font-size:12px">' + esc(c.t.slice(6)) + '</span><span class="txt">' + esc(c.s) + '</span></div>'; }).join('') + '</div></details>';
+        }).join('');
+        return '<section class="panel"><div class="head"><div class="status"><span class="branch">' + esc(b.name) + '</span><span class="muted">' + (b.worktree ? uiText('工作树 ', "Worktree ") + esc(b.worktree) + ' · ' : '') + uiText('领先 ', "Ahead of ") + esc(b.base) + ' ' + b.ahead + uiText(' 次提交 · 最近提交 ', " commits · Last commit ") + esc(b.last) + '</span></div>' +
+                    '<div><div class="strip-bars">' + bars + '</div><div class="strip-ends"><span>' + esc(b.activity.from) + uiText('</span><span>提交活动，每格 ', "</span><span>Commit activity · ") + b.activity.hours + uiText(' 小时</span><span>', " hours per bar</span><span>") + esc(b.activity.to) + '</span></div></div></div>' +
+          uiText('<div class="body"><div class="row"><div class="wide"><h3>最近对产品的改动</h3><div class="stack">', "<div class=\"body\"><div class=\"row\"><div class=\"wide\"><h3>Recent product changes</h3><div class=\"stack\">") + deltaHtml(b) + uiText('</div><p class="muted" style="margin:10px 0 0;font-size:13px">选一个时间范围，看这段时间里哪些模块、功能点和裁定是新增或改过的。按事实文件的提交日期算，不看代码。</p></div>', "</div><p class=\"muted\" style=\"margin:10px 0 0;font-size:13px\">Select a range to see new and updated modules, features, and decisions by fact-file commit date.</p></div>") +
+          uiText('<div class="narrow"><h3>等你的事</h3><div class="stack">', "<div class=\"narrow\"><h3>Needs your attention</h3><div class=\"stack\">") + todo + '</div></div></div>' +
+          uiText('<div><h3>最近的提交</h3><div class="stack">', "<div><h3>Recent commits</h3><div class=\"stack\">") + pushes + '</div></div></div></section>';
+      }).join('');
+      var strip = D.sessions.length ? '<div class="sstrip">' + active.map(function (x) { return sessionTile(x, sel); }).join('') +
+        (older ? uiText('<button type="button" class="scard more-old" data-modal="older"><b>更早的 ', "<button type=\"button\" class=\"scard more-old\" data-modal=\"older\"><b>Earlier sessions · ") + older + uiText(' 个</b><span class="muted">结束的，或 7 天没同步的</span></button>', "</b><span class=\"muted\">Ended or not synchronized for seven days</span></button>") : '') + '</div>' : '';
+      var names = function (ids) { return ids.map(function (f) { return esc(byId[f].title); }).join('、'); };
+      var warn = clashes().map(function (c) {
+        var who = c.sessions.map(pickLink).join('、'), mod = link(c.id, byId[c.id].title);
+        if (c.hard) return uiText('<p class="strip wait clash"><b>撞车</b><span>', "<p class=\"strip wait clash\"><b>Overlap</b><span>") + who + ' ' + c.sessions.length + uiText(' 个会话都在动 ', " sessions are editing ") + mod + (c.features.length ? uiText(' 的功能点「', " feature “") + names(c.features) + '」' : uiText('（有会话没说清动的是哪个功能点）', " (a session has an unspecified feature)")) + uiText('，动手前先对一下各自要改什么。</span></p>', ". Coordinate the changes before continuing.</span></p>");
+        return uiText('<p class="strip clash"><b class="soft">同一模块</b><span>', "<p class=\"strip clash\"><b class=\"soft\">Shared module</b><span>") + who + uiText(' 都在动 ', " are working in ") + mod + uiText('，但改的是不同的功能点：', " on different features: ") + c.sessions.map(function (x) { return esc(x.title || x.id) + uiText(' 改「', " edits “") + names(featsIn(x, c.id)) + '」'; }).join('；') + '。</span></p>';
+      }).join('');
+      return uiText('<div><h1>现在</h1><p class="sub">正在进行的会话，选一个看它的目标、计划和所在分支。</p></div>', "<div><h1>Activity</h1><p class=\"sub\">Select an active session to see its goal, plan, and branch.</p></div>") + warn + strip +
+        (sel ? sessionCard(sel) : uiText('<p class="empty">还没有同步过会话。在对话里运行 /rf-sync，这里会显示任务目标、正在处理的事和计划。</p>', "<p class=\"empty\">No sessions have been synchronized. Run /rf-sync in a session to see its goal, current work, and plan here.</p>")) +
+        (cards || (sel && sel.branch ? uiText('<p class="empty">这个会话所在的分支 ', "<p class=\"empty\">This session's branch ") + esc(sel.branch) + uiText(' 相对 ', " has no commits ahead of ") + esc(N.base || 'main') + uiText(' 还没有提交。</p>', ".</p>") : ''));
+    },
+    map: function () {
+      var cur = D.decisions.filter(function (d) { return d.status === 'current' && !(d.inProgress && d.inProgress.length); }).length; // 进行中的需求带来的裁定还不算现行
+      var live = function (list) { return list.filter(function (x) { return x.status !== 'reference'; }); };
+      return uiText('<div><h1>大图</h1><p class="sub">产品有哪些模块、每个模块下面有哪些功能点，以 <span class="path">', "<div><h1>Project map</h1><p class=\"sub\">Modules and features reflect the facts on the <span class=\"path\">") + esc(N.base || 'main') + uiText('</span> 分支上的事实文件为准；进行中的需求带来的标着「进行中」，确认完成后才算现行。', "</span> branch. Changes from active requirements take effect when those requirements are completed. ") + LAYERS.length + uiText(' 层 · ', " layers · ") + live(D.modules).length + uiText(' 个模块 · ', " modules · ") + live(D.features).length + uiText(' 个功能点 · ', " features · ") + JOURNEYS.length + uiText(' 条用户旅程 · ', " user journeys · ") + cur + uiText(' 条现行裁定', " current decisions") + (D.modules.length > live(D.modules).length ? uiText('，另有 ', ", plus ") + (D.modules.length - live(D.modules).length) + uiText(' 个模块已搁置', " shelved modules") : '') + '。</p></div>' +
+        (N.baseEmpty && N.branches.length ? '<p class="strip wait">' + esc(N.base) + uiText(' 上还没有事实文件。下面显示的是合并 <span class="path">', " has no fact files yet. This map previews what will appear after merging <span class=\"path\">") + esc(N.branches[0].name) + uiText('</span> 之后会有的内容。</p>', "</span>.</p>") : '') +
+        '<div class="row"><section class="panel mapcol">' + treeHtml() + '</section><section class="panel sidecol">' + panel() + '</section></div>';
+    }
+  };
+  function show(keep) {
+    document.getElementById('tabs').innerHTML = [['now', uiText('现在', "Activity"), D.sessions.filter(isActive).length + uiText(' 个会话', " sessions")], ['map', uiText('大图', "Project map"), N.base || '']].map(function (p) { return '<button type="button" data-page="' + p[0] + '"' + (S.page === p[0] ? ' aria-current="page"' : '') + '>' + p[1] + '<small>' + esc(p[2]) + '</small></button>'; }).join('');
+    document.getElementById('page').innerHTML = render[S.page]();
+    if (S.focus) { var el = document.getElementById('c-' + S.focus); if (el) el.scrollIntoView({ block: 'center' }); S.focus = null; }
+    else window.scrollTo(0, keep || 0);
+  }
+  function open(id) {
+    var o = byId[id];
+    if (!o) return;
+    var same = S.page === 'map', y = window.scrollY;
+    S.page = 'map';
+    if (o.type === 'decision' || o.status === 'superseded') { if (!same) show(); openDecision(id); return; }
+    choose(id); keep();
+    hash(id); show(same ? y : 0);
+  }
+  function hash(k) { try { if (location.hash.slice(1) !== k) location.hash = k; } catch (e) {} }
+  function route() {
+    var k = location.hash.slice(1);
+    if (byId[k]) { if (S.sel !== k && S.focus !== k) open(k); return true; }
+    if (render[k]) { if (S.page !== k) { S.page = k; show(); } return true; }
+    if (D.sessions.some(function (x) { return x.id === k; })) { if (S.sid !== k || S.page !== 'now') { S.page = 'now'; S.sid = k; show(); } return true; }
+    return false;
+  }
+  document.addEventListener('click', function (e) {
+    var dlg = document.getElementById('dlg');
+    var dayBtn = e.target.closest('[data-day]');
+    if (dayBtn) { openModal(modal.kind, modal.sid, modal.day === dayBtn.dataset.day ? null : dayBtn.dataset.day); return; }
+    if (e.target === dlg || e.target.closest('[data-close]')) { dlg.close ? dlg.close() : dlg.removeAttribute('open'); return; }
+    var drawn = e.target.closest('[data-design]');
+    if (drawn) { openDesign(drawn.dataset.design); return; }
+    var pick = e.target.closest('[data-pick]');
+    if (pick) { if (dlg.open && dlg.close) dlg.close(); S.page = 'now'; S.sid = pick.dataset.pick; hash(S.sid); show(window.scrollY); return; }
+    var m = e.target.closest('[data-modal]');
+    if (m) { openModal(m.dataset.modal, m.dataset.sid); return; }
+    var fr = e.target.closest('[data-fresh]');
+    if (fr) { try { parent.postMessage({ rf: fr.dataset.fresh === 'check' ? 'map-fresh-check' : 'map-fresh-open', id: fr.dataset.id }, '*'); } catch (err) {} return; } // 核对、看建议：在应用里做
+    var trunk = e.target.closest('[data-trunk]');
+    if (trunk) { try { parent.postMessage({ rf: 'map-trunk', id: trunk.dataset.trunk, on: trunk.dataset.on === '1' }, '*'); } catch (err) {} return; } // 设为主干：只由你在应用里点（rf.py map trunk）
+    var tog = e.target.closest('[data-toggle]');
+    if (tog) { S.open[tog.dataset.toggle] = S.open[tog.dataset.toggle] ? 0 : 1; keep(); show(window.scrollY); return; }
+    var t = e.target.closest('[data-page],[data-open],[data-sel],[data-win],[data-layer],[data-expand],[data-collapse],[data-terse],[data-j],[data-step],[data-gostep],[data-edit]');
+    if (!t) return;
+    if (dlg.open && dlg.close) dlg.close();
+    var d = t.dataset, y = window.scrollY;
+    if (d.page) { S.page = d.page; hash(d.page); show(); return; }
+    if (d.open) { open(d.open); return; }
+    if (d.edit != null) { S.editing = !S.editing; document.documentElement.classList.toggle('editing', S.editing); try { parent.postMessage({ rf: 'map-edit', open: S.editing }, '*'); } catch (err) {} }
+    else if (d.sel) { if (S.sel === d.sel && byId[d.sel].type === 'module') S.sel = null; else choose(d.sel); hash(S.sel || 'map'); }
+    else if (d.win) S.win = +d.win;
+    else if (d.layer) S.layer = d.layer;
+    else if (d.expand != null || d.collapse != null) D.modules.forEach(function (m) { if (LAYER_OF[m.id] === layerNow()) S.open[m.id] = d.expand != null ? 1 : 0; });
+    else if (d.terse != null) S.terse = !S.terse;
+    else if (d.j != null) { S.j = +d.j; S.step = null; }
+    else if (d.step != null) { var i = +d.step; S.step = S.step === i ? null : i; }
+    else if (d.gostep) { var g = d.gostep.split('|'), jr = JOURNEYS.filter(function (x) { return x.id === g[0]; })[0]; if (jr) { choose(jr.module); S.j = journeysOf(jr.module).indexOf(jr); S.step = +g[1]; hash(jr.module); } }
+    keep();
+    show(y);
+  });
+  window.addEventListener('hashchange', route);
+  document.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('mrow')) { e.preventDefault(); e.target.click(); } });
+  // 知识保鲜：应用把哪些功能点可能过时、核对到哪了交进来（app/src/main/fresh.js），这里只显示
+  window.addEventListener('message', function (e) { if (e.data && e.data.rf === 'map-fresh' && e.data.data && typeof e.data.data === 'object') { S.fresh = e.data.data; if (S.page === 'map') show(window.scrollY); } });
+  window.addEventListener('message', function (e) { if (e.data && e.data.rf === 'map-edit-state' && S.editing !== !!e.data.open) { S.editing = !!e.data.open; document.documentElement.classList.toggle('editing', S.editing); if (S.page === 'map') show(window.scrollY); } });
+  if (EMBED && /[?&]editing=1/.test(location.search)) { S.editing = true; document.documentElement.classList.add('editing'); }
+  var others = D.projects || [];
+  if (others.length > 1) document.getElementById('project').innerHTML = uiText('<button type="button" class="switch" data-modal="projects">项目：', "<button type=\"button\" class=\"switch\" data-modal=\"projects\">Project: ") + esc(D.project) + '</button>';
+  else document.getElementById('project').textContent = uiText('项目：', "Project: ") + D.project;
+  route();
+  if (!document.getElementById('page').firstChild) show();  // the address may name the page we already start on
+  if (location.protocol.indexOf('http') === 0 && location.port) {
+    var version = null;
+    setInterval(function () { fetch('api/version').then(function (r) { return r.json(); }).then(function (v) { if (version && v.version !== version) location.reload(); version = v.version; }).catch(function () {}); }, 4000);
+  }
+})();
+</script>

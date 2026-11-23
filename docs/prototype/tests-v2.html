@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>测试与验收 交互稿</title>
+<style>
+:root{color-scheme:dark;--bg:#111318;--panel:#171a21;--card:#1d222b;--line:#2c323d;--text:#e6e9ef;--muted:#a1a8b4;--blue:#9bbaff;--green:#80dba6;--amber:#edbf70;--red:#f0a08e;--note:#192331;--note-line:#35465e}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#111318;--panel:#171a21;--card:#1d222b;--line:#2c323d;--text:#e6e9ef;--muted:#a1a8b4}}
+:root[data-theme="dark"]{--bg:#111318;--panel:#171a21;--card:#1d222b;--line:#2c323d;--text:#e6e9ef;--muted:#a1a8b4}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;display:flex;flex-direction:column}
+button,select,input,textarea{font:inherit;color:inherit;border:1px solid var(--line);border-radius:6px;background:#20242d;padding:5px 10px}
+button,select{cursor:pointer}
+button:hover:not(:disabled){border-color:#7892b7}
+button:disabled{opacity:.45;cursor:default}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+button.primary{background:#94deb4;color:#11251b;border-color:transparent;font-weight:600}
+button.quiet{background:transparent;color:var(--muted)}
+button.link{background:transparent;border:0;padding:0;color:var(--blue)}
+button.sm,select.sm{font-size:12px;padding:2px 8px}
+.muted{color:var(--muted)}.small{font-size:12px}
+.mono,pre,textarea.json{font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}
+h1,h2,h3{margin:0}
+.proto{flex:none;background:#0c0e12;border-bottom:1px solid var(--line);padding:8px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.proto button[aria-pressed=true]{background:#293a50;color:#cde0ff;border-color:#627d9c}
+.notes{flex:none;background:var(--note);border-bottom:1px solid var(--note-line);padding:8px 16px;font-size:13px}
+.notes ul{margin:4px 0 0;padding-left:18px}.notes summary{cursor:pointer;color:var(--blue)}
+.scroll{flex:1;min-height:0;overflow-x:auto}
+.app{min-width:1200px;height:100%;display:flex;flex-direction:column}
+header.top{flex:none;height:44px;border-bottom:1px solid var(--line);background:var(--panel);display:flex;align-items:center;gap:18px;padding:0 16px}
+header.top small{margin-left:auto;color:var(--muted)}
+.stage{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
+.shell{flex:1;min-height:0;display:grid;grid-template-columns:60px minmax(0,1fr)}
+.shell.req{grid-template-columns:60px 210px minmax(0,1fr) 420px}
+nav.rail{background:var(--panel);border-right:1px solid var(--line);text-align:center;padding:10px 6px}
+nav.rail span{display:block;border-radius:8px;margin-bottom:6px;padding:8px 0;color:var(--muted);font-size:12px}
+nav.rail .on{background:#293344;color:#c7d8ff}
+.col{background:var(--panel);border-right:1px solid var(--line);min-width:0;min-height:0;overflow:auto}
+.col .it{padding:8px 12px;border-top:1px solid var(--line)}.col .it.cur{background:#202937}.col .it small{display:block;color:var(--muted)}
+.pill{border:1px solid var(--line);border-radius:10px;padding:0 7px;font-size:11px;line-height:1.6;white-space:nowrap;display:inline-block}
+.pill.g{color:var(--green);border-color:#35604a}.pill.a{color:var(--amber);border-color:#6a5730}.pill.r{color:var(--red);border-color:#6d4239}.pill.b{color:var(--blue);border-color:#405677}
+.center{display:flex;flex-direction:column;min-width:0;min-height:0;border-right:1px solid var(--line)}
+.stabs{flex:none;display:flex;gap:2px;padding:8px 12px 0;border-bottom:1px solid var(--line);background:var(--panel)}
+.stab{border:1px solid var(--line);border-bottom:0;border-radius:6px 6px 0 0;padding:4px 14px;background:transparent;color:var(--muted)}
+.stab.on{background:var(--bg);color:var(--text)}
+.term{flex:1;overflow:auto;padding:14px 16px;font:13px/1.7 ui-monospace,Menlo,monospace;color:#c9cfd9;white-space:pre-wrap}
+.term .ok{color:var(--green)}.term .no{color:var(--red)}.term .dim{color:#727a88}
+aside.side{overflow:auto;padding:16px 18px 40px;background:var(--panel);min-width:0}
+aside.side h2{font-size:18px}
+aside.side h3,.sec{font-size:12px;color:var(--muted);font-weight:600;margin:18px 0 6px}
+.box{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0;background:var(--card)}
+.box.warn{border-color:#6a5730;background:#231f15}.box.bad{border-color:#6d4239;background:#241917}
+.setcard{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0;background:var(--card)}
+.setcard b{display:block}.setcard .m{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;align-items:center}
+.bar{display:flex;gap:2px;margin-top:8px}.bar i{flex:1;height:6px;border-radius:2px;background:#555c69}.bar i.p{background:var(--green)}.bar i.f{background:var(--red)}.bar i.n{background:var(--amber)}.bar i.e{background:#b06a5c;background-image:repeating-linear-gradient(45deg,transparent 0 3px,rgba(0,0,0,.35) 3px 6px)}.bar{gap:1px}
+.vgrp{padding:6px 12px 2px;font-size:11px;color:var(--muted);background:#14171d;position:sticky;top:0}.vfilter{padding:8px 10px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:4px}.vfilter input{width:100%;font-size:12px;margin-top:4px}
+.chg{border:1px solid #6a5730;border-radius:8px;background:#231f15;padding:10px 12px;margin:8px 0}.chg.done{border-color:#35604a;background:var(--card)}.chg.no{border-color:#6d4239}.chg .ov{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}.chg pre{padding:4px 8px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;align-items:center}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:500}
+tr.click{cursor:pointer}tr.click:hover{background:#1b2029}
+pre{margin:0;padding:8px 10px;background:#0e1014;border:1px solid var(--line);border-radius:6px;overflow:auto;color:#c9cfd9;white-space:pre-wrap}
+/* 测试集查看器 */
+.overlay{position:absolute;inset:0;background:rgba(8,9,12,.78);display:flex;align-items:center;justify-content:center;z-index:5;padding:20px}
+.viewer{width:1120px;max-width:100%;height:100%;max-height:760px;background:var(--panel);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;overflow:hidden}
+.vhead{flex:none;padding:14px 18px 10px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.vhead h2{font-size:17px}.vhead .sp{margin-left:auto}
+.vtabs{flex:none;display:flex;gap:4px;padding:8px 18px 0;border-bottom:1px solid var(--line)}
+.vtab{border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:var(--muted);padding:4px 10px 6px}
+.vtab.on{color:var(--text);border-bottom-color:var(--blue)}
+.vbody{flex:1;min-height:0;display:grid;grid-template-columns:250px minmax(0,1fr)}
+.vlist{border-right:1px solid var(--line);overflow:auto}
+.vcase{display:flex;gap:8px;width:100%;text-align:left;border:0;border-left:2px solid transparent;border-radius:0;background:transparent;padding:8px 12px;align-items:baseline}
+.vcase.cur{background:#202937;border-left-color:var(--blue)}
+.vcase .s{flex:none;width:16px;font-weight:700}.vcase .s.p{color:var(--green)}.vcase .s.f{color:var(--red)}.vcase .s.n{color:var(--amber)}
+.vmain{overflow:auto;padding:14px 18px 24px}
+.io{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.io h3{font-size:12px;color:var(--muted);margin-bottom:4px}
+.chat{flex:1;min-height:180px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:#0e1014}.msg{display:flex;gap:10px;margin-bottom:10px}.msg>span{flex:none;width:28px;color:var(--muted);font-size:12px;padding-top:2px}.msg.me>div{color:var(--blue)}
+textarea.json{width:100%;min-height:110px;background:#0e1014;color:#c9cfd9;resize:vertical}
+.diff{color:var(--red)}
+/* 验收台 */
+.bench{flex:1;min-height:0;display:grid;grid-template-columns:60px 330px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+.bench nav.rail{grid-row:1/3}
+.envbar{grid-column:2/4;display:flex;gap:10px;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
+.crits{grid-row:2;border-right:1px solid var(--line);background:var(--panel);overflow:auto;padding:12px}
+.crit{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-bottom:8px;background:var(--card)}
+.crit.good{border-color:#35604a}.crit.bad{border-color:#6d4239}
+.work{min-width:0;min-height:0;display:flex;flex-direction:column}
+.api{flex:1;min-height:0;display:grid;grid-template-columns:230px minmax(0,1fr)}
+.api .ilist{border-right:1px solid var(--line);overflow:auto}
+.api .ilist button{display:block;width:100%;text-align:left;border:0;border-radius:0;background:transparent;padding:7px 12px;border-left:2px solid transparent}
+.api .ilist button.cur{background:#202937;border-left-color:var(--blue)}
+.verb{display:inline-block;width:42px;font:600 11px ui-monospace,monospace}.verb.get{color:var(--green)}.verb.post{color:var(--amber)}
+.api .imain{overflow:auto;padding:12px 16px}
+.urlbar{display:flex;gap:8px}.urlbar input{flex:1}
+.browser{flex:1;min-height:0;display:flex;flex-direction:column;background:#f4f5f7;color:#1b1e24}
+.browser .addr{flex:none;display:flex;gap:8px;padding:6px 10px;background:#dfe2e8;align-items:center;font-size:12px}
+.browser .addr span{flex:1;background:#fff;border-radius:12px;padding:2px 12px}
+.browser .page{flex:1;overflow:auto;padding:18px 24px}
+.browser select,.browser button{background:#fff;color:#1b1e24;border-color:#c5c9d1}
+.browser table th,.browser table td{border-bottom-color:#dfe2e8;color:#1b1e24}
+.logs{flex:none;height:200px;border-top:1px solid var(--line);background:#0e1014;display:flex;flex-direction:column;min-height:0}
+.logs .lh{flex:none;display:flex;gap:8px;align-items:center;padding:5px 12px;border-bottom:1px solid var(--line);font-size:12px}
+.logs .ll{flex:1;overflow:auto;padding:6px 12px;font:12px/1.7 ui-monospace,Menlo,monospace}
+.logs .ll div{display:flex;gap:10px}.logs .ll time{color:#727a88}.logs .ll b{width:44px;font-weight:600}
+.lg-ui b{color:var(--blue)}.lg-req b{color:var(--green)}.lg-be b{color:var(--amber)}.lg-err b,.lg-err span{color:var(--red)}
+.steps{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:12px;flex-wrap:wrap}.steps span{border:1px solid var(--line);border-radius:12px;padding:1px 10px;color:var(--muted)}.steps span.done{color:var(--green);border-color:#35604a}.steps span.cur{background:#293a50;color:#cde0ff;border-color:#627d9c;font-weight:600}.steps i{font-style:normal;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}.seg button{border:0;border-radius:0;background:transparent;color:var(--muted);padding:4px 14px}.seg button.on{background:#293a50;color:#cde0ff}
+.envsel{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:2px 8px;background:#14171d}.envsel span{font-size:12px;color:var(--muted)}.envsel select{border:0;background:transparent;padding:2px 4px;color:var(--text);font-weight:600}
+.plain{flex:1;overflow:auto;padding:24px 28px 60px}.plain .wrap{max-width:1000px}
+.tag1,.tag2,.tag3,.tag4{border-radius:4px;padding:0 6px;font-size:11px;white-space:nowrap}
+.tag1{background:#1f3a2c;color:var(--green)}.tag2{background:#22324d;color:var(--blue)}.tag3{background:#3a3020;color:var(--amber)}.tag4{background:#2a2d35;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="proto">
+  <b>测试与验收 · 交互稿</b>
+  <button data-scene="req" aria-pressed="true">① 需求里的测试集</button>
+  <button data-scene="manage" aria-pressed="false">② 测试页</button>
+  <button data-scene="bench" aria-pressed="false">③ 人工验收</button>
+  <button data-scene="list" aria-pressed="false">④ 功能点清单</button>
+  <span class="muted small">都是假数据，按钮可以点</span>
+</div>
+<div class="notes" id="notes"></div>
+<div class="scroll"><div class="app">
+  <header class="top"><b>RelayForge</b><span class="muted">项目：账单服务</span><small>2 个提交未发布</small></header>
+  <div class="stage" id="stage"></div>
+</div></div>
+
+<script>
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function J(x) { return JSON.stringify(x, null, 2); }
+
+var NOTES = {
+  req: ['右边「全部重跑」上方和查看器顶栏都能选测试环境：测试集用哪套环境跑（连哪个数据库等）。',
+    '需求进入验证环节时，AI 按需求生成测试集。一个测试集 = 一份测试数据（JSON）+ 一段读这份数据的测试代码。',
+    '数据多的时候只让你看需要看的：右边只列有失败或有新数据的测试集，全部通过的收成一行；条形是通过和失败的比例，不是一条一格。',
+    '「这个需求改了以前的数据」：AI 改动已有数据的期望时单独列出旧值和新值，你逐条同意或不同意；没确认完不能去人工验收（可以手动放行）。',
+    '查看器里默认只显示「需要看的」（失败、跑不起来、AI 新加的），按正常、边界、异常分组，可以搜索。',
+    '查看器像刷题网站跑代码：左边一条条用例，右边是这条的输入、期望输出、实际输出；失败的标红并写明差在哪。',
+    '查看器里可以改数据、加一条。「让 AI 改」标签里直接用对话让 AI 改这份数据（补边界值、补异常输入、换一批数据等），然后重跑。',
+    '关掉查看器后，右边每个测试集下面有一段分析：哪些过了、哪些没过、为什么。'],
+  manage: ['凡是会跑测试的地方都有「测试环境」选择框：测试集管理的右上角、测试集查看器的顶栏、人工测试的顶栏、需求里的测试集和人工验收。选的是同一个设置，旁边的「设置」直接跳到测试环境页。',
+    '测试页有三块，标题旁边切换：「测试集管理」「人工测试」「测试环境」。',
+    '测试环境：可以建几套环境（本机、测试服…），每套有启动命令、端口、外部依赖、环境变量、请求的通用设置、测试用的登录身份。',
+    '测试用户：每个用户带一组自己起名的值（jwt、uid、talent_id…），都能直接编辑；通用请求头里写 {{user.uid}} 这样的引用，发请求时换一个用户，请求头就跟着变。',
+    '请求的通用设置：通用的请求头和地址参数，以及发请求之前、收到返回之后各运行一段 JS 脚本（自动登录拿 token、加签名等）。发请求的界面上能看到这次自动带上了什么。',
+    '外部依赖（数据库、缓存、第三方服务）默认从项目里你自己的配置文件读出来显示，并检查能不能连上；不用在这里重填一遍。人工测试和人工验收顶上可以选用哪一套。',
+    '接口列表上方有「重新读代码，刷新接口说明」：AI 重新生成接口说明文件，列出和上一版的差别给你看。',
+    '人工测试和需求里的人工验收是同一套界面（服务、接口、页面、日志），只是不绑需求：默认对着主线，也可以选某个需求的代码；发现不对直接记成问题。',
+    '测试集管理：全部测试集的列表，每个挂在哪个需求、哪个功能点下面。',
+    '点一行打开的是同一个查看器，可以改数据、让 AI 补数据、重跑。',
+    '可以改挂靠（换需求或功能点）、标不要。「提示」只用程序能算的固定规则。',
+],
+  bench: ['人工验收是这个需求下面的一个标签，和立项、开发并列；左边仍然是需求列表，右边仍然是这个需求的面板。',
+    '右边面板顶上有一条进度：开发 › 测试集 › 人工验收 › 确认完成，标出现在走到哪一步。',
+    '从哪里进来：需求面板里的「去人工验收」按钮，或者直接点「人工验收」标签。',
+    '顶栏的「测试环境」选择框决定用哪套环境启动服务；换了以后服务会重启。',
+    '程序用这个需求的代码把整个服务跑起来（后端、前端都起），状态在中间区域的顶上。',
+    '「接口」标签像 Postman：选接口、填参数、发送，看真实返回。',
+    '「页面」标签是嵌在应用里的真实页面，你直接点，把流程走通。',
+    '下面的日志把三样东西按时间排在一起：你在页面上的操作、发出的请求、后端日志。前后端联调时能看出一次点击引起了哪些请求和后端行为。',
+    '右边是验收条件，逐条点「通过」或「这里不对」；点「这里不对」时，当时那一段日志会一起交回开发会话。'],
+  list: ['这是我现在理解的全部功能点和分期。请看有没有理解错的。']
+};
+
+/* ---------- 数据 ---------- */
+var B = function (id, d) { return { id: id, booked_at: d }; };
+var SETS = [
+  { id: 'TS-012', name: '按月筛选账单', req: 'R-20261118-dd36', reqName: '账单列表加按月筛选', feat: 'RF-101 账单列表', inprog: true, hints: [], runAt: '今天 09:40',
+    code: 'import json, unittest\nfrom bills import list_bills\nfrom testkit import load_bills\n\nCASES = json.load(open(".relayforge/tests/TS-012.json"))["cases"]\n\nclass FilterByMonth(unittest.TestCase):\n    def test_cases(self):\n        for c in CASES:\n            with self.subTest(c["name"]):\n                load_bills(c["input"]["bills"])\n                got = [b.id for b in list_bills(month=c["input"]["month"])]\n                self.assertEqual(got, c["expect"])',
+    cases: [
+      { name: '只返回那个月的', input: { bills: [B('b1', '2026-09-30'), B('b2', '2026-10-01'), B('b3', '2026-10-31')], month: '2026-10' }, expect: ['b2', 'b3'], actual: ['b2', 'b3'] },
+      { name: '那个月没有账单', input: { bills: [B('b1', '2026-09-30')], month: '2026-10' }, expect: [], actual: [] },
+      { name: '不传月份，按本月', input: { bills: [B('b1', '2026-10-05'), B('b2', '2026-11-02')], month: null }, expect: ['b2'], actual: ['b2'] },
+      { name: '月底 23:59 记的账', input: { bills: [{ id: 'b1', booked_at: '2026-10-31T23:59', created_at: '2026-11-01T00:03' }], month: '2026-10' }, expect: ['b1'], actual: [], why: '期望返回 b1，实际一条都没有。这张账单的记账时间在十月、创建时间在十一月：结果说明程序是按创建时间分月的。' },
+      { name: '跨年：12 月', input: { bills: [B('b1', '2025-12-31'), B('b2', '2026-12-01')], month: '2026-12' }, expect: ['b2'], actual: ['b2'] },
+      { name: '月份格式不对', input: { bills: [], month: '2026-13' }, expect: { error: '月份不合法' }, actual: { error: '月份不合法' } }
+    ],
+    analysis: '6 条里 5 条通过。没通过的「月底 23:59 记的账」：程序按创建时间分月，而验收条件要求按记账时间。其余 5 条覆盖了正常、空结果、默认本月、跨年、非法输入。' },
+  { id: 'TS-013', name: '筛选后的合计金额', req: 'R-20261118-dd36', reqName: '账单列表加按月筛选', feat: 'RF-101 账单列表', inprog: true, hints: [], runAt: '今天 09:40',
+    code: '（结构同上：读 TS-013.json，逐条调 sum_bills 比对）',
+    cases: [
+      { name: '两张相加', input: { amounts: ['120.00', '238.50'] }, expect: '358.50', actual: '358.50' },
+      { name: '没有账单', input: { amounts: [] }, expect: '0.00', actual: '0.00' },
+      { name: '小数进位', input: { amounts: ['0.10', '0.20'] }, expect: '0.30', actual: '0.30' }
+    ],
+    analysis: '3 条全部通过。数据偏少：没有负数（退款）和很大的金额，可以让 AI 再补几条。' },
+  { id: 'TS-007', name: '导出金额格式', req: 'R-20261110-a2f0', reqName: '导出账单为 PDF', feat: 'RF-102 账单导出', hints: ['没拦住问题：这个功能点出过 I-033「导出金额少了一分」，当时这个测试集全部通过'], runAt: '今天 11:02',
+    code: '（读 TS-007.json，逐条调 format_amount 比对）',
+    cases: [
+      { name: '补零', input: { amount: 12.5 }, expect: '12.50', actual: '12.50' },
+      { name: '整数', input: { amount: 12 }, expect: '12.00', actual: '12.00' },
+      { name: '千分位', input: { amount: 1024.35 }, expect: '1,024.35', actual: '1,024.35' }
+    ],
+    analysis: '3 条全部通过。' },
+  { id: 'TS-003', name: '登录失败锁定', req: 'R-20261102-91c4', reqName: '登录失败锁定', feat: 'RF-103 登录', hints: ['从没失败过：跑过 38 次、期间代码改过 19 次，一次都没失败'], runAt: '今天 11:02',
+    code: '（读 TS-003.json，逐条按顺序调 login 比对）',
+    cases: [
+      { name: '错三次后锁定', input: { tries: ['wrong', 'wrong', 'wrong', 'pw1'] }, expect: 'locked', actual: 'locked' },
+      { name: '错两次不锁', input: { tries: ['wrong', 'wrong', 'pw1'] }, expect: 'ok', actual: 'ok' }
+    ],
+    analysis: '2 条全部通过。' }
+];
+(function () {
+  var s012 = SETS[0], cats = ['正常', '正常', '正常', '边界', '边界', '异常'];
+  s012.cases.forEach(function (c, i) { c.cat = cats[i]; });
+  var names = { '正常': ['只有一张', '同一天多张', '整月每天一张', '两个月各一半', '金额为 0 的也算', '已删除的不算', '别的用户的不算'], '边界': ['月初 00:00', '月底最后一秒', '2 月 28 日（平年）', '2 月 29 日（闰年）', '30 天的月', '31 天的月', '1 月', '12 月'], '异常': ['月份是空字符串', '月份带空格', '月份是 2026/10', '月份是数字 202610', '年份太早 1900-01', '没有登录'] };
+  Object.keys(names).forEach(function (k) { names[k].forEach(function (n, j) { s012.cases.push({ name: n, cat: k, input: { bills: [B('b' + j, '2026-10-0' + (j % 9 + 1))], month: '2026-10' }, expect: ['b' + j], actual: ['b' + j] }); }); });
+  SETS[1].cases.forEach(function (c) { c.cat = '正常'; });
+  var mk = function (id, name, n, extra) { var cs = []; for (var j = 0; j < n; j++) cs.push({ name: name + ' · 情况 ' + (j + 1), cat: j % 3 === 2 ? '边界' : '正常', input: { n: j }, expect: j, actual: j }); return Object.assign({ id: id, name: name, req: 'R-20261118-dd36', reqName: '账单列表加按月筛选', feat: 'RF-101 账单列表', inprog: true, hints: [], runAt: '今天 09:40', code: '（读 ' + id + '.json，逐条调用并比对）', cases: cs, analysis: n + ' 条全部通过。' }, extra || {}); };
+  SETS.splice(2, 0, mk('TS-014', '月份下拉框的可选项', 12), mk('TS-015', '筛选和排序一起用', 18), mk('TS-016', '筛选和翻页一起用', 24), mk('TS-017', '筛选后的空状态文案', 5), mk('TS-018', '地址栏参数的读写', 9));
+  var old = mk('TS-004', '账单列表基本查询', 30, { req: 'R-20261020-3be1', reqName: '账单列表', inprog: false, analysis: '30 条里 27 条通过。3 条和这次的改动有关，见上面「这个需求改了以前的数据」。' });
+  old.cases[3] = { name: '不带任何条件', cat: '正常', input: { month: null }, expect: ['全部账单'], actual: ['本月的账单'], why: '以前不带条件返回全部；这个需求把默认改成了本月。' };
+  old.cases[4] = { name: '按创建时间排序', cat: '正常', input: { sort: 'created_at' }, expect: ['b1', 'b2'], actual: ['b2', 'b1'], why: '排序结果反了。这次的需求没有要求改排序。' };
+  SETS.push(old);
+  var broken = mk('TS-005', '账单导出为 CSV', 8, { req: 'R-20261015-77aa', reqName: '导出账单为 CSV', feat: 'RF-102 账单导出', inprog: false, hints: ['跑不起来：测试代码出错，一条都没有执行'], analysis: '8 条都没有执行：测试代码里引用的 export_csv 已经不存在（在「导出账单为 PDF」里改名成了 export_file）。' });
+  broken.cases.forEach(function (c) { delete c.actual; c.err = "ImportError: cannot import name 'export_csv' from 'export'"; });
+  SETS.push(broken);
+  SETS.push(mk('TS-001', '旧版月度汇总', 14, { req: 'R-20260901-0c2d', reqName: '月度汇总（旧版）', feat: 'RF-104 月度汇总（已下线）', inprog: false, stale: true, analysis: '功能点已下线，这个测试集不再运行。' }));
+})();
+var CHG = [
+  { set: 'TS-004', name: '不带任何条件', old: ['全部账单'], now: ['本月的账单'], why: '验收条件 3「不选月份时默认显示本月」改了这个行为，所以期望要跟着改。', v: '' },
+  { set: 'TS-004', name: '不带条件时的合计', old: '1438.50', now: '358.50', why: '同上：默认只算本月，合计也变成本月的。', v: '' }
+];
+function ok(c) { return c.err ? false : c.actual === undefined ? null : J(c.actual) === J(c.expect); }
+function st(c) { return c.err ? 'e' : c.actual === undefined ? 'n' : ok(c) ? 'p' : 'f'; }
+function need(c) { return st(c) !== 'p' || !!c.by; }
+function stat(s) { var t = { p: 0, f: 0, n: 0, e: 0 }; s.cases.forEach(function (c) { t[st(c)]++; }); return t; }
+function bar(s) { var t = stat(s); return '<div class="bar">' + [['f', t.f], ['e', t.e], ['n', t.n], ['p', t.p]].map(function (x) { return x[1] ? '<i class="' + x[0] + '" style="flex:' + x[1] + '"></i>' : ''; }).join('') + '</div>'; }
+function resPill(s) { var t = stat(s); return (t.f ? '<span class="pill r">' + t.f + ' 条失败</span>' : '') + (t.e ? '<span class="pill r">' + t.e + ' 条跑不起来</span>' : '') + (t.n ? '<span class="pill a">' + t.n + ' 条还没跑</span>' : '') + (t.p ? '<span class="pill g">' + t.p + ' 条通过</span>' : ''); }
+
+/* ---------- 测试集查看器（①② 共用） ---------- */
+var V = { set: null, cur: 0, tab: 'cases', running: false };
+function viewer() {
+  var s = V.set; if (!s) return '';
+  var c = s.cases[V.cur], o = c && ok(c), t0 = stat(s), nNeed = s.cases.filter(need).length;
+  if (!V.f) V.f = nNeed ? 'need' : 'all';
+  var h = '<div class="overlay"><div class="viewer"><div class="vhead"><h2>' + esc(s.name) + '</h2><span class="mono muted">' + s.id + '</span>' + resPill(s)
+    + '<span class="sp"></span>' + envSel() + '<button class="sm" data-act="add">加一条</button><button class="sm primary" data-act="runset">' + (V.running ? '正在跑…' : '运行全部') + '</button><button class="sm quiet" data-act="close">关闭</button></div>'
+    + '<div class="vtabs">' + [['cases', '用例（' + s.cases.length + '）'], ['json', '测试数据（JSON 全文）'], ['code', '测试代码'], ['ai', '让 AI 改']].map(function (t) { return '<button class="vtab' + (V.tab === t[0] ? ' on' : '') + '" data-vtab="' + t[0] + '">' + t[1] + '</button>'; }).join('') + '<span class="small muted" style="margin:6px 0 0 auto">挂在：' + esc(s.reqName) + ' · ' + s.feat + '</span></div>';
+  if (V.tab === 'json') h += '<div class="vmain"><p class="small muted" style="margin:0 0 8px">这就是 <span class="mono">.relayforge/tests/' + s.id + '.json</span> 的内容。测试代码读它，这个界面也读它。可以直接改，保存后重跑。</p><textarea class="json" style="min-height:440px">' + esc(J({ id: s.id, name: s.name, cases: s.cases.map(function (x) { return { name: x.name, input: x.input, expect: x.expect }; }) })) + '</textarea><div class="acts"><button class="sm primary" data-act="runset">保存并运行</button></div></div>';
+  else if (V.tab === 'ai') {
+    s.chat = s.chat || [];
+    h += '<div class="vmain" style="display:flex;flex-direction:column"><p class="small muted" style="margin:0 0 8px">直接说想怎么改这份测试数据。AI 只改这个测试集的数据文件，不动被测的代码；它加的、改的每一条都会标出来等你看。</p><div class="chat">'
+      + (s.chat.length ? s.chat.map(function (m) { return '<div class="msg ' + m[0] + '"><span>' + (m[0] === 'me' ? '你' : 'AI') + '</span><div>' + m[1] + '</div></div>'; }).join('') : '<div class="muted small">还没有对话。可以点下面的例子，或者自己写。</div>')
+      + '</div><div class="acts" style="margin:10px 0 6px">' + ['补几条边界值', '补几条异常输入', '来一条数据量很大的', '把日期都换成 2027 年的'].map(function (x) { return '<button class="sm" data-say="' + x + '">' + x + '</button>'; }).join('') + '</div><div style="display:flex;gap:8px"><input id="say" style="flex:1" placeholder="比如：加一条跨时区的，用户在东京、服务器在伦敦"><button class="primary" data-act="say">发送</button></div></div>';
+  }
+  else if (V.tab === 'code') h += '<div class="vmain"><p class="small muted" style="margin:0 0 8px">AI 写的测试代码。它不含任何测试数据，只负责：读上面那份 JSON → 逐条调用被测的代码 → 把结果交给程序比对。一般不需要看。</p><pre>' + esc(s.code) + '</pre></div>';
+  else {
+    var show = function (x) { return (V.f === 'all' || V.f === 'need' && need(x) || V.f === 'fail' && (st(x) === 'f' || st(x) === 'e')) && (!V.q || x.name.indexOf(V.q) >= 0); };
+    h += '<div class="vbody"><div class="vlist"><div class="vfilter">' + [['need', '需要看的 ' + nNeed], ['fail', '失败 ' + (t0.f + t0.e)], ['all', '全部 ' + s.cases.length]].map(function (x) { return '<button class="sm' + (V.f === x[0] ? ' primary' : '') + '" data-vf="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '<input id="vq" placeholder="搜名称" value="' + esc(V.q || '') + '"></div>';
+    var shown = 0;
+    ['正常', '边界', '异常', undefined].forEach(function (cat) {
+      var rows = s.cases.map(function (x, i) { return [x, i]; }).filter(function (r) { return r[0].cat === cat && show(r[0]); });
+      if (!rows.length) return; shown += rows.length;
+      rows.sort(function (a, b) { return 'fenp'.indexOf(st(a[0])) - 'fenp'.indexOf(st(b[0])); });
+      h += '<div class="vgrp">' + (cat || '还没分类') + ' · ' + rows.length + '</div>' + rows.map(function (r) { var x = r[0], k = st(x); return '<button class="vcase' + (r[1] === V.cur ? ' cur' : '') + '" data-vc="' + r[1] + '"><span class="s ' + (k === 'e' ? 'f' : k) + '">' + { p: '✓', f: '✗', n: '?', e: '!' }[k] + '</span><span>' + esc(x.name) + (x.by ? ' <span class="pill a">' + x.by + '</span>' : '') + '</span></button>'; }).join('');
+    });
+    if (!shown) h += '<div class="small muted" style="padding:12px">' + (V.f === 'need' ? '没有需要看的：全部通过，也没有新加的。' : '没有符合的。') + '</div>';
+    h += '</div><div class="vmain">';
+    h += '<div style="display:flex;gap:8px;align-items:center"><b style="font-size:15px">' + esc(c.name) + '</b>' + (c.err ? '<span class="pill r">跑不起来</span>' : o === null ? '<span class="pill a">还没跑</span>' : o ? '<span class="pill g">通过</span>' : '<span class="pill r">失败</span>') + (c.cat ? '<span class="pill">' + c.cat + '</span>' : '') + '<span style="margin-left:auto"></span><button class="sm" data-act="runone">只跑这一条</button><button class="sm quiet" data-act="del">删掉这条</button></div>';
+    if (c.err) h += '<div class="box bad"><b>跑不起来</b><div style="margin-top:4px">不是结果不对，是测试代码本身出错了，这条数据根本没有执行到。通常是被测的代码改了名字或删掉了：要么让 AI 把测试代码跟着改，要么这个测试集该标成过期。</div><pre style="margin-top:6px">' + esc(c.err) + '</pre></div>';
+    else if (o === false) h += '<div class="box bad"><b>为什么失败</b><div style="margin-top:4px">' + esc(c.why || '实际输出和期望输出不一样，见下面标红的部分。') + '</div></div>';
+    if (c.by) h += '<div class="box warn"><b>' + c.by + '</b>：期望输出是 AI 按需求推出来的，请你看一眼对不对；不对可以直接改右边的期望输出。</div>';
+    h += '<div class="io"><div><h3>输入</h3><textarea class="json" style="min-height:' + (o === null || o ? 250 : 190) + 'px">' + esc(J(c.input)) + '</textarea></div><div><h3>期望输出</h3><textarea class="json" style="min-height:90px">' + esc(J(c.expect)) + '</textarea><h3 style="margin-top:10px">实际输出</h3>' + (c.err ? '<pre class="muted">没有执行到</pre>' : o === null ? '<pre class="muted">还没跑</pre>' : '<pre' + (o ? '' : ' class="diff"') + '>' + esc(J(c.actual)) + '</pre>') + '</div></div></div></div>';
+  }
+  return h + '</div></div>';
+}
+function viewerClick(t) {
+  var d = t.dataset, s = V.set;
+  if (d.act === 'close') { V.set = null; V.f = ''; V.q = ''; }
+  else if (d.vtab) V.tab = d.vtab;
+  else if (d.vc) { V.cur = +d.vc; V.tab = 'cases'; }
+  else if (d.vf) { V.f = d.vf; var fi = s.cases.findIndex(function (x) { return d.vf === 'all' || need(x); }); if (fi >= 0) V.cur = fi; }
+  else if (d.say || d.act === 'say') {
+    var text = d.say || ($('say') && $('say').value.trim()); if (!text) return true;
+    var more = s.id === 'TS-012'
+      ? [{ name: '月初 00:00 记的账', input: { bills: [B('b1', '2026-10-01T00:00')], month: '2026-10' }, expect: ['b1'] }, { name: '闰年 2 月 29 日', input: { bills: [B('b1', '2028-02-29')], month: '2028-02' }, expect: ['b1'] }]
+      : [{ name: '退款（负数）', input: { amounts: ['120.00', '-20.00'] }, expect: '100.00' }, { name: '金额很大', input: { amounts: ['99999999.99', '0.01'] }, expect: '100000000.00' }];
+    more = more.filter(function (m) { return !s.cases.some(function (c) { return c.name === m.name; }); });
+    more.forEach(function (m) { m.by = 'AI 新加'; s.cases.push(m); });
+    s.chat = s.chat || []; s.chat.push(['me', esc(text)]);
+    s.chat.push(['ai', more.length ? '加了 ' + more.length + ' 条：' + more.map(function (m) { return '「' + m.name + '」'; }).join('、') + '。期望输出是我按需求推的，还没跑过，请你看一眼对不对。<br><button class="link" data-vc="' + (s.cases.length - more.length) + '">去看新加的</button> · <button class="link" data-act="runset">运行全部</button>' : '这类数据已经有了，我没有再加。可以说得更具体一点。']);
+  }
+  else if (d.act === 'add') { s.cases.push({ name: '新的一条', input: {}, expect: null, by: '你加的' }); V.cur = s.cases.length - 1; V.tab = 'cases'; }
+  else if (d.act === 'del') { s.cases.splice(V.cur, 1); V.cur = Math.max(0, V.cur - 1); }
+  else if (d.act === 'runone' || d.act === 'runset') {
+    V.running = true; render();
+    setTimeout(function () { V.running = false; s.cases.forEach(function (c, i) { if (c.actual === undefined && (d.act === 'runset' || i === V.cur)) c.actual = c.expect; }); s.runAt = '刚刚'; V.tab = 'cases'; render(); }, 700); return;
+  } else return false;
+  render(); return true;
+}
+/* ---------- ① 需求里的测试集 ---------- */
+function rail(on) { return '<nav class="rail">' + ['需求', '问题', '测试', '聊天', '大图'].map(function (n) { return '<span class="' + (n === on ? 'on' : '') + '">' + n + '</span>'; }).join('') + '</nav>'; }
+function renderReq() {
+  var mine = SETS.filter(function (s) { return s.inprog; }), tp = 0, tf = 0, tn = 0;
+  var oldSets = SETS.filter(function (s) { return s.id === 'TS-004'; });
+  var todo = CHG.filter(function (c) { return !c.v; }).length;
+  mine.concat(oldSets).forEach(function (s) { var t = stat(s); tp += t.p; tf += t.f + t.e; tn += s.cases.length; });
+  var h = '<div class="shell req">' + rail('需求') + '' + REQLIST + '<section class="center">' + reqTabs('dev') + '<div class="term"><span class="dim">开发会话</span>\n\n按月筛选做完了，进入验证。我按需求生成了 7 个测试集，共 101 条数据。\n\n测试数据在 .relayforge/tests/ 下，测试代码只负责读数据和调用。\n\n<span class="dim">$ rf.py test run --req R-20261118-dd36</span>\n新的 7 个测试集：        <span class="ok">100 通过</span>  <span class="no">1 失败</span>\n这个功能点以前的测试集：<span class="ok">27 通过</span>   <span class="no">3 失败</span>\n\n以前的测试集里失败的 3 条，我逐条看了：\n· 2 条是这个需求有意改了行为（默认从「全部」变成「本月」），\n  我把它们的期望改了，等你确认。\n· 1 条「按创建时间排序」是我改坏的，不该变，我来修。\n\nTS-012 的「月底 23:59 记的账」没过：我按创建时间分的月，\n验收条件要的是记账时间。我来改 bills.py。\n\n「筛选条件在刷新页面后还在」是页面上的行为，单元测试测不到，\n要到人工验收里你自己点一下。</div></section>'
+    + '<aside class="side"><h2>账单列表加按月筛选</h2><div style="margin-top:6px"><span class="pill b">进行中 · 验证</span> <span class="pill">req/R-20261118-dd36</span></div>' + stepper(1)
+    + '<h3>验收条件</h3><ol style="margin:0;padding-left:20px"><li>选了十月只看到十月的账单</li><li>月底 23:59 记的账算在当月</li><li>不选月份时默认显示本月</li><li>筛选条件在刷新页面后还在</li></ol>'
+    + '<h3>这个需求改了以前的数据 <span style="font-weight:400">' + (todo ? todo + ' 条等你确认' : '都确认过了') + '</span></h3><p class="small muted" style="margin:0 0 4px">新加的数据不用确认。AI 改动已经存在的数据时，程序会单独列在这里：防止测试被悄悄改成永远通过。</p>';
+  CHG.forEach(function (c, i) {
+    h += '<div class="chg' + (c.v === 'ok' ? ' done' : c.v === 'no' ? ' no' : '') + '"><b>' + esc(c.name) + '</b> <span class="mono muted">' + c.set + '</span><div class="ov"><div><span class="small muted">原来的期望</span><pre>' + esc(J(c.old)) + '</pre></div><div><span class="small muted">改成</span><pre>' + esc(J(c.now)) + '</pre></div></div><div class="small">AI 的理由：' + esc(c.why) + '</div><div class="acts" style="margin:8px 0 0">'
+      + (c.v === 'ok' ? '<span class="pill g">你同意了</span><button class="sm quiet" data-chg="' + i + '" data-v="">撤回</button>' : c.v === 'no' ? '<span class="pill r">你不同意 · 已交回开发会话，期望恢复原样</span><button class="sm quiet" data-chg="' + i + '" data-v="">撤回</button>' : '<button class="sm primary" data-chg="' + i + '" data-v="ok">同意改</button><button class="sm" data-chg="' + i + '" data-v="no">不同意，这是改坏了</button>') + '</div></div>';
+  });
+  h += '<h3>测试集 <span style="font-weight:400">' + (mine.length + oldSets.length) + ' 个 · ' + tn + ' 条数据 · ' + tf + ' 条没通过</span></h3>';
+  var card = function (s, tag) { var t = stat(s); return '<button class="setcard" data-open="' + s.id + '"><b>' + esc(s.name) + ' <span class="mono muted" style="font-weight:400">' + s.id + '</span>' + (tag ? ' <span class="pill">' + tag + '</span>' : '') + '</b>' + bar(s) + '<span class="m">' + resPill(s) + '<span class="small muted">共 ' + s.cases.length + ' 条</span></span></button>' + (t.f + t.e ? '<div class="box bad" style="margin-top:-4px"><span class="small muted">分析</span><div class="small" style="margin-top:2px">' + esc(s.analysis) + '</div></div>' : ''); };
+  var all = mine.map(function (s) { return [s, '']; }).concat(oldSets.map(function (s) { return [s, '以前就有的']; }));
+  var hot = all.filter(function (x) { return x[0].cases.some(need); }), calm = all.filter(function (x) { return !x[0].cases.some(need); });
+  hot.forEach(function (x) { h += card(x[0], x[1]); });
+  if (calm.length) h += '<details class="box"><summary class="small">另有 ' + calm.length + ' 个测试集全部通过（共 ' + calm.reduce(function (n, x) { return n + x[0].cases.length; }, 0) + ' 条）</summary>' + calm.map(function (x) { return card(x[0], x[1]); }).join('') + '</details>';
+  var block = tf || todo;
+  h += '<div class="acts" style="margin-bottom:0">' + envSel() + '</div><div class="acts"><button data-act="runreq">全部重跑</button><button class="primary" data-go="bench"' + (block ? ' disabled title="还有没通过的测试，或者有改动等你确认"' : '') + '>去人工验收</button>' + (block ? '<button class="quiet" data-go="bench">手动放行，去人工验收</button>' : '') + '</div><p class="small muted">合计 ' + tp + ' 条通过、' + tf + ' 条没通过' + (todo ? '，' + todo + ' 处改动等你确认' : '') + '。分析是 AI 写的；通过或失败是程序比对出来的。</p></aside></div>';
+  $('stage').innerHTML = h + viewer();
+}
+
+/* ---------- ② 测试页 ---------- */
+var M = { f: 'need', tab: 'sets' };
+function mtabs() { return '<span class="seg"><button class="' + (M.tab === 'sets' ? 'on' : '') + '" data-mtab="sets">测试集管理</button><button class="' + (M.tab === 'manual' ? 'on' : '') + '" data-mtab="manual">人工测试</button><button class="' + (M.tab === 'env' ? 'on' : '') + '" data-mtab="env">测试环境</button></span>'; }
+var ENVS = [
+  { name: '本机', note: '服务和数据库都在这台电脑上', cmds: [['后端', 'mvn spring-boot:run', '8080'], ['前端', 'npm run dev', '5173']],
+    vars: [['DB_URL', 'jdbc:mysql://localhost:3306/bills_test', false], ['DB_PASSWORD', '', true], ['PAY_API', 'http://localhost:9090（本机的模拟支付）', false]],
+    cfg: 'src/main/resources/application-local.yml', deps: [['账单数据库', 'MySQL', 'localhost:3306/bills_test', '配置文件', 'ok'], ['缓存', 'Redis', 'localhost:6379', '配置文件', 'ok'], ['支付服务', 'HTTP 接口', 'localhost:9090（本机的模拟支付）', '在这里改的', 'ok'], ['短信服务', 'HTTP 接口', '（没配）', '配置文件', 'off']],
+    users: [['测试用户 A', '普通用户'], ['测试用户 B', '管理员']] },
+  { name: '测试服', note: '服务在本机启动，数据库和第三方用公司的测试环境', cmds: [['后端', 'mvn spring-boot:run -Dspring.profiles.active=test', '8080'], ['前端', 'npm run dev', '5173']],
+    vars: [['DB_URL', 'jdbc:mysql://test-db.internal:3306/bills', false], ['DB_PASSWORD', '', true], ['PAY_API', 'https://pay-sandbox.example.com', false], ['PAY_KEY', '', true]],
+    cfg: 'src/main/resources/application-test.yml', deps: [['账单数据库', 'MySQL', 'test-db.internal:3306/bills', '配置文件', 'ok'], ['缓存', 'Redis', 'test-redis.internal:6379', '配置文件', 'bad'], ['支付服务', 'HTTP 接口', 'pay-sandbox.example.com', '配置文件', 'ok'], ['短信服务', 'HTTP 接口', 'sms-sandbox.example.com', '配置文件', 'ok']],
+    users: [['测试用户 A', '普通用户']] }
+];
+var E = { cur: 0, use: 0, user: 0 };
+var USERS = [
+  { name: '测试用户 A', note: '普通用户', role: 'user', exp: false, fields: [['jwt', 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1XzEwMDEiLCJyb2xlIjoidXNlciIsImV4cCI6MTc5NTA4MjQwMH0.4f1c…', true], ['uid', 'u_1001', false], ['tenant_id', 't_demo', false]] },
+  { name: '测试用户 B', note: '管理员', role: 'admin', exp: true, fields: [['jwt', 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1XzAwMDEiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3OTQ5OTYwMDB9.9be2…', true], ['uid', 'u_0001', false], ['tenant_id', 't_demo', false], ['talent_id', 'tl_88', false]] }
+];
+function envSel() { return '<label class="envsel"><span>测试环境</span><select class="sm" data-envuse="1">' + ENVS.map(function (x, i) { return '<option value="' + i + '"' + (i === E.use ? ' selected' : '') + '>' + x.name + '</option>'; }).join('') + '</select><button class="link small" data-envgo="1">设置</button></label>'; }
+function renderEnv() {
+  var e = ENVS[E.cur];
+  var h = '<div class="shell">' + rail('测试') + '<div class="plain" style="padding-top:18px"><div style="display:flex;align-items:center;gap:12px"><h1 style="font-size:22px">测试</h1>' + mtabs() + '<span class="muted small">人工测试和人工验收启动服务时用这里的设置</span></div>'
+    + '<div style="display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;margin-top:16px;max-width:1100px"><div>'
+    + ENVS.map(function (x, i) { return '<button class="setcard" data-env="' + i + '" style="' + (i === E.cur ? 'border-color:#627d9c;background:#202937' : '') + '"><b>' + x.name + (i === E.use ? ' <span class="pill g">正在用</span>' : '') + '</b><span class="small muted">' + x.note + '</span></button>'; }).join('')
+    + '<button class="sm" data-act="envnew">＋ 新建一个环境</button> <button class="sm" data-act="postman">从 Postman 导入</button><p class="small muted">环境设置存在项目里；标了「保密」的值只存在这台电脑上，不进仓库。</p></div><div>'
+    + '<div style="display:flex;align-items:center;gap:10px"><h2 style="font-size:18px">' + e.name + '</h2>' + (E.cur === E.use ? '<span class="pill g">正在用</span>' : '<button class="sm primary" data-act="envuse">用这个环境</button>') + '<span style="margin-left:auto"></span><button class="sm" data-act="envai">让 AI 读项目，帮我填</button></div>'
+    + '<div class="sec">怎么启动 <span style="font-weight:400">第一次执行前会给你看实际的命令</span></div><table><tr><th style="width:90px">服务</th><th>启动命令</th><th style="width:110px">端口</th></tr>' + e.cmds.map(function (c) { return '<tr><td>' + c[0] + '</td><td><input class="mono" style="width:100%" value="' + esc(c[1]) + '"></td><td><input class="mono" style="width:100%" value="' + c[2] + '"></td></tr>'; }).join('') + '</table>'
+    + '<div class="sec">外部依赖 <span style="font-weight:400">这个项目要连哪些数据库和外部服务</span></div><div class="acts" style="margin:0 0 6px"><span class="small muted">用哪个配置文件</span><select class="sm mono"><option>' + e.cfg + '</option><option>src/main/resources/application.yml</option></select><button class="sm" data-act="depscan">重新读配置</button><button class="sm" data-act="depcheck">检查能不能连上</button></div><table><tr><th style="width:110px">依赖</th><th style="width:90px">类型</th><th>地址</th><th style="width:100px">来自</th><th style="width:90px">状态</th></tr>' + e.deps.map(function (x) { return '<tr><td>' + x[0] + '</td><td class="muted">' + x[1] + '</td><td class="mono">' + esc(x[2]) + '</td><td class="small ' + (x[3] === '配置文件' ? 'muted' : '') + '">' + x[3] + '</td><td>' + (x[4] === 'ok' ? '<span class="pill g">能连上</span>' : x[4] === 'bad' ? '<span class="pill r">连不上</span>' : '<span class="pill a">没配</span>') + '</td></tr>'; }).join('') + '</table><p class="small muted" style="margin:6px 0 0">地址默认从你项目里的配置文件读，不用在这里再填一遍；配置文件照旧由你自己维护。只有想临时换掉某一项时，才在下面的环境变量里覆盖。</p>'
+    + '<div class="sec">环境变量 <span style="font-weight:400">启动服务时额外带上的，会盖过配置文件里的同名项</span></div><table><tr><th style="width:170px">名称</th><th>值</th><th style="width:90px">保密</th></tr>' + e.vars.map(function (v) { return '<tr><td class="mono">' + v[0] + '</td><td><input class="mono" style="width:100%" ' + (v[2] ? 'type="password" value="xxxxxxxx"' : 'value="' + esc(v[1]) + '"') + '></td><td>' + (v[2] ? '<span class="pill a">只存本机</span>' : '<span class="muted small">进仓库</span>') + '</td></tr>'; }).join('') + '</table><div class="acts"><button class="sm">＋ 加一个</button></div>'
+    + '<div class="sec">请求的通用设置 <span style="font-weight:400">人工测试、人工验收里发的每个请求都会带上</span></div>'
+    + '<table><tr><th style="width:90px">放在哪</th><th style="width:190px">名称</th><th>值</th><th style="width:90px">保密</th></tr>' + [['请求头', 'Authorization', 'Bearer {{user.jwt}}', false], ['请求头', 'X-Uid', '{{user.uid}}', false], ['请求头', 'X-Tenant-Id', '{{user.tenant_id}}', false], ['请求头', 'X-Api-Key', '', true], ['地址参数', 'lang', 'zh-CN', false]].map(function (v) { return '<tr><td><select class="sm"><option>' + v[0] + '</option><option>' + (v[0] === '请求头' ? '地址参数' : '请求头') + '</option></select></td><td><input class="mono" style="width:100%" value="' + v[1] + '"></td><td><input class="mono" style="width:100%" ' + (v[3] ? 'type="password" value="xxxxxxxx"' : 'value="' + esc(v[2]) + '"') + '></td><td>' + (v[3] ? '<span class="pill a">只存本机</span>' : '<span class="muted small">进仓库</span>') + '</td></tr>'; }).join('') + '</table><div class="acts"><button class="sm">＋ 加一个</button><span class="small muted">值里可以用 {{变量名}} 引用环境变量，用 {{user.名称}} 引用当前选的测试用户的值：换一个用户，这些请求头就跟着变</span></div>'
+    + '<div class="io" style="margin-top:4px"><div><h3>发请求之前运行的脚本（JS）</h3><textarea class="json" style="min-height:150px">// 例：没有 token 就先登录拿一个\nif (!env.get("token")) {\n  const r = await send("POST", "/api/login", { user: env.get("TEST_USER"), password: env.get("TEST_PASSWORD") });\n  env.set("token", r.body.token);\n}\n// 例：给请求加签名\nrequest.headers["X-Sign"] = sha256(request.url + env.get("SIGN_KEY"));</textarea></div><div><h3>收到返回之后运行的脚本（JS）</h3><textarea class="json" style="min-height:150px">// 例：登录过期了就清掉 token，下次自动重新登录\nif (response.status === 401) env.set("token", "");\n// 例：把返回里的编号记下来，给后面的请求用\nif (response.body.id) env.set("last_id", response.body.id);</textarea></div></div>'
+    + '<p class="small muted" style="margin:6px 0 0">脚本能做的：读写这套环境的变量、改这次请求的请求头和参数、读返回、再发别的请求。脚本在隔离的环境里运行，碰不到你电脑上的文件。每个接口还可以有自己的脚本，在通用脚本之后运行。写法兼容 Postman 常用的 pm.*（pm.environment、pm.request、pm.response、pm.sendRequest、pm.test），从 Postman 导入的脚本可以直接用。</p>'
+    + '<div class="sec">测试用户 <span style="font-weight:400">发请求时选「以谁的身份」；每个用户带着自己的一组值，请求头里用 {{user.名称}} 引用</span></div>'
+    + '<div style="display:grid;grid-template-columns:190px minmax(0,1fr);gap:14px"><div>' + USERS.map(function (u, i) { return '<button class="setcard" style="margin:0 0 6px;' + (i === E.user ? 'border-color:#627d9c;background:#202937' : '') + '" data-user="' + i + '"><b>' + u.name + '</b><span class="small muted">' + u.note + '</span></button>'; }).join('') + '<button class="sm">＋ 加一个用户</button></div><div class="box" style="margin:0">'
+    + (function (u) {
+      return '<div style="display:flex;gap:8px;align-items:center"><input style="flex:1;font-weight:600" value="' + u.name + '"><input style="flex:1" value="' + u.note + '"></div>'
+        + '<table style="margin-top:8px"><tr><th style="width:150px">名称（自己起）</th><th>值</th><th style="width:90px">保密</th><th style="width:40px"></th></tr>' + u.fields.map(function (f) { return '<tr><td><input class="mono" style="width:100%" value="' + f[0] + '"></td><td>' + (f[0] === 'jwt' ? '<textarea class="json" style="min-height:64px">' + f[1] + '</textarea><div class="small muted">解出来的内容：sub=' + u.fields[1][1] + ' · role=' + u.role + ' · <span style="color:' + (u.exp ? 'var(--red)">已过期（' : 'var(--green)">有效到 ') + '2026-11-19 10:00' + (u.exp ? '）' : '') + '</span> · <button class="link small" data-act="jwtfetch">用登录接口重新拿</button></div>' : '<input class="mono" style="width:100%" value="' + f[1] + '">') + '</td><td>' + (f[2] ? '<span class="pill a">只存本机</span>' : '<span class="muted small">进仓库</span>') + '</td><td><button class="sm quiet">×</button></td></tr>'; }).join('') + '</table><div class="acts" style="margin-bottom:0"><button class="sm">＋ 加一项</button><span class="small muted">名称随便起：uid、aid、talent_id、tenant_id 都行。上面「请求的通用设置」里已经这样引用了：<span class="mono">Authorization: Bearer {{user.jwt}}</span>、<span class="mono">X-Uid: {{user.uid}}</span></span></div>';
+    })(USERS[E.user]) + '</div></div>'
+    + '<div class="box warn"><b>提醒</b>：测试会真的读写这个环境连着的数据库。不要把正式环境的地址填在这里。</div></div></div></div></div>';
+  $('stage').innerHTML = h;
+}
+
+function renderManage() {
+  if (M.tab === 'manual') return renderBench(true);
+  if (M.tab === 'env') return renderEnv();
+  var fs = [['need', '需要看的'], ['all', '全部在用的'], ['inprog', '进行中的需求'], ['stale', '过期']];
+  var pass = function (s, f) { var t = stat(s); return f === 'stale' ? !!s.stale : !s.stale && (f === 'all' || f === 'need' && (t.f || t.e || s.hints.length) || f === 'inprog' && s.inprog); };
+  var h = '<div class="shell">' + rail('测试') + '<div class="plain" style="padding-top:18px"><div style="display:flex;align-items:center;gap:12px"><h1 style="font-size:22px">测试</h1>' + mtabs() + '<span class="muted small">对着主线 main · 上次整套运行今天 11:02</span><span style="margin-left:auto"></span>' + envSel() + '<button data-act="runall">整套跑一遍</button></div>'
+    + '<div class="acts">' + fs.map(function (x) { return '<button class="sm' + (M.f === x[0] ? ' primary' : '') + '" data-mf="' + x[0] + '">' + x[1] + ' ' + SETS.filter(function (s) { return pass(s, x[0]); }).length + '</button>'; }).join('') + '</div>'
+    + '<table><tr><th>测试集</th><th>挂在哪个需求</th><th>功能点</th><th style="width:70px">数据</th><th style="width:230px">上次结果</th><th>提示</th><th style="width:150px"></th></tr>';
+  var lastFeat = '';
+  SETS.slice().sort(function (x, y) { return x.feat < y.feat ? -1 : x.feat > y.feat ? 1 : 0; }).forEach(function (s) {
+    if (!pass(s, M.f)) return;
+    if (s.feat !== lastFeat) { lastFeat = s.feat; var fl = SETS.filter(function (x) { return x.feat === s.feat && pass(x, M.f); }); h += '<tr><td colspan="7" style="background:#14171d;padding:5px 8px"><b>' + s.feat + '</b> <span class="small muted">' + fl.length + ' 个测试集 · ' + fl.reduce(function (n, x) { return n + x.cases.length; }, 0) + ' 条数据</span></td></tr>'; }
+    h += '<tr class="click" data-open="' + s.id + '"><td><b>' + esc(s.name) + '</b><div class="mono muted">' + s.id + '</div></td><td>' + esc(s.reqName) + '<div class="small muted">' + s.req + (s.inprog ? ' · <span style="color:var(--amber)">进行中</span>' : ' · 已完成') + '</div></td><td>' + s.feat + '</td><td>' + s.cases.length + ' 条</td><td>' + resPill(s) + bar(s) + '</td><td class="small">' + (s.hints.length ? s.hints.map(function (x) { return '<span style="color:var(--amber)">' + esc(x) + '</span>'; }).join('<br>') : '<span class="muted">—</span>') + '</td><td>' + (s.stale ? '<span class="pill">过期 · 不再运行</span> <button class="sm quiet" data-act="revive">恢复</button>' : '<button class="sm" data-act="move">改挂靠</button> <button class="sm quiet" data-act="stale">标成过期</button>') + '</td></tr>';
+  });
+  h += '</table><p class="small muted" style="margin-top:14px">另外，项目里还有 2 个旧式测试（数据写死在代码里，看不到输入和期望）。<button class="link small" data-act="legacy">让 AI 改写成测试集</button></p>'
+    + '<p class="small muted">「需要看的」= 有失败、跑不起来、或者有提示。「提示」只有四条固定规则，由程序算：没拦住问题、从没失败过、时过时不过、跑不起来。</p><p class="small muted">功能点下线或被替代时，挂在它下面的测试集自动标成过期：不再运行、不删除，在「过期」里能找到。</p></div></div>';
+  $('stage').innerHTML = h + viewer();
+}
+
+/* ---------- ③ 人工验收 ---------- */
+var APIS = [['GET', '/api/bills', '账单列表'], ['GET', '/api/bills/{id}', '一张账单'], ['POST', '/api/bills/export', '导出']];
+var W = { tab: 'api', api: 0, sent: false, month: '', crit: ['', '', '', ''], writing: -1,
+  logs: [['09:58:01', 'be', 'INFO  server started on :8080 （需求 R-…dd36 的代码）'], ['09:58:03', 'be', 'INFO  web dev server on :5173']] };
+var CRITS = ['选了十月只看到十月的账单', '月底 23:59 记的账算在当月', '不选月份时默认显示本月', '筛选条件在刷新页面后还在'];
+function log(k, t) { var d = new Date(); W.logs.push([('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2), k, t]); }
+function stepper(cur) {
+  var names = ['开发', '测试集', '人工验收', '确认完成'];
+  return '<div class="steps">' + names.map(function (n, i) { return '<span class="' + (i < cur ? 'done' : i === cur ? 'cur' : '') + '">' + (i < cur ? '✓ ' : '') + n + '</span>'; }).join('<i>›</i>') + '</div>';
+}
+var REQLIST = '<section class="col"><div class="it"><b>需求</b></div><div class="it cur">账单列表加按月筛选<small>进行中 · 验证</small></div><div class="it">导出账单为 PDF<small>已完成</small></div><div class="it">登录失败锁定<small>已完成</small></div></section>';
+function reqTabs(on) { return '<div class="stabs"><button class="stab">立项</button><button class="stab' + (on === 'dev' ? ' on' : '') + '" data-go="req">开发</button><button class="stab' + (on === 'bench' ? ' on' : '') + '" data-go="bench">人工验收</button><span class="muted small" style="margin:6px 0 0 auto">都在「账单列表加按月筛选」这个需求下面</span></div>'; }
+function renderBench(free) {
+  var h = '<div class="bench">' + rail(free ? '测试' : '需求') + '<div class="envbar">' + (free ? '<b style="font-size:18px">测试</b>' + mtabs() + '<span class="small muted">对着</span><select class="sm"><option>主线 main</option><option>需求：账单列表加按月筛选</option></select>' : '<b>人工验收：账单列表加按月筛选</b>') + '<span class="pill g">后端 运行中 :8080</span><span class="pill g">前端 运行中 :5173</span><span class="small muted">' + (free ? '' : '用的是这个需求的代码 · ') + '</span>' + envSel() + '<span style="margin-left:auto"></span><button class="sm">重启</button><button class="sm quiet">停止</button></div>';
+  var top = h; h = '<div class="crits">';
+  if (free) h += '<div class="sec" style="margin-top:0">随时可以来这里试</div><p class="small muted" style="margin:0 0 10px">和需求里的人工验收是同一套东西，只是不绑某个需求：服务跑起来，发请求、点页面、看日志。</p><div class="sec">存下来的接口用例</div>' + [['GET', '按月查账单：2026-10', 'g'], ['GET', '不带月份，默认本月', 'g'], ['POST', '导出 I-033 那张账单', 'g']].map(function (x) { return '<div class="crit"><span class="verb ' + x[0].toLowerCase() + '">' + x[0] + '</span>' + x[1] + '<div style="margin-top:6px"><button class="sm" data-act="send">再发一次</button> <span class="pill g">上次和预期一致</span></div></div>'; }).join('') + '<div class="sec">发现不对</div><textarea style="width:100%;min-height:54px" placeholder="一句话说哪里不对"></textarea><div class="acts" style="margin:6px 0 0"><button class="sm primary" data-act="issue">连同刚才的日志记成问题</button></div>';
+  if (!free) h += '<div class="sec" style="margin-top:0">验收条件 · 你试过以后逐条点</div>';
+  if (!free) CRITS.forEach(function (c, i) {
+    var v = W.crit[i];
+    h += '<div class="crit' + (v === 'ok' ? ' good' : v === 'no' ? ' bad' : '') + '"><div><b>' + c + '</b></div><div class="small muted" style="margin:3px 0 6px">' + (i < 3 ? '单元测试：通过（TS-012）' : '单元测试测不到，只能在这里试') + '</div>';
+    if (W.writing === i) h += '<textarea style="width:100%;min-height:50px" placeholder="哪里不对？一句话就行"></textarea><div class="acts" style="margin:6px 0 0"><button class="sm primary" data-send="' + i + '">连同刚才的日志交回开发会话</button><button class="sm quiet" data-cancel="1">取消</button></div>';
+    else if (v === 'no') h += '<span class="small" style="color:var(--red)">已交回开发会话，附了当时的 ' + Math.min(W.logs.length, 12) + ' 行日志</span>';
+    else h += '<button class="sm' + (v === 'ok' ? ' primary' : '') + '" data-ok="' + i + '">' + (v === 'ok' ? '✓ 通过' : '通过') + '</button> <button class="sm" data-no="' + i + '">这里不对</button>';
+    h += '</div>';
+  });
+  var all = W.crit.every(function (x) { return x === 'ok'; });
+  if (!free) h += '<div class="acts"><button class="primary" ' + (all ? '' : 'disabled') + ' data-act="finish">确认完成</button></div><p class="small muted">「确认完成」只有你能点。有问题随时可以在开发会话里问 AI。</p>';
+  h += '</div>';
+  var side = h; h = '';
+  h += '<div class="work"><div class="stabs"><button class="stab' + (W.tab === 'api' ? ' on' : '') + '" data-wtab="api">接口</button><button class="stab' + (W.tab === 'page' ? ' on' : '') + '" data-wtab="page">页面</button><span class="muted small" style="margin:6px 0 0 auto">后端项目只有「接口」，前端项目只有「页面」，都有就两个都在</span></div>';
+  if (W.tab === 'api') {
+    var a = APIS[W.api];
+    h += '<div class="api"><div class="ilist"><div class="small muted" style="padding:8px 12px">接口说明：AI 读代码生成 · 今天 09:35 · 3 个接口<br><button class="link small" data-act="apidoc">重新读代码，刷新接口说明</button><br><button class="link small" data-act="postman">从 Postman 导入</button></div>' + APIS.map(function (x, i) { return '<button class="' + (i === W.api ? 'cur' : '') + '" data-api="' + i + '"><span class="verb ' + x[0].toLowerCase() + '">' + x[0] + '</span>' + x[2] + (i === 0 ? ' <span class="pill b">改过</span>' : '') + '<div class="mono muted">' + x[1] + '</div></button>'; }).join('') + '</div><div class="imain">'
+      + '<div class="urlbar"><select><option>' + a[0] + '</option></select><input class="mono" value="http://localhost:8080' + a[1] + '"><button class="primary" data-act="send">发送</button></div>'
+      + '<div class="sec">参数 <span style="font-weight:400">接口定义是 AI 读代码生成的；值你来填</span></div><table><tr><th>名称</th><th>放在哪</th><th>类型</th><th>说明</th><th style="width:200px">值</th></tr><tr><td class="mono">month</td><td>地址参数</td><td>字符串，可不填</td><td>年月，如 2026-10；不填按本月</td><td><input class="mono" style="width:100%" value="2026-10"></td></tr></table><div class="acts" style="margin:10px 0 0"><span class="small muted">以谁的身份</span><select class="sm" data-asuser="1">' + USERS.map(function (u, i) { return '<option value="' + i + '"' + (i === E.user ? ' selected' : '') + '>' + u.name + '（' + u.note + '）</option>'; }).join('') + '</select><span class="small muted mono">uid=' + USERS[E.user].fields[1][1] + '</span>' + (USERS[E.user].exp ? '<span class="pill r">JWT 已过期</span>' : '') + '<button class="link small" data-mtab="env">编辑这个用户</button></div>'
+      + '<details class="box" style="margin:10px 0 0"><summary class="small">自动带上的（来自测试环境「' + ENVS[E.use].name + '」）：4 个请求头、1 个地址参数、发送前和返回后的脚本</summary><table><tr><td class="mono">Authorization</td><td>请求头</td><td class="mono">Bearer {{user.jwt}} <span class="muted">→ ' + USERS[E.user].name + ' 的 JWT</span></td></tr><tr><td class="mono">X-Uid</td><td>请求头</td><td class="mono">{{user.uid}} <span class="muted">→ ' + USERS[E.user].fields[1][1] + '</span></td></tr><tr><td class="mono">X-Tenant-Id</td><td>请求头</td><td class="mono">{{user.tenant_id}} <span class="muted">→ t_demo</span></td></tr><tr><td class="mono">X-Api-Key</td><td>请求头</td><td class="mono">••••••</td></tr><tr><td class="mono">lang</td><td>地址参数</td><td class="mono">zh-CN</td></tr></table><div class="acts" style="margin:8px 0 0"><button class="sm" data-mtab="env">去测试环境里改</button><label class="small muted"><input type="checkbox"> 这个请求不带通用设置</label></div></details>'
+    + '<div class="acts" style="margin-bottom:0"><button class="sm">＋ 加请求头</button><button class="sm">＋ 加地址参数</button><button class="sm">这个接口自己的脚本</button></div>'
+    + '<div class="acts"><button class="sm">存成一条接口用例</button><span class="small muted">存下来以后可以反复跑，也会出现在测试页里</span></div>';
+    if (W.sent) h += '<div class="sec">返回 <span class="pill g">200 OK</span> <span style="font-weight:400">43 毫秒 · 212 字节</span></div><div class="io" style="margin-top:0"><pre>' + esc(J({ items: [{ id: 'b_102', booked_at: '2026-10-01', amount: '120.00' }, { id: 'b_117', booked_at: '2026-10-31', amount: '238.50' }], total_amount: '358.50' })) + '</pre><table><tr><th>返回的参数</th><th>类型</th><th>说明</th></tr><tr><td class="mono">items</td><td>数组</td><td>这个月的账单</td></tr><tr><td class="mono">items[].id</td><td>字符串</td><td>账单编号</td></tr><tr><td class="mono">items[].booked_at</td><td>日期</td><td>记账日期</td></tr><tr><td class="mono">items[].amount</td><td>金额</td><td></td></tr><tr><td class="mono">total_amount</td><td>金额</td><td>合计</td></tr></table></div>';
+    else h += '<div class="sec">返回</div><pre class="muted">点「发送」后这里显示真实的返回</pre>';
+    h += '</div></div>';
+  } else {
+    var rows = [['b_099', '2026-09-30', '80.00'], ['b_102', '2026-10-01', '120.00'], ['b_117', '2026-10-31', '238.50']].filter(function (r) { return !W.month || r[1].indexOf(W.month) === 0; });
+    h += '<div class="browser"><div class="addr"><button class="sm" data-act="reload">刷新</button><span>localhost:5173/bills' + (W.month ? '?month=' + W.month : '') + '</span></div><div class="page"><h2 style="font-size:20px">账单</h2><p>月份 <select data-month="1"><option value="">全部</option><option value="2026-09"' + (W.month === '2026-09' ? ' selected' : '') + '>2026 年 9 月</option><option value="2026-10"' + (W.month === '2026-10' ? ' selected' : '') + '>2026 年 10 月</option></select></p><table><tr><th>编号</th><th>记账日期</th><th>金额</th></tr>' + rows.map(function (r) { return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>'; }).join('') + '</table><p style="color:#6b7280;font-size:12px">这是项目自己的页面，嵌在应用里。你像平时一样点。</p></div></div>';
+  }
+  h += '<div class="logs"><div class="lh"><b>日志</b><span class="muted">你的操作、请求、后端日志按时间排在一起</span><span style="margin-left:auto"></span><span class="pill b">操作</span><span class="pill g">请求</span><span class="pill a">后端</span><button class="sm quiet" data-act="clear">清空</button></div><div class="ll" id="ll">' + W.logs.map(function (l) { return '<div class="lg-' + l[1] + '"><time>' + l[0] + '</time><b>' + { ui: '操作', req: '请求', be: '后端', err: '报错' }[l[1]] + '</b><span>' + esc(l[2]) + '</span></div>'; }).join('') + '</div></div></div>';
+  if (free) h = top + side + h + '</div>';
+  else h = '<div class="shell req">' + rail('需求') + REQLIST + '<section class="center">' + reqTabs('bench') + top.slice(top.indexOf('<div class="envbar">')).replace('<b>人工验收：账单列表加按月筛选</b>', '')
+    + h.replace('<div class="work">', '<div class="work" style="flex:1">') + '</section><aside class="side"><h2>账单列表加按月筛选</h2><div style="margin-top:6px"><span class="pill b">进行中 · 验证</span> <span class="pill">req/R-20261118-dd36</span></div>' + stepper(2)
+    + '<p class="small muted" style="margin:10px 0 0">测试集已经跑过（<button class="link small" data-go="req">回去看</button>）。现在服务用这个需求的代码开着，你在中间自己试，然后在这里逐条点。</p>'
+    + side.replace('<div class="crits">', '<div>').replace('<div class="sec" style="margin-top:0">', '<div class="sec">') + '</aside></div>';
+  $('stage').innerHTML = h;
+  var ll = $('ll'); ll.scrollTop = ll.scrollHeight;
+}
+function fetchBills() { var q = W.month ? '?month=' + W.month : ''; log('req', 'GET /api/bills' + q + '  →  200  43ms'); log('be', 'INFO  list_bills month=' + (W.month || '(本月)') + ' rows=' + (W.month === '2026-10' ? 2 : W.month ? 1 : 3)); }
+function benchClick(t) {
+  var d = t.dataset;
+  if (d.wtab) W.tab = d.wtab;
+  else if (d.api) { W.api = +d.api; W.sent = false; }
+  else if (d.act === 'send') { W.sent = true; log('req', 'GET /api/bills?month=2026-10  →  200  43ms'); log('be', 'INFO  list_bills month=2026-10 rows=2'); }
+  else if (d.act === 'reload') { log('ui', '刷新页面'); fetchBills(); }
+  else if (d.act === 'clear') W.logs = [];
+  else if (d.ok) W.crit[+d.ok] = W.crit[+d.ok] === 'ok' ? '' : 'ok';
+  else if (d.no) W.writing = +d.no;
+  else if (d.cancel) W.writing = -1;
+  else if (d.send) { W.crit[+d.send] = 'no'; W.writing = -1; }
+  else if (d.act === 'issue') { alert('记成一条问题，附上刚才这段日志（你的操作、请求、后端日志）。之后在「问题」里走初判和修复。'); return; }
+  else if (d.act === 'finish') { alert('程序先把涉及的功能点的测试集在主线上跑一遍（有失败只提示、不拦），然后合并。\n这个需求的测试集留在对应的功能点下面，出现在测试页里。'); return; }
+  else return;
+  render();
+}
+document.addEventListener('change', function (e) {
+  if (e.target.dataset.envuse) { E.use = +e.target.value; return render(); }
+  if (e.target.dataset.asuser) { E.user = +e.target.value; return render(); }
+  if (!e.target.dataset.month) return;
+  W.month = e.target.value; log('ui', '在「月份」下拉框里选了「' + (e.target.selectedOptions[0].text) + '」'); fetchBills(); render();
+});
+
+/* ---------- ④ 功能点清单 ---------- */
+var LIST = [
+  [1, '测试集 = 数据 + 代码', '测试数据是一个 JSON 文件（每条：名称、输入、期望输出），放在 .relayforge/tests/；测试代码不含数据，只读这份 JSON、调用被测代码'],
+  [1, 'AI 按需求生成测试集', '需求进入验证环节时生成，对应到验收条件；写了测试却把数据写死在代码里，结束时被拦住'],
+  [1, '程序来跑、来比对', '逐条比对实际输出和期望输出，记下每条的结果；第一版支持 Python、Node、Java'],
+  [1, '需求里看测试集', '需求右侧列出用到的测试集、每个的通过和失败；点开进查看器'],
+  [1, '测试集查看器', '左边一条条用例，右边输入、期望输出、实际输出；失败的标红并说明差在哪；能看 JSON 全文和测试代码'],
+  [1, '改数据、加数据', '直接改 JSON 或单条的输入和期望；加一条；在「让 AI 改」标签里用对话让 AI 改这份数据，AI 只改数据文件，加的、改的都标出来等你看'],
+  [1, '运行后的分析', '关掉查看器后，每个测试集下面有一段分析：哪些过了、哪些没过、为什么；结果是程序比对的，分析是 AI 写的'],
+  [1, '数据多的时候', '比例条加数字；需求面板只列有失败或有新数据的测试集，其余收成一行；查看器默认只显示需要看的，按正常、边界、异常分组，可搜索；程序拒绝输入完全相同的重复数据'],
+  [1, 'AI 改旧数据要你确认', '需求动到的功能点，它已有的测试集一起跑；AI 改动已有数据的期望时，程序列出旧值、新值和理由，你逐条同意或不同意；改动在需求完成前是进行中的'],
+  [1, '三种结果', '通过、失败（跑了但结果不对）、跑不起来（测试代码出错，没执行到）'],
+  [1, '过期', '功能点下线或被替代时，它的测试集自动标成过期：不再运行、不删除；也可以手动标成过期或恢复'],
+  [1, '测试页：测试集管理', '全部测试集的列表：挂在哪个需求、哪个功能点、几条数据、上次结果；改挂靠、标不要、整套跑'],
+  [1, '提示', '只用程序能算的固定规则：没拦住问题、从没失败过、时过时不过'],
+  [1, '旧式测试', '数据写死在代码里的老测试单独列出，可以让 AI 改写成测试集；改不了的留着'],
+  [2, '人工验收在需求下面', '是需求的一个标签，和立项、开发并列；需求面板顶上有进度条（开发、测试集、人工验收、确认完成）；验收条件和确认完成在需求面板里'],
+  [2, '把服务跑起来', '程序用这个需求的代码启动后端和前端，显示状态、端口，可以重启和停止；启动命令第一次执行前给你看'],
+  [2, '接口（像 Postman）', '接口列表（这个需求改到的排前面）、参数表、发送、真实返回和返回参数的说明；凭证存本机；能把一次请求存成接口用例'],
+  [2, '日志采集', '发出的请求和后端日志按时间排在一起'],
+  [2, '逐条验收和交回', '需求面板里验收条件逐条点通过或这里不对；这里不对时连同当时的日志交回开发会话'],
+  [2, '确认完成', '只有你能点；点之前程序在主线上跑一遍涉及的测试集，有失败只提示不拦；可以手动放行'],
+  [2, '测试页里的人工测试', '测试页分「测试集管理」和「人工测试」两块；人工测试和需求里的人工验收是同一套界面，不绑需求，默认对着主线，可以选某个需求的代码；发现不对连同日志记成问题；存下来的接口用例在这里反复用'],
+  [1, '选择测试环境', '凡是会跑测试的地方都有同一个选择框：需求里的测试集、测试集查看器、测试集管理、人工测试、人工验收；第 1 项先支持选择和环境变量，其余设置在第 2 项'],
+  [2, '测试环境', '测试页的第三块：可以建多套环境并选择用哪套；每套有启动命令、端口、外部依赖（从项目的配置文件读出数据库和外部服务，检查能不能连上）、环境变量、测试用的登录身份；保密的值只存本机；可以让 AI 读项目帮忙填'],
+  [2, '请求的通用设置', '每套测试环境可以设通用的请求头和地址参数（保密的只存本机），以及发请求之前、收到返回之后运行的 JS 脚本；脚本能读写环境变量、改请求、读返回、再发请求，在隔离环境里运行；每个接口还可以有自己的请求头、参数和脚本'],
+  [2, '测试用户', '每套环境可以有多个测试用户，每个用户带一组自己起名的值（jwt、uid、aid、talent_id、tenant_id…），都可以直接编辑；JWT 可以粘贴修改，界面显示解出来的内容和过期时间，也可以用登录接口重新拿；通用请求头里用 {{user.名称}} 引用，发请求时选以谁的身份，请求头跟着变'],
+  [2, '从 Postman 导入', '导入 Postman 导出的集合和环境文件：请求变成接口用例、文件夹变成分组、环境变量变成测试环境的变量；pre-request 和 tests 脚本一起导入，支持常用的 pm.* 写法，不支持的逐条列出'],
+  [2, '接口说明文件和刷新', 'AI 读代码生成接口说明文件（接口、参数、返回的结构）；项目里有现成的就直接读；可以随时点刷新让 AI 重新生成，并列出和上一版的差别'],
+  [3, '页面（嵌在应用里）', '项目自己的前端页面嵌进应用，你直接点；你的点击、输入、页面报错也进日志'],
+  [3, '前后端联调', '一次点击引起了哪些请求、后端打了什么日志，在同一条时间线上看'],
+  [4, '接进问题', '修复时先加一条能重现的测试数据；测试集失败一键记成问题；修复的验证也走人工验收页'],
+  [4, '桌面和手机应用的验收', '由程序构建并启动，人自己操作；排在最后']
+];
+var OPEN = [
+  '已定：不做单独的验收会话；测试集同时挂需求和功能点；先做第 1 项；外部依赖通过「测试环境」设置；接口说明由 AI 读代码生成并可刷新。',
+  '测试环境的设置存在项目里（进仓库），保密的值只存本机。换一台电脑时保密的值要重新填一次。可以吗？',
+  '刷新接口说明时，AI 生成的新版本先给你看差别、你确认后才替换旧的。还是直接替换？'
+];
+function renderList() {
+  var names = { 1: '第 1 项 · 测试集', 2: '第 2 项 · 人工验收（后端）', 3: '第 3 项 · 页面和联调', 4: '更后面' };
+  var h = '<div class="plain"><div class="wrap"><h2>功能点清单</h2><table style="margin-top:12px"><tr><th style="width:170px">分期</th><th style="width:210px">功能点</th><th>说明</th></tr>';
+  LIST.forEach(function (r) { h += '<tr><td><span class="tag' + r[0] + '">' + names[r[0]] + '</span></td><td><b>' + r[1] + '</b></td><td>' + r[2] + '</td></tr>'; });
+  h += '</table><h2 style="margin-top:32px">需要你定的</h2><ol>' + OPEN.map(function (o) { return '<li style="margin:6px 0">' + o + '</li>'; }).join('') + '</ol></div></div>';
+  $('stage').innerHTML = h;
+}
+
+/* ---------- 公共 ---------- */
+var scene = 'req';
+function render() { ({ req: renderReq, manage: renderManage, bench: function () { renderBench(false); }, list: renderList })[scene](); }
+function show(s) {
+  scene = s; V.set = null;
+  document.querySelectorAll('[data-scene]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.scene === s); });
+  $('notes').innerHTML = '<details open><summary>这一屏的要点</summary><ul>' + NOTES[s].map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul></details>';
+  render();
+}
+document.addEventListener('click', function (e) {
+  var t = e.target.closest('button,tr.click'); if (!t) return;
+  if (t.dataset.scene) return show(t.dataset.scene);
+  if (!$('stage').contains(t)) return;
+  var d = t.dataset;
+  if (d.go) return show(d.go);
+  if (d.envgo) { M.tab = 'env'; E.cur = E.use; return show('manage'); }
+  if (V.set && viewerClick(t) !== false) return;
+  if (d.mtab) { M.tab = d.mtab; return render(); }
+  if (d.env) { E.cur = +d.env; return render(); }
+  if (d.user) { E.user = +d.user; return render(); }
+  if (d.act === 'jwtfetch') { alert('用这个用户的账号调一次登录接口，把返回的 JWT 填进来。登录接口和账号在脚本或环境变量里配。'); return; }
+  if (d.act === 'envuse') { E.use = E.cur; return render(); }
+  if (d.act === 'depscan') { alert('程序重新读你选的配置文件，列出里面的数据库和外部服务地址。读不懂的格式会请 AI 帮忙认，认出来的标待确认。'); return; }
+  if (d.act === 'depcheck') { alert('程序逐个试连：数据库试登录，HTTP 服务试访问。只检查能不能连上，不写任何数据。'); return; }
+  if (d.act === 'envnew') { alert('新建一个环境：起个名字，可以从现有的环境复制一份再改。'); return; }
+  if (d.act === 'envai') { alert('开一个聊天，请 AI 读项目的配置文件，把启动命令、端口、需要的环境变量填出来；它填的你确认后才生效，密钥它不会填。'); return; }
+  if (d.act === 'postman') { alert('选一个 Postman 导出的文件（集合或环境）。\n· 集合：里面的请求变成存下来的接口用例，文件夹保留成分组，请求头、参数、请求体照搬。\n· 环境：里面的变量变成一套测试环境的变量，标了 secret 的只存本机。\n· 脚本：pre-request 和 tests 脚本一起导入，常用的 pm.* 写法可以直接运行；用到不支持的写法会逐条列出来。\n导入前先给你看会新增哪些内容。'); return; }
+  if (d.act === 'apidoc') { alert('请 AI 重新读代码，生成接口说明文件（有哪些接口、参数、返回的结构）。\n生成后列出和上一版相比新增、改了、没了哪些接口，你看过再替换。'); return; }
+  if (scene === 'bench' || scene === 'manage' && M.tab === 'manual') return benchClick(t);
+  if (d.act === 'move') { alert('选一个需求或功能点，把这个测试集挂过去。'); return; }
+  if (d.act === 'stale') { alert('标成过期：不再运行，不删除，在「过期」筛选里能找到，可以恢复。'); return; }
+  if (d.act === 'revive') { alert('恢复成在用的测试集，重新参与运行。'); return; }
+  if (d.chg) { CHG[+d.chg].v = d.v; return render(); }
+  if (d.act === 'drop') { alert('标成不要。标了不要的攒起来，一次交给 AI 删掉数据文件和对应的测试代码。'); return; }
+  if (d.act === 'legacy') { alert('新开一个聊天，请 AI 把旧式测试的数据抽出来，改写成测试集。'); return; }
+  if (d.act === 'runall' || d.act === 'runreq') { alert('程序把这些测试集全部跑一遍，不调用模型。'); return; }
+  if (d.mf) { M.f = d.mf; return render(); }
+  var row = e.target.closest('[data-open]');
+  if (row) { V.set = SETS.filter(function (s) { return s.id === row.dataset.open; })[0]; V.tab = 'cases'; V.f = ''; V.q = ''; V.cur = Math.max(0, V.set.cases.findIndex(function (c) { return ok(c) === false; })); render(); }
+});
+show('req');
+</script>
+</body>
+</html>

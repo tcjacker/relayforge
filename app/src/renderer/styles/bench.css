@@ -1,0 +1,58 @@
+/* 人工验收（需求下的标签，#bench）和人工测试（测试页，#ts-pane-manual）：同一套界面。上面服务的状态，下面日志。
+   右边需求面板里每条验收条件的「通过」「这里不对」（.ck-acc）。样式照交互稿 docs/prototype/tests-v2.html 的「③ 人工验收」。 */
+[data-bench] { --card: #1d222b; --line: #2c323d; --text: #e6e9ef; --muted: #a1a8b4; --blue: #9bbaff; --green: #80dba6; --amber: #edbf70; --red: #f0a08e; color: var(--text) }
+#bench { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; gap: 10px; margin: -10px -44px -10px -12px; padding: 14px 18px; background: #111318; overflow: auto }
+#bench[hidden] { display: none }
+#ts-pane-manual { display: flex; flex-direction: column; gap: 10px; margin-top: 14px } #ts-pane-manual[hidden] { display: none }
+[data-bench] button, [data-bench] select, [data-bench] textarea { font: inherit; color: inherit; border: 1px solid var(--line); border-radius: 6px; background: #20242d; padding: 5px 10px }
+[data-bench] button { cursor: pointer } [data-bench] button:hover:not(:disabled) { border-color: #7892b7 } [data-bench] button:disabled { opacity: .45; cursor: default }
+[data-bench] button.primary { background: #94deb4; color: #11251b; border-color: transparent; font-weight: 600 }
+[data-bench] button.quiet { background: transparent; color: var(--muted) }
+[data-bench] button.link { background: transparent; border: 0; padding: 0; color: var(--blue) }
+[data-bench] button.sm, [data-bench] select.sm { font-size: 12px; padding: 2px 8px }
+[data-bench] .muted { color: var(--muted) } [data-bench] .small { font-size: 12px } [data-bench] .mono { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace }
+[data-bench] .spacer { flex: 1 }
+.bn-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap } .bn-top b { font-size: 15px } .bn-top .mono { overflow-wrap: anywhere }
+.bn-acts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
+.bn-copy { display: inline-flex; gap: 10px; align-items: center; margin-left: 8px } .bn-copy label { display: inline-flex; gap: 4px; align-items: center }
+.bn-err { margin: 0; color: var(--red); font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere } .bn-info { margin: 0; color: var(--green); font-size: 13px }
+.bn-empty { border: 1px dashed var(--line); border-radius: 8px; padding: 14px 16px } .bn-empty p { margin: 0 0 8px }
+.bn-svcs { display: flex; flex-direction: column; gap: 8px }
+.bn-svc { border: 1px solid var(--line); border-radius: 8px; background: var(--card); padding: 8px 12px }
+.bn-svc.running { border-color: #35604a } .bn-svc.failed { border-color: #6d4239 } .bn-svc.starting { border-color: #6a5730 }
+.bn-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap } .bn-row b { font-weight: 600 }
+.bn-cmd { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 46ch }
+.bn-where { margin-top: 3px; overflow-wrap: anywhere }
+.bn-plan { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 1px 10px; margin: 6px 0 0; font-size: 12px }
+.bn-plan dt { color: var(--muted) } .bn-plan dd { margin: 0; overflow-wrap: anywhere } .bn-plan dd.bad { color: var(--red) }
+.bn-fail { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; padding: 6px 9px; border-radius: 6px; background: #241917; color: var(--red); font-size: 13px }
+.bn-fail .small { color: var(--text) }
+.ts-pill { display: inline-block; border: 1px solid var(--line); border-radius: 10px; padding: 0 7px; font-size: 11px; line-height: 1.6; white-space: nowrap; color: var(--muted) }
+.ts-pill.g { color: var(--green); border-color: #35604a } .ts-pill.a { color: var(--amber); border-color: #6a5730 } .ts-pill.r { color: var(--red); border-color: #6d4239 }
+.bn-log { display: flex; flex-direction: column; min-height: 220px; flex: 1 1 260px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden }
+.bn-lh { display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: #171a21; border-bottom: 1px solid var(--line); flex-wrap: wrap }
+.bn-ll { flex: 1; min-height: 160px; max-height: 60vh; overflow: auto; background: #0e1014; padding: 6px 0; font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace }
+#ts-pane-manual .bn-ll { max-height: 46vh }
+.bn-l { display: grid; grid-template-columns: 64px 96px minmax(0, 1fr); gap: 8px; padding: 0 10px } .bn-l:hover { background: #151922 }
+.bn-l time { color: #6f7785 } .bn-l b { font-weight: 500; color: var(--blue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.bn-l span { white-space: pre-wrap; overflow-wrap: anywhere; color: #c9cfd9 } .bn-l.err span { color: #ff9c8a } .bn-l.err b::after { content: " ·err"; color: #b06a5c; font-size: 10px } .bn-l.sys span { color: var(--amber) }
+.bn-issue { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--card) } .bn-issue p { margin: 4px 0 8px }
+.bn-issue textarea { width: 100%; min-height: 54px; margin-bottom: 6px }
+#req-list li.sub .kind.accept { border-radius: 50% 50% 2px 2px } #req-list li.sub.early { opacity: .75 }
+/* 需求面板：逐条验收 */
+.ck-acc { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 2px; font-size: 12px }
+.ck-acc button { font: inherit; font-size: 12px; color: var(--ink); background: #20242d; border: 1px solid var(--line); border-radius: 6px; padding: 1px 9px; cursor: pointer }
+.ck-acc button:hover:not(:disabled) { border-color: #7892b7 } .ck-acc button.primary { background: #94deb4; color: #11251b; border-color: transparent; font-weight: 600 }
+.ck-acc button.quiet { background: transparent; color: var(--muted) }
+.ck-acc .ck-mark { color: var(--muted) } .ck-acc.ok .ck-mark { color: var(--ok) } .ck-acc.bad .ck-mark { color: #fca5a5; flex-basis: 100% }
+.ck-acc textarea { flex-basis: 100%; font: inherit; font-size: 13px; color: var(--ink); background: #0e1014; border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; min-height: 48px }
+#run-hint { margin: 6px 0 0 } #run-hint button.link { background: transparent; border: 0; padding: 0; color: var(--accent); cursor: pointer; font: inherit }
+#instance-tag { font-size: 12px; font-weight: 600; color: #11251b; background: #edbf70; border-radius: 10px; padding: 1px 10px; white-space: nowrap; max-width: 52vw; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto }
+#instance-tag small { font-weight: 400; margin-left: 8px; opacity: .8 }
+/* 启动后代码改过的标记、启动记录 */
+.bn-stale { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; padding: 6px 10px; border-radius: 6px; background: #2b2314; border: 1px solid #8a6b2c; color: var(--amber) }
+.bn-stale b { font-size: 13px } .bn-stale .small { color: var(--text); flex: 1 1 240px }
+.bn-hist { margin-top: 4px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap }
+.bn-hist .muted { min-width: 0; overflow-wrap: anywhere }
+.bn-hl { flex-basis: 100%; margin: 2px 0 0; padding: 6px 10px; list-style: none; border-radius: 6px; background: #0e1014; max-height: 180px; overflow: auto }
+.bn-hl li { padding: 1px 0; color: #c9cfd9; overflow-wrap: anywhere }

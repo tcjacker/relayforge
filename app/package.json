@@ -1,0 +1,25 @@
+{
+  "name": "relayforge-app",
+  "productName": "RelayForge",
+  "version": "0.1.0",
+  "private": true,
+  "license": "FSL-1.1-ALv2",
+  "description": "RelayForge：用 Claude Code 或 Codex 会话开发的本地桌面工作台，按需求管理分支、测试和会话进度",
+  "main": "src/main/index.js",
+  "scripts": {
+    "prestart": "node scripts/brand-electron.js",
+    "start": "node scripts/start-electron.js",
+    "postinstall": "node scripts/brand-electron.js",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "electron": "^33.0.0",
+    "eslint": "^9.39.4",
+    "globals": "^17.14.0"
+  }
+}
