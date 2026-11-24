@@ -16,7 +16,10 @@ RelayForge 是一个 macOS 桌面开发工作台。它在本地管理需求、�
 
 ## 演示
 
-https://github.com/user-attachments/assets/cda45aab-29e8-4592-9482-21f1b1e7e46d
+
+
+https://github.com/user-attachments/assets/83bb0176-1d09-4a94-a7bc-88a2acba958b
+
 
 ## 界面一览
 
