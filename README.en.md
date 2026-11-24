@@ -18,7 +18,9 @@ The app shell is Electron; the backend is `rf.py` and the `relayforge` package, 
 
 ## Demo
 
-https://github.com/user-attachments/assets/73dcbf60-9d82-4717-ab43-954e53fbd7e2
+
+https://github.com/user-attachments/assets/356d3a44-a6a0-42f1-90cf-761a377794a7
+
 
 > The 57-second promo video (also on the website home page).
 
