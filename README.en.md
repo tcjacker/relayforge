@@ -18,11 +18,9 @@ The app shell is Electron; the backend is `rf.py` and the `relayforge` package, 
 
 ## Demo
 
-![RelayForge demo: one requirement from the map through scoping, build, test and acceptance](docs/media/demo-en.gif)
+https://github.com/user-attachments/assets/73dcbf60-9d82-4717-ab43-954e53fbd7e2
 
-[![RelayForge promo video (click to watch)](docs/media/relayforge-promo-poster.jpg)](docs/media/relayforge-promo.mp4)
-
-> Click the cover to watch the 57-second promo video (also on the website home page).
+> The 57-second promo video (also on the website home page).
 
 ## Screenshots
 

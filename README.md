@@ -16,11 +16,7 @@ RelayForge 是一个 macOS 桌面开发工作台。它在本地管理需求、�
 
 ## 演示
 
-![RelayForge 演示：从大图、立项、开发、测试到验收的一轮流程](docs/media/demo-zh.gif)
-
-[![RelayForge 宣传视频（点击观看）](docs/media/relayforge-promo-poster.jpg)](docs/media/relayforge-promo.mp4)
-
-> 点击封面观看 57 秒宣传视频（也可以在官网首页观看）。
+https://github.com/user-attachments/assets/cda45aab-29e8-4592-9482-21f1b1e7e46d
 
 ## 界面一览
 
