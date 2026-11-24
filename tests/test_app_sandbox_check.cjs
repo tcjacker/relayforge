@@ -92,7 +92,7 @@ test('a session whose sandbox would not take is not started; the reason shows in
     './sandbox-check': { check: async (file) => ({ ok: false, reason: `Claude Code 1.0.0 太旧了（${file}）\n请更新` }) },
     './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {}, mergeProgress() {} },
     './codex-hooks': { flags: () => [], env: () => ({}) }, './claude-settings': { guardSpec: () => ({}), draftsFor: () => '/d', hooks: () => '{}' },
-    './prompts': { develop: () => 'go', following: () => 'go', intake: () => 'go' }, './session-token': require(path.join(main, 'session-token')), './splits': { guide: '' },
+    './ui-names': { guide: () => '' }, './prompts': { develop: () => 'go', following: () => 'go', intake: () => 'go' }, './session-token': require(path.join(main, 'session-token')), './splits': { guide: '' },
   });
   await sessions.open({ id: 'R-1', cols: 80, rows: 24 });
   assert.equal(spawned.length, 0);

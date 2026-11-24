@@ -126,7 +126,7 @@ function mainTesting() {
   const mocks = {
     './backend': { uiText: locale.uiText,  rf: async (args) => { calls.rf.push(args); return { ok: true, stdout: '{}' }; } },
     './state': { state, send: (channel, payload) => calls.sent.push([channel, payload]) },
-    './prompts': require(path.join(main, 'prompts')),
+    './ui-names': require(path.join(main, 'ui-names')), './prompts': require(path.join(main, 'prompts')),
     './demo': { info: () => null },
     './sessions': { type: (run, text) => calls.typed.push([run.id, text]) },
     './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post: (m) => calls.typed.push([m.to, m.text]) }, // 再测一轮经收件箱送（inbox.js）
@@ -190,7 +190,7 @@ test('the test session is opened in the requirement working directory with its o
     './requirements': { listReqs: async () => [r], pushReqs() {} },
     './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {} },
     './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './codex-hooks': { flags: () => [], env: () => ({}) }, './claude-settings': { guardSpec: () => ({}), draftsFor: () => '/d', hooks: (...args) => JSON.stringify({ args }) },
-    './prompts': require(path.join(main, 'prompts')),
+    './ui-names': require(path.join(main, 'ui-names')), './prompts': require(path.join(main, 'prompts')),
     './session-token': require(path.join(main, 'session-token')),
     './splits': { guide: '拆分的说明' },
   };

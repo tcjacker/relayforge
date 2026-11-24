@@ -85,7 +85,7 @@ async function run(input) {
       './claude-settings': { ...claudeSettings, hooks: () => '{}' },
       './sandbox-check': { check: async () => ({ ok: true }) },
       './inbox': { takeForOpen: () => '', envFor: () => ({}) },
-      './prompts': { intake: () => '', develop: () => '', following: () => '', testing: () => '' },
+      './ui-names': { guide: () => '' }, './prompts': { intake: () => '', develop: () => '', following: () => '', testing: () => '' },
       './demo': { session: () => null },
       './codex-sessions': { register() {}, has: (id) => !!knownSession && id === knownSession, find: () => transcript, nativeId: () => knownSession },
       './initialization': {},

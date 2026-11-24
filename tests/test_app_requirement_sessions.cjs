@@ -33,7 +33,7 @@ function harness(agent, req, known = {}) {
     './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {} },
     './codex-hooks': { flags: () => [], env: () => ({}) }, './claude-settings': { guardSpec: () => ({}), draftsFor: () => '/drafts', hooks: (...args) => { hookCalls.push(args); return '{}'; } },
     './splits': { guide: 'split prompt' },
-    './prompts': { mapEdit: () => '', intake: () => 'intake prompt', develop: () => 'development prompt', following: () => 'follow-up prompt', testing: () => 'testing prompt' },
+    './ui-names': { guide: () => '' }, './prompts': { mapEdit: () => '', intake: () => 'intake prompt', develop: () => 'development prompt', following: () => 'follow-up prompt', testing: () => 'testing prompt' },
     './session-token': require(path.join(main, 'session-token')),
   });
   return { sessions, launches, hookCalls, attached };

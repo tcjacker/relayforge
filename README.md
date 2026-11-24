@@ -4,10 +4,7 @@ RelayForge 是一个 macOS 桌面开发工作台。它在本地管理需求、�
 
 应用主进程是 Electron，后端是 Python 标准库实现的 `rf.py` 和 `relayforge` 包。项目事实保存在 Git 之外的 `.relayforge/`（默认在本机 `~/.relayforge/projects/`），仓库里只提交一个项目 ID；应用本身没有服务端，模型由本机 CLI 调用。
 
-> **English**: RelayForge is a local macOS workbench for developing software with Claude Code or Codex sessions.
-> Each requirement gets its own Git branch and worktree; the app tracks requirements, issues, test sets and session
-> progress. The docs are in Chinese; the app has an English UI. Source-available under
-> [FSL-1.1-ALv2](LICENSE) (each release converts to Apache 2.0 two years after it is published).
+**中文** | [English](README.en.md)
 
 ## 主要能力
 
@@ -16,6 +13,40 @@ RelayForge 是一个 macOS 桌面开发工作台。它在本地管理需求、�
 - **测试和验收**：测试集由数据、接入代码和程序比对组成；测试环境保存变量、保密值和外部依赖；准备步骤和构建命令第一次执行前要你在应用里确认；人工验收的服务由应用启动、停止和收集日志。
 - **事实和大图**：模块、功能点、用户旅程、决定、设计稿和文档登记构成产品事实；大图按层查看模块和功能点，设计稿在隔离的窗口中预览。
 - **Git 和发布**：需求、修复完成时按合并队列合并进项目主目录的当前分支；推送只由你在应用里点「发布」触发。
+
+## 演示
+
+[![RelayForge 宣传视频（点击观看）](docs/media/relayforge-promo-poster.jpg)](docs/media/relayforge-promo.mp4)
+
+> 点击封面观看 57 秒宣传视频（也可以在官网首页观看）。
+
+## 界面一览
+
+演示项目 FlowNote 里一个需求从立项到验收的过程：
+
+### 1. 打开你的项目，AI 先整理出产品大图
+
+![产品大图：按层分页的模块和功能点，AI 整理的部分标着「待确认」](docs/media/step-map.jpg)
+
+### 2. 新建需求，先立项再动手
+
+![立项中的需求：阶段、需求说明、要改的功能点和验收条件](docs/media/step-scope.jpg)
+
+### 3. 开发：每一步都看得见
+
+![进行中的需求：计划 2/4，每一步的完成状态](docs/media/step-build.jpg)
+
+### 4. 测试：越攒越多，一键重跑
+
+![测试集查看器：3 条全部通过，每条标着「AI 新加」](docs/media/step-tests.jpg)
+
+### 5. 问题回流：AI 修好，你来确认
+
+![一条 AI 记下的问题：AI 初判、修复报告、回归数据和「确认修好了」](docs/media/step-fix.jpg)
+
+### 6. 验收、合并，大图跟着更新
+
+![待验收的需求：逐条验收，已通过的条目带时间](docs/media/step-accept.jpg)
 
 ## 运行
 
@@ -46,6 +77,26 @@ RELAYFORGE_PROJECT=/path/to/project npm start
 5. 发现的问题可以随时记成「问题」，AI 初判后由你决定修复、转需求、排查或暂不处理。
 
 不想继续的需求可以取消，取消前的分支、内容和会话都保留，之后可以恢复。
+
+## 官网（relayforge_backend）
+
+官网放在单独的仓库 `relayforge_backend`（本机默认与本仓库同级：`~/ai/relayforge_backend`），不在这个仓库里。它负责介绍应用、提供 dmg 下载和收集反馈。
+
+- 首页、下载页、反馈页：中文在根路径，英文在 `/en`。
+- dmg 和更新日志读取本项目的 GitHub Releases（缓存 10 分钟，GitHub 不可用时页面照常打开）；发新版本只需要建 Release 并上传 `.dmg`。
+- 反馈：网页表单加一个给应用用的接口 `POST /api/v1/feedback`，可匿名、邮箱选填，按编号查进度（`GET /api/v1/feedback/{id}`）。
+- 反馈后台 `/admin`：只有站长能登录，可以改状态、回复用户、写内部备注、看日志和截图，并一键复制成 RelayForge 需求。
+- 技术栈：Python 3.11+、FastAPI、Jinja2 模板、SQLite，没有前端构建步骤；也可以用 `scripts/publish_pages.sh` 构建成静态站发布到 GitHub Pages。
+
+本地预览：
+
+```sh
+cd ~/ai/relayforge_backend
+uv sync
+uv run python scripts/dev_preview.py   # 打开 http://127.0.0.1:8765 ，后台密码 dev
+```
+
+部署、接口字段、垃圾反馈判断和隐私说明见该仓库的 `README.md`。
 
 ## 工程目录
 
@@ -91,6 +142,7 @@ cd app && npm run lint                                     # ESLint
 ## 更多文档
 
 - [桌面应用说明](app/README.md)
+- 官网说明：`relayforge_backend` 仓库的 `README.md`
 - [演示项目说明](test-project/README.md)
 - [产品设计草稿](docs/product/)
 - [设计稿与设计思考](docs/design/)

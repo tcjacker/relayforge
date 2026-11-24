@@ -87,6 +87,8 @@ var staticEnglish = {
   "程序按要改的功能点算出": "Based on the affected features",
   "至少要有一条验收条件。确认后关掉立项会话，开一个新的会话开始开发": "Add at least one acceptance criterion. Confirming closes planning and starts a new development session.",
   "确认立项，开始开发": "Approve and start development",
+  "跳过检查，仍然合并": "Skip check and merge anyway",
+  "合并后的代码没过合并前的检查：不再检查，直接合并（完成记录里会写明）": "The merged code did not pass the checks before merging. Skip the checks and merge directly (the completion record will say so)",
   "不等 AI 把计划全部勾完，交给这个需求的测试会话按验收条件来测": "Send the acceptance criteria to the test session before the development plan is finished",
   "交给测试": "Send to testing",
   "不经过测试，直接进入待验收；需求的记录里会如实写「跳过了测试」": "Move straight to acceptance and record that testing was skipped",

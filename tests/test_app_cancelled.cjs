@@ -108,7 +108,7 @@ test('main process refuses cancelled requirement and historical session entry po
     child_process: { spawn() { throw new Error('must not spawn'); } },
     './demo': { session: () => null, info: () => null }, './initialization': { forSession: () => null }, './settings': {}, './codex-sessions': {}, './config': {}, './backend': {}, './state': { state, send: (channel, payload) => sent.push(payload) },
     './requirements': { listReqs: async () => [{ id: 'R-cancelled', state: 'dropped', sessions: ['old-session'] }] },
-    './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {} }, './claude-settings': {}, './codex-hooks': { flags: () => [], env: () => ({}) }, './prompts': {}, './session-token': require(path.join(base, 'main', 'session-token')), './splits': {},
+    './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {} }, './claude-settings': {}, './codex-hooks': { flags: () => [], env: () => ({}) }, './ui-names': { guide: () => '' }, './prompts': {}, './session-token': require(path.join(base, 'main', 'session-token')), './splits': {},
   };
   const context = vm.createContext({ require: (id) => mocks[id] || require(id), module: { exports: {} }, clearTimeout });
   vm.runInContext(fs.readFileSync(path.join(base, 'main', 'sessions.js'), 'utf8'), context);

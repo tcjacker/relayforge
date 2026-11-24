@@ -60,7 +60,7 @@ function sessionHarness(agent, reqs = [], known = {}, repair = null, example = n
     './requirements': { listReqs: async () => reqs, pushReqs() {} },
     './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {} }, './codex-hooks': { flags: () => ['-c', 'hooks.Stop=[]'], env: (spec) => ({ RELAYFORGE_GUARD: JSON.stringify(spec) }) }, './claude-settings': { guardSpec: (o) => ({ kind: o.drafts ? 'intake' : null }), draftsFor: () => '/drafts', hooks: () => '{}' },
     './splits': { guide: 'split prompt' },
-    './prompts': { mapEdit: () => 'map prompt', intake: () => 'intake prompt', develop: () => 'development prompt', following: () => 'follow-up prompt' },
+    './ui-names': { guide: () => '' }, './prompts': { mapEdit: () => 'map prompt', intake: () => 'intake prompt', develop: () => 'development prompt', following: () => 'follow-up prompt' },
     './session-token': require(path.join(base, 'session-token')),
   });
   return { sessions, launches, state, registered, sent };

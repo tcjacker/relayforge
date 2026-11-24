@@ -29,7 +29,7 @@ async function open(id, over, recap = { ok: true, stdout: '上一个会话 S-old
     './backend': { rf: async (args) => { calls.push(args); return args[0] === 'history' ? recap : { ok: true, stdout: 'S-new\n' }; }, cleanEnv: () => ({}), lastLine: (x) => x },
     './state': { state: { runs: new Map(), project: '/p' }, send() {} }, './requirements': { listReqs: async () => [r], pushReqs() {} },
     './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {} }, './codex-hooks': { flags: () => [], env: () => ({}) }, './claude-settings': { guardSpec: () => ({}), draftsFor: () => '/d', hooks: () => '{}' },
-    './prompts': { develop: () => 'DEVELOP', following: () => 'FOLLOWING', intake: () => 'INTAKE', testing: () => 'TESTING' }, './session-token': T, './splits': { guide: '拆分的说明' },
+    './ui-names': { guide: () => '' }, './prompts': { develop: () => 'DEVELOP', following: () => 'FOLLOWING', intake: () => 'INTAKE', testing: () => 'TESTING' }, './session-token': T, './splits': { guide: '拆分的说明' },
   });
   await sessions.open({ id, cols: 80, rows: 24 });
   sessions.close(id);

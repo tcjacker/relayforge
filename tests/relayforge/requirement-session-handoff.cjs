@@ -72,7 +72,7 @@ req_start(root, ident)
       './claude-settings': { ...load('claude-settings', deps), hooks: () => '{}' },
       './sandbox-check': { check: async () => ({ ok: true }) },
       './inbox': { takeForOpen: () => '', envFor: () => ({}) },
-      './prompts': { intake: () => '', develop: () => '', following: () => '', testing: () => '' },
+      './ui-names': { guide: () => '' }, './prompts': { intake: () => '', develop: () => '', following: () => '', testing: () => '' },
       './demo': { session: () => null },
       './codex-sessions': { register(id) { registered.add(id); }, has: (id) => registered.has(id), find: () => transcript, nativeId: (id) => 'native-' + id },
       './initialization': {},

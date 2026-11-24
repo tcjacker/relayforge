@@ -71,7 +71,7 @@ test('rf.py asks the app over its unix socket: the right kind under the session,
 test('each kind of session gets its own kind and owner in the token', () => {
   const sessions = loadWith('sessions', {
     child_process: { spawn() { throw new Error('not here'); } }, './config': {}, './backend': { uiText: locale.uiText }, './state': { state: { runs: new Map() }, send() {} }, './requirements': {},
-    './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {} }, './codex-hooks': { flags: () => [], env: () => ({}) }, './claude-settings': {}, './prompts': {}, './settings': {}, './codex-sessions': {}, './initialization': {}, './demo': {}, './session-token': T, './splits': {},
+    './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {} }, './codex-hooks': { flags: () => [], env: () => ({}) }, './claude-settings': {}, './ui-names': { guide: () => '' }, './prompts': {}, './settings': {}, './codex-sessions': {}, './initialization': {}, './demo': {}, './session-token': T, './splits': {},
   });
   const req = { id: 'R-1', state: 'open', worktree: '/w' };
   const kinds = [
@@ -97,7 +97,7 @@ test('the session gets the signed token and the app itself never passes one on',
     './backend': { uiText: locale.uiText,  rf: async () => ({ ok: true, stdout: 'S-1\n' }), cleanEnv: () => ({}), lastLine: (x) => x },
     './state': { state: { runs: new Map(), project: '/p' }, send() {} }, './requirements': { listReqs: async () => [r], pushReqs() {} },
     './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {} }, './codex-hooks': { flags: () => [], env: () => ({}) }, './claude-settings': { guardSpec: () => ({}), draftsFor: () => '/d', hooks: () => '{}' },
-    './prompts': { develop: () => 'go', following: () => 'go', intake: () => 'go' }, './session-token': T, './splits': { guide: '拆分的说明' },
+    './ui-names': { guide: () => '' }, './prompts': { develop: () => 'go', following: () => 'go', intake: () => 'go' }, './session-token': T, './splits': { guide: '拆分的说明' },
   });
   await sessions.open({ id: 'R-1', cols: 80, rows: 24 });
   const env = spawned[0].env;
@@ -137,7 +137,7 @@ test('requirement sessions use the configured CLI and model and still carry the 
       './backend': { uiText: locale.uiText,  rf: async () => ({ ok: true, stdout: 'S-1\n' }), cleanEnv: () => ({}), lastLine: (x) => x },
       './state': { state: { runs: new Map(), project: '/p' }, send() {} }, './requirements': { listReqs: async () => [r], pushReqs() {} },
       './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {} }, './codex-hooks': { flags: () => [], env: () => ({}) }, './claude-settings': { guardSpec: () => ({}), draftsFor: () => '/d', hooks: () => '{}' },
-      './prompts': { develop: () => 'go', following: () => 'go', intake: () => 'go', testing: () => 'go' }, './session-token': T, './splits': { guide: '拆分的说明' },
+      './ui-names': { guide: () => '' }, './prompts': { develop: () => 'go', following: () => 'go', intake: () => 'go', testing: () => 'go' }, './session-token': T, './splits': { guide: '拆分的说明' },
     });
     await sessions.open({ id, cols: 80, rows: 24 });
     assert.equal(spawned.length, 1, id + ' ' + kind);
@@ -167,7 +167,7 @@ test('sessions get the project rules from the local records, not from AGENTS.md'
       './backend': { uiText: locale.uiText,  rf: async () => ({ ok: true, stdout: 'S-1\n' }), cleanEnv: () => ({}), lastLine: (x) => x },
       './state': { state: { runs: new Map(), project }, send() {} }, './requirements': { listReqs: async () => [r], pushReqs() {} },
       './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {} }, './codex-hooks': { flags: () => [], env: () => ({}) }, './claude-settings': { guardSpec: () => ({}), draftsFor: () => '/d', hooks: () => '{}' },
-      './prompts': { develop: () => 'go', following: () => 'go', intake: () => 'go', testing: () => 'go' }, './session-token': T, './splits': { guide: '拆分的说明' },
+      './ui-names': { guide: () => '' }, './prompts': { develop: () => 'go', following: () => 'go', intake: () => 'go', testing: () => 'go' }, './session-token': T, './splits': { guide: '拆分的说明' },
     });
     await sessions.open({ id: 'R-1', cols: 80, rows: 24 });
     const args = spawned[0];
@@ -194,7 +194,7 @@ test('a background Codex run keeps the configured CLI arguments and the chosen m
     './backend': { uiText: locale.uiText,  rf: async () => ({ ok: true, stdout: 'S-1\n' }), cleanEnv: () => ({}), lastLine: (x) => x },
     './state': { state: st, send() {} }, './requirements': { listReqs: async () => [r], pushReqs() {} },
     './sandbox-check': { check: async () => ({ ok: true }) }, './inbox': { post() {}, takeForOpen: () => '', envFor: () => ({}) }, './attention': { setPhase() {}, phaseOf: () => 'reply', forgetPhase() {}, onPhase() {}, seen() {}, stopped() {} }, './codex-hooks': { flags: () => ['-c', 'hooks.Stop=[]'], env: () => ({}) }, './claude-settings': { guardSpec: () => ({}), draftsFor: () => '/d', hooks: () => '{}' },
-    './prompts': { develop: () => 'go', following: () => 'go', intake: () => 'go', testing: () => 'go' }, './session-token': T, './splits': { guide: '拆分的说明' },
+    './ui-names': { guide: () => '' }, './prompts': { develop: () => 'go', following: () => 'go', intake: () => 'go', testing: () => 'go' }, './session-token': T, './splits': { guide: '拆分的说明' },
   });
   await sessions.open({ id: 'R-1', headless: true });
   assert.equal(started.length, 1);
@@ -222,7 +222,7 @@ test('a background Codex run keeps the configured CLI arguments and the chosen m
 
 test('headless approval modes: auto never lets a session leave the sandbox, ask waits for you; Codex escalations are yours to approve', () => {
   const { approvalArgs, codexSandboxFlags } = loadWith('sessions', { './sandbox-check': {}, './inbox': {}, './attention': {}, './codex-hooks': {}, './claude-settings': {},
-    './prompts': {}, './session-token': T, './splits': {}, './demo': {}, './initialization': {}, './settings': {}, './codex-sessions': {}, './config': {}, './backend': { uiText: locale.uiText },
+    './ui-names': { guide: () => '' }, './prompts': {}, './session-token': T, './splits': {}, './demo': {}, './initialization': {}, './settings': {}, './codex-sessions': {}, './config': {}, './backend': { uiText: locale.uiText },
     './state': { state: { runs: new Map() }, send() {} }, './requirements': {} });
   assert.deepEqual([...approvalArgs('claude', 'auto')], ['--permission-mode', 'auto']); // Claude Code 的 Auto：跳出沙箱照样不行（sandbox 设置）
   assert.deepEqual([...approvalArgs('claude', 'ask')], ['--permission-mode', 'manual']);
@@ -369,7 +369,7 @@ test('the build command shows in the same consent dialog and is agreed with what
   const calls = [];
   const testsets = loadWith('testsets', {
     './backend': { uiText: locale.uiText,  rf: async (args) => { calls.push(args); return { ok: true, stdout: JSON.stringify({ id: 'TS-003', blocked: [build], env: null, place: '/Users/me/bills' }) }; }, lastLine: (x) => x, parse: JSON.parse },
-    './state': { state: { project: '/p', runs: new Map() }, send() {} }, './prompts': {}, '../renderer/scripts/tests-model': {},
+    './state': { state: { project: '/p', runs: new Map() }, send() {} }, './ui-names': { guide: () => '' }, './prompts': {}, '../renderer/scripts/tests-model': {},
   });
   const pre = await testsets.run({ ids: ['TS-003'] });
   assert.deepEqual(pre.needApproval, [build]); // 没同意：不跑，交给界面弹确认框

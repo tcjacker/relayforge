@@ -13,6 +13,7 @@ const attention = require('./attention');
 const { draftsFor, guardSpec, hooks } = require('./claude-settings');
 const codexHooks = require('./codex-hooks');
 const { INBOX_GUIDE, ISSUE_GUIDE, INTAKE_ASSESSMENT_GUIDE, following, intake, develop, mapEdit, fixing, investigating, checking, testing: testingPrompt } = require('./prompts');
+const uiNames = require('./ui-names');
 
 // 上一个会话最后几轮的步骤（rf.py history session --brief，程序从聊天记录算的）；没有记录、出错或太慢时不给，不影响开会话
 const RECAP_TIMEOUT = 15000;
@@ -313,6 +314,7 @@ async function open({ id, cols = 100, rows = 30, fresh, blank, title, images, sa
     : 'Use English for every user-facing reply, progress update, and conclusion. Preserve commands, code, identifiers, and quotations.';
   const sessionGuide = [
     replyLanguage + ' Follow any newer RelayForge response-language setting supplied in a turn hook.',
+    uiNames.guide(language), // 提示词是中文的：英文界面上引用按钮和标签时要用英文界面上的名字
     projectRules(state.project), INBOX_GUIDE, !tester && ISSUE_GUIDE, splitEnabled && splits.guide, drafting && INTAKE_ASSESSMENT_GUIDE, subagentGuide,
     inDrafts && `## 你在哪里\n\n你的当前目录是这件事专用的草稿目录（${inDrafts}），能写的只有这里：设计稿先写在这里，再用 rf.py design save --file 收进需求。` +
       `项目在 ${root}，只读，不要尝试修改；读项目文件用这个绝对路径。rf.py 的命令照常运行，会找到这个项目。`].filter(Boolean).join('\n\n');
